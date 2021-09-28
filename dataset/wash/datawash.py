@@ -10,7 +10,14 @@ import cv2
 
 from utils.fileHelper import os_mkdir
 
+
 def images_Normalization(path, img_show=False):
+    """
+    图像数据归一化
+    :param path:
+    :param img_show:
+    :return:
+    """
     for root, dirs, files in os.walk(path):
         print('################################################################')
         for name in files:
@@ -186,5 +193,8 @@ if __name__ == '__main__':
     # images_Normalization(path)
 
     # path = '/home/hxzh02/桌面/杆塔倒塌-负样本/'
-    path = '/home/hxzh02/桌面/杆塔图片汇总/'
-    images_Normalization(path, False)
+    # path = '/home/hxzh02/文档/defectDetect/金属锈蚀-原数据-标注/'
+    # images_Normalization(path, False)
+    # dataWash_1(path)
+    path = '/home/hxzh02/文档/defectDetect/金属锈蚀/'
+    images_Normalization(path)
