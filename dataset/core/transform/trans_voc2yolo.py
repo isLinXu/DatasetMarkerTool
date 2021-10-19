@@ -11,7 +11,7 @@ import shutil
 
 
 # voc数据集根目录以及版本
-voc_root = "/home/dell/桌面/GTSDB"
+voc_root = "/home/hxzh02/data/VOCdevkit"
 voc_version = "VOC2007"
 
 # 转换的训练集以及验证集对应txt文件

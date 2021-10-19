@@ -96,11 +96,9 @@ def get_images_from_baidu(keyword, page_num, save_dir):
 
 if __name__ == '__main__':
     # 设置搜索-关键字
-    # keywords = ['输电塔', '输电塔架', '猫塔', '电力输电塔架', '干字塔', '酒杯塔', '官帽塔', '单回路塔', '双回路塔']
-    # keywords = ['灾后电塔','杆塔倒塌','铁塔倒塌']
-    keywords = ['电网铁塔', '电塔']
+    keywords = ['金属腐蚀', '金属生锈','表面生锈','表面腐蚀']
     for keyword in keywords:
-        save_dir = "/home/hxzh02/文档/PlanetDataset/src/" + keyword
-        page_num = 100
+        save_dir = "/home/hxzh02/文档/金属腐蚀/" + keyword
+        page_num = 300
         get_images_from_baidu(keyword, page_num, save_dir)
         print('Get images finished.')

@@ -11,7 +11,7 @@ import cv2
 from utils.fileHelper import os_mkdir
 
 
-def images_Normalization(path, img_show=False):
+def images_Normalization(path, img_show=True):
     """
     图像数据归一化
     :param path:
@@ -196,5 +196,5 @@ if __name__ == '__main__':
     # path = '/home/hxzh02/文档/defectDetect/金属锈蚀-原数据-标注/'
     # images_Normalization(path, False)
     # dataWash_1(path)
-    path = '/home/hxzh02/文档/defectDetect/金属锈蚀/'
+    path = '/home/hxzh02/Demo_pic/dst-有点离谱'
     images_Normalization(path)
