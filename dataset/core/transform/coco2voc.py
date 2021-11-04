@@ -1,40 +1,151 @@
-from pycocotools.coco import COCO
-from pascal_voc_writer import Writer
-import argparse
+from xml.dom import minidom
+import json
+import glob
 import os
-
-def coco2voc(ann_file, output_dir):
-    coco = COCO(ann_file)
-    cats = coco.loadCats(coco.getCatIds())
-    cat_idx = {}
-    for c in cats:
-        cat_idx[c['id']] = c['name']
-    for img in coco.imgs:
-        catIds = coco.getCatIds()
-        annIds = coco.getAnnIds(imgIds=[img], catIds=catIds)
-        if len(annIds) > 0:
-            img_fname = coco.imgs[img]['file_name']
-            image_fname_ls = img_fname.split('.')
-            image_fname_ls[-1] = 'xml'
-            label_fname = '.'.join(image_fname_ls)
-            writer = Writer(img_fname, coco.imgs[img]['width'], coco.imgs[img]['height'])
-            anns = coco.loadAnns(annIds)
-            for a in anns:
-                bbox = a['bbox']
-                bbox = [bbox[0], bbox[1], bbox[2] + bbox[0], bbox[3] + bbox[1]]
-                bbox = [str(b) for b in bbox]
-                catname = cat_idx[a['category_id']]
-                writer.addObject(catname, bbox[0], bbox[1], bbox[2], bbox[3])
-                writer.save(output_dir+'/'+label_fname)
+from shutil import copyfile
+# 将self.orderDict中的信息写入本地xml文件，参数filename是xml文件名
+def Convert_coco_to_voc(annotation_path,JPEGImage_path,out_path):
+    '''
+    将coco数据转换为voc数据
+    :param annotation_path:coco标记文件的地址
+    :param JPEGImage_path: coco图片数据集的位置
+    :param out_path: 生成的voc数据集保存的位置
+    :return:
+    '''
+    #先创建voc输出文件夹标准格式
+    outdir = out_path
+    # 创建各级文件夹
+    train_xml_out = os.path.join(outdir, 'VOC2007/Annotations')
+    if not os.path.exists(train_xml_out ):
+        os.makedirs(train_xml_out)
+    train_img_out = os.path.join(outdir, 'VOC2007/JPEGImages')
+    if not os.path.exists(train_img_out):
+        os.makedirs(train_img_out)
 
 
-parser = argparse.ArgumentParser(description='Convert COCO annotations to PASCAL VOC XML annotations')
-parser.add_argument('--ann_file',help='Path to annotations file')
-parser.add_argument('--output_dir',help='Path to output directory where annotations are to be stored')
-args = parser.parse_args()
-try:
-    os.mkdir(args.output_dir)
-except FileExistsError:
-    pass
+    data = json.load(open(annotation_path, 'r'))
+    imgs = data['images']
+    annotations = data['annotations']
+    categorie=data["categories"]
+    # cate_list=list()
+    cate_list = {}
+    print('JSON文件中_图片总数:' + str(len(imgs)))
+    # for i  in range(len(categorie)):
+    #     for ca in categorie:
+    #         if ca["id"]==i:
+    #             cate_list.append(ca["supercategory"])
+    # for i  in range(len(categorie)):
+    for ca in categorie:
+        tmp_ca = cate_list[ca["id"]] = ca["name"]
+    print("JSON文件中_标注类别:" + str(cate_list))
 
-coco2voc(ann_file=args.ann_file, output_dir=args.output_dir)
+    #遍历图片json列表
+    for img in imgs:
+        filename = img['file_name']
+        print(filename)
+        img_w = img['width']
+        img_h = img['height']
+        img_id = img['id']
+        ana_txt_name = filename.split('.')[0] + '.txt'
+        roi_list=list()
+        #遍历图片标注信息列表
+        for ann in annotations:
+            if ann['image_id'] == img_id:
+                print(ann['category_id'])
+                #图片和标记匹配
+                box = convert_boxshape((img_w, img_h), ann['bbox'])
+                roi_list.append([cate_list[ann['category_id']],box[0], box[1], box[2], box[3]])
+                print(box)
+        get_xml(filename, [img_w,img_h,3], roi_list,train_xml_out)
+        copyfile(os.path.join(JPEGImage_path, filename),os.path.join(train_img_out, filename,))
+def convert_boxshape(size, box):
+    '''
+    coco数据集标注是xmin,ymin,width,height 而voc和yolo是xmin ymin xmax ynax 需要进行转换
+    :param size: 图片宽 图片高
+    :param box:
+    :return:
+    '''
+    dw = size[0]   # 图像实际宽度
+    dh = size[1]  # 图像实际高度
+    #x=box[0]
+    #y=box[1]
+    x = box[0]  #标注区域X坐标
+    y = box[1]  #标注区域Y坐标
+    w = box[2]   # 标注区域宽度
+    h = box[3]   #标注区域高度
+
+    xmin=int(x)
+    ymin=int(y)
+    xmax=int(x+w)
+    ymax=int(y+h)
+    return (xmin, ymin, xmax, ymax)
+
+
+def get_xml(img_name,size,roi,outpath):
+    '''
+    传入每张图片的名称 大小 和标记点列表生成和图片名相同的xml标记文件
+    :param img_name: 图片名称
+    :param size:[width,height,depth]
+    :param roi:[["label1",xmin,ymin,xmax,ymax]["label2",xmin,ymin,xmax,ymax].....]
+    :return:
+    '''
+    impl = minidom.getDOMImplementation()
+    doc = impl.createDocument(None, None, None)
+    #创建根节点
+    orderlist = doc.createElement("annotation")
+    doc.appendChild(orderlist)
+    #c创建二级节点
+    filename=doc.createElement("filename")
+    filename.appendChild(doc.createTextNode(img_name))
+    orderlist.appendChild(filename)
+    #size节点
+    sizes=doc.createElement("size")
+    width=doc.createElement("width")
+    width.appendChild(doc.createTextNode(str(size[0])))
+    height=doc.createElement("height")
+    height.appendChild(doc.createTextNode(str(size[1])))
+    depth=doc.createElement("depth")
+    depth.appendChild(doc.createTextNode(str(size[2])))
+    sizes.appendChild(width)
+    sizes.appendChild(height)
+    sizes.appendChild(depth)
+    orderlist.appendChild(sizes)
+    #object 节点
+    for ri in roi:
+        object=doc.createElement("object")
+        name=doc.createElement("name")
+        name.appendChild(doc.createTextNode(ri[0]))
+        object.appendChild(name)
+        bndbox=doc.createElement("bndbox")
+
+        xmin=doc.createElement("xmin")
+        xmin.appendChild(doc.createTextNode(str(ri[1])))
+        bndbox.appendChild(xmin)
+        ymin=doc.createElement("ymin")
+        ymin.appendChild(doc.createTextNode(str(ri[2])))
+        bndbox.appendChild(ymin)
+        xmax=doc.createElement("xmax")
+        xmax.appendChild(doc.createTextNode(str(ri[3])))
+        bndbox.appendChild(xmax)
+        ymax=doc.createElement("ymax")
+        ymax.appendChild(doc.createTextNode(str(ri[4])))
+        bndbox.appendChild(ymax)
+        object.appendChild(bndbox)
+        orderlist.appendChild(object)
+         # 将dom对象写入本地xml文件
+
+    # 打开test.xml文件 准备写入
+    f = open(os.path.join(outpath,img_name[:-4]+'.xml'), 'w')
+    # 写入文件
+    doc.writexml(f, addindent='  ', newl='\n')
+    # 关闭
+    f.close()
+
+if __name__ == "__main__":
+    #传入coco的annotations.json地址，image文件存放的地址 和输出的voc数据存放地址
+    # Convert_coco_to_voc(, "D:/00_indemind_lyk/dataset/COCO/COCO/val2017", ,)
+
+    annotation_path = "D:/00_indemind_lyk/dataset/COCO/COCO/annotations/instances_val2017.json"
+    JPEGImage_path = "D:/00_indemind_lyk/dataset/COCO/COCO//voc/val"
+    out_path = ""
+    Convert_coco_to_voc()

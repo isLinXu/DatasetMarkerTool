@@ -7,7 +7,6 @@ import os
 from os import listdir, getcwd
 from os.path import join
 
-
 total_object=0 #total obj  count
 def calc_total_objcount(xml_dir):
 

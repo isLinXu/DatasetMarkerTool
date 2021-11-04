@@ -186,8 +186,7 @@ class CreateImages():
                             xml_infos.append(info)
                             src_copy[ymin:ymin+h,xmin:xmin+w]=button
                             break
-                #保存图片
-        
+            #保存图片
             filepath=osp.join(self.xml_savedir,bg_image_ids+'-'+str(i)+'.png')
             flag=cv.imencode(".png",src_copy)[1].tofile(filepath)
 
