@@ -1,22 +1,41 @@
+# -*- coding:utf-8  -*-
+'''
+@author: linxu
+@contact: 17746071609@163.com
+@time: 2021-9-23 上午11:56
+@desc: VOC(xml)格式转换为COCO(json)格式
+'''
 
 import os.path as osp
 import xml.etree.ElementTree as ET
 
-#import mmcv  #需在mmdet环境下！
 import json
 
 from glob import glob
 from tqdm import tqdm
 from PIL import Image
 
-cls_classes = ['dog','cat','human']    #检测目标类别（不含background）
+#检测目标类别（不含background）
+cls_classes = ['smoke']
 label_ids = {name: i + 1 for i, name in enumerate(cls_classes)}
 
 def get_segmentation(points):
+    '''
+    获得box角点
+    :param points:
+    :return:
+    '''
     return [points[0], points[1], points[2] + points[0], points[1],
              points[2] + points[0], points[3] + points[1], points[0], points[3] + points[1]]
 
 def parse_xml(xml_path, img_id, anno_id):
+    '''
+    xml解析
+    :param xml_path: xml路径
+    :param img_id: img id
+    :param anno_id: 标注文件 id
+    :return:
+    '''
     tree = ET.parse(xml_path)
     root = tree.getroot()
     annotation = []
@@ -50,10 +69,18 @@ def parse_xml(xml_path, img_id, anno_id):
     return annotation, anno_id
 
 def cvt_annotations(img_path, xml_path, out_file):
+    '''
+    转换标注格式
+    :param img_path:
+    :param xml_path:
+    :param out_file:
+    :return:
+    '''
     images = []
     annotations = []
     img_id = 1
     anno_id = 1
+    # 处理过程-进度条
     for img_path in tqdm(glob(img_path + '/*.jpg')):
         w, h = Image.open(img_path).size
         img_name = osp.basename(img_path)
@@ -77,9 +104,12 @@ def cvt_annotations(img_path, xml_path, out_file):
 
 
 def main():
-    xml_path = "/home1/huangqiangHD/dataset/train/xml/"   #XML文件位置
-    img_path = "/home1/huangqiangHD/dataset/train/images/"#Image文件位置
-    out_path = "/home1/huangqiangHD/dataset/train/train.json"#COCO文件位置
+    # XML文件位置
+    xml_path = "/home/hxzh02/MyGithub/TrainNetHub/Efficient/EfficientDet_master/datasets/smoke_coco/train"
+    # Image文件位置
+    img_path = "/home/hxzh02/MyGithub/TrainNetHub/Efficient/EfficientDet_master/datasets/smoke_coco/train"
+    # COCO文件位置
+    out_path = "/home/hxzh02/MyGithub/TrainNetHub/Efficient/EfficientDet_master/datasets/smoke_coco/annotations/instances_train.json"
     print('processing {} ...'.format("xml format annotations"))
     cvt_annotations(img_path, xml_path, out_path)
     print('Done!')

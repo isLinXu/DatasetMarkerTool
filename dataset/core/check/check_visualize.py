@@ -24,7 +24,6 @@ def checkJpgXml(jpg_dirs,
     dir3 是创建的，如果图片没有对应的xml文件，那就将图片放入dir3
     is_move 是确认是否进行移动，否则只进行打印
     """
-
     set1 = set()
     set2 = set()
 
@@ -45,7 +44,6 @@ def checkJpgXml(jpg_dirs,
 
     print("###########  right jpgs  ###########")
     for _name in intersection:
-
         path1 = os.path.join(jpg_dirs, _name + ".jpg")
         path2 = os.path.join(intersection_jpg_dir, _name + ".jpg")
         shutil.copy(path1, path2)
@@ -124,7 +122,6 @@ def make_square_image(img):
 
 def rescale_img_bbox(xml_path, jpg_path, resizedSize, save_xml_path,
                      save_jpg_path):
-
     mk(save_jpg_path)
     mk(save_xml_path)
 
@@ -158,7 +155,7 @@ def rescale_img_bbox(xml_path, jpg_path, resizedSize, save_xml_path,
         x1, y1 = int(x1), int(y1)
         x2, y2 = int(x2), int(y2)
 
-        #rescale
+        # rescale
         x1, x2 = x1 * w_scale, x2 * w_scale
         y1, y2 = y1 * h_scale, y2 * h_scale
 
@@ -181,7 +178,6 @@ def rescale_img_bbox(xml_path, jpg_path, resizedSize, save_xml_path,
               xml_declaration=True)
 
 
-
 def changeName(xml_fold, origin_name, new_name):
     '''
     xml_fold: xml存放文件夹
@@ -194,13 +190,13 @@ def changeName(xml_fold, origin_name, new_name):
         file_path = os.path.join(xml_fold, xmlFile)
         dom = parse(file_path)
         root = dom.getroot()
-        for obj in root.iter('object'):  #获取object节点中的name子节点
+        for obj in root.iter('object'):  # 获取object节点中的name子节点
             tmp_name = obj.find('name').text
             if tmp_name == origin_name:  # 修改
                 obj.find('name').text = new_name
                 print("change %s to %s." % (origin_name, new_name))
                 cnt += 1
-        dom.write(file_path, xml_declaration=True)  #保存到指定文件
+        dom.write(file_path, xml_declaration=True)  # 保存到指定文件
     print("有%d个文件被成功修改。" % cnt)
 
 
@@ -214,10 +210,10 @@ if __name__ == "__main__":
     # xml_path = r"/home/ubuntu/yolov3/voc2007crack (329).xml"
 
     jpg_dirs = "/home/ubuntu/yolov3/voc2007/JPEGImages"
-    #r"/home/ubuntu/yolov3/voc2007/Annotations/JPEGImages"
-    
+    # r"/home/ubuntu/yolov3/voc2007/Annotations/JPEGImages"
+
     xml_dirs = "/home/ubuntu/yolov3/voc2007/Annotations"
-    
+
     empty_dirs = r"/home/ubuntu/yolov3/voc2007/empty"
 
     intersection_jpg_dir = r"/home/ubuntu/yolov3/voc2007/interset_jpg"
