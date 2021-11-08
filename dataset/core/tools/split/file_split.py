@@ -22,7 +22,7 @@ for i in range(datasetLength):
     filename = datasetList[i]
     # 以 . 分割提取文件名
     file_name = filename.split('.')[0]
-    print('file', file_name)
+    # print('file', file_name)
     # 以 _ 分割提取类别号
     classOrder = str(file_name.split('_')[0])
     # 以第二个 _ 分割验证与测试集
@@ -30,19 +30,27 @@ for i in range(datasetLength):
     if sdata:
         type_d = sdata[0]
         if type_d == 'train':
-            print('type:', type_d)
-            rd_path = os.path.join(dataset_path, file_name + '.jpg')
+            rd_jpg_path = os.path.join(dataset_path, file_name + '.jpg')
+            wr_jpg_path = os.path.join(train_dir, file_name + '.jpg')
+            rd_xml_path = os.path.join(dataset_path, file_name + '.xml')
+            wr_xml_path = os.path.join(train_dir, file_name + '.xml')
             check_dir(train_dir)
-            wr_path = os.path.join(train_dir, file_name + '.jpg')
-            shutil.copy(rd_path, wr_path)
+
+            shutil.copy(rd_jpg_path, wr_jpg_path)
+            shutil.copy(rd_xml_path, wr_xml_path)
         else:
-            print('type:', type_d)
+            rd_jpg_path = os.path.join(dataset_path, file_name + '.jpg')
+            wr_jpg_path = os.path.join(test_dir, file_name + '.jpg')
+            rd_xml_path = os.path.join(dataset_path, file_name + '.xml')
+            wr_xml_path = os.path.join(train_dir, file_name + '.xml')
             check_dir(test_dir)
-            wr_path = os.path.join(test_dir, file_name + '.jpg')
-            shutil.copy(rd_path, wr_path)
-    # print(sdata,type_d)
+
+            shutil.copy(rd_jpg_path, wr_jpg_path)
+            shutil.copy(rd_xml_path, wr_xml_path)
+        print('write jpg:', wr_jpg_path)
+        print('write xml:', wr_xml_path)
 
     labelList.append(classOrder)
     fileList.append(file_name)
-print(labelList)
-print(fileList)
+# print(labelList)
+# print(fileList)
