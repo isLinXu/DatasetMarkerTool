@@ -47,6 +47,6 @@ def files_split_data(path_files):
 
 if __name__ == '__main__':
     # 指定文件夹路径
-    path_files = r'/home/hxzh02/文档/datasets_smoke/'
+    path_files = r'/home/hxzh02/文档/call-phone_datasets/'
     files_split_data(path_files)
 
