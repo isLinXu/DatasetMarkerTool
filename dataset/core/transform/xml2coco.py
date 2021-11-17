@@ -5,8 +5,9 @@
 @time: 2021-9-23 上午11:56
 @desc: VOC(xml)格式转换为COCO(json)格式
 '''
-
+import os
 import os.path as osp
+import shutil
 import xml.etree.ElementTree as ET
 
 import json
@@ -18,6 +19,13 @@ from PIL import Image
 #检测目标类别（不含background）
 cls_classes = ['smoke']
 label_ids = {name: i + 1 for i, name in enumerate(cls_classes)}
+
+def mkr(path):
+    if os.path.exists(path):
+        shutil.rmtree(path)
+        os.mkdir(path)
+    else:
+        os.mkdir(path)
 
 def get_segmentation(points):
     '''
@@ -105,13 +113,27 @@ def cvt_annotations(img_path, xml_path, out_file):
 
 def main():
     # XML文件位置
-    xml_path = "/home/hxzh02/MyGithub/TrainNetHub/Efficient/EfficientDet_master/datasets/smoke_coco/train"
+    xml_path = "/home/hxzh02/文档/datasets_smoke/train"
     # Image文件位置
-    img_path = "/home/hxzh02/MyGithub/TrainNetHub/Efficient/EfficientDet_master/datasets/smoke_coco/train"
+    img_path = "/home/hxzh02/文档/datasets_smoke/train"
     # COCO文件位置
-    out_path = "/home/hxzh02/MyGithub/TrainNetHub/Efficient/EfficientDet_master/datasets/smoke_coco/annotations/instances_train.json"
+    out_path = "/home/hxzh02/文档/datasets_smoke/annotations/instances_train.json"
+    train_annotations = '/home/hxzh02/文档/datasets_smoke/annotations'
+
+
+    mkr(train_annotations)
+
+    # XML文件位置
+    val_xml_path = "/home/hxzh02/文档/datasets_smoke/val/"
+    # Image文件位置
+    val_img_path = "/home/hxzh02/文档/datasets_smoke/val/"
+    # COCO文件位置
+    val_out_path = "/home/hxzh02/文档/datasets_smoke/annotations/instances_val.json"
+
+
     print('processing {} ...'.format("xml format annotations"))
     cvt_annotations(img_path, xml_path, out_path)
+    cvt_annotations(val_img_path, val_xml_path, val_out_path)
     print('Done!')
 
 
