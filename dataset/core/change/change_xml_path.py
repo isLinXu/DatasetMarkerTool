@@ -7,8 +7,8 @@ import os.path
 import xml.dom.minidom
 
 # file_path = "./data/VOCdevkit2007/VOC2007/Annotations"
-xml_file_path = '/home/hxzh02/文档/SSD_Pytorch_learn/dataset/label'
-jpeg_file_path = '/home/hxzh02/文档/SSD_Pytorch_learn/dataset/data'
+xml_file_path = '/media/hxzh02/SB@home/hxzh/Dataset/11-5电塔照片视频/照片/annotaions'
+jpeg_file_path = '/media/hxzh02/SB@home/hxzh/Dataset/11-5电塔照片视频/照片/'
 files = os.listdir(xml_file_path)  # 得到文件夹下所有文件名称
 s = []
 for xmlFile in files:  # 遍历文件夹
