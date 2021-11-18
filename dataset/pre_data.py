@@ -7,11 +7,11 @@ import random
 from shutil import copyfile
 
 # 分类类别
-classes = ["ball", "messi"]
-# classes=["ball"]
-
+# 异物分类
+classes = ["nest", "trash", "kite", "balloon"]
+# classes = ['smoke']
 # 划分训练集比率
-TRAIN_RATIO = 80
+TRAIN_RATIO = 90
 
 
 def clear_hidden_files(path):
@@ -50,14 +50,14 @@ def convert(size, box):
     return (x, y, w, h)
 
 
-def convert_annotation(image_id):
+def convert_annotation(dir_path, dataset_name, image_id):
     '''
     转换annotation
     :param image_id:
     :return:
     '''
-    in_file = open('data/VOCdevkit/VOC2007/Annotations/%s.xml' % image_id)
-    out_file = open('data/VOCdevkit/VOC2007/YOLOLabels/%s.txt' % image_id, 'w')
+    in_file = open(dir_path + dataset_name + '/VOC2007/Annotations/%s.xml' % image_id)
+    out_file = open(dir_path + dataset_name + '/VOC2007/YOLOLabels/%s.txt' % image_id, 'w')
     tree = ET.parse(in_file)
     root = tree.getroot()
     size = root.find('size')
@@ -65,10 +65,13 @@ def convert_annotation(image_id):
     h = int(size.find('height').text)
 
     for obj in root.iter('object'):
-        difficult = obj.find('difficult').text
         cls = obj.find('name').text
-        if cls not in classes or int(difficult) == 1:
-            continue
+        # print(cls)
+        if len(classes) > 1:
+            difficult = obj.find('difficult').text
+            if cls not in classes or int(difficult) == 1:
+                continue
+
         cls_id = classes.index(cls)
         xmlbox = obj.find('bndbox')
         b = (float(xmlbox.find('xmin').text), float(xmlbox.find('xmax').text), float(xmlbox.find('ymin').text),
@@ -78,12 +81,12 @@ def convert_annotation(image_id):
     in_file.close()
     out_file.close()
 
-if __name__ == '__main__':
 
-    wd = os.getcwd()
-    data_base_dir = os.path.join(wd, "data/VOCdevkit/")
+def trans_prepare_config(dir_path='data/', dataset_name='VOCdevkit_xxx'):
+    data_base_dir = os.path.join(dir_path + dataset_name + "/")
     if not os.path.isdir(data_base_dir):
         os.mkdir(data_base_dir)
+    print('data_base_dir', data_base_dir)
     work_sapce_dir = os.path.join(data_base_dir, "VOC2007/")
     if not os.path.isdir(work_sapce_dir):
         os.mkdir(work_sapce_dir)
@@ -124,12 +127,13 @@ if __name__ == '__main__':
         os.mkdir(yolov5_labels_test_dir)
     clear_hidden_files(yolov5_labels_test_dir)
 
-    train_file = open(os.path.join(wd, "data/yolov5_train.txt"), 'w')
-    test_file = open(os.path.join(wd, "data/yolov5_val.txt"), 'w')
+    print('dir_path', dir_path)
+    train_file = open(dir_path + "yolov5_train.txt", 'w')
+    test_file = open(dir_path + "yolov5_val.txt", 'w')
     train_file.close()
     test_file.close()
-    train_file = open(os.path.join(wd, "data/yolov5_train.txt"), 'a')
-    test_file = open(os.path.join(wd, "data/yolov5_val.txt"), 'a')
+    train_file = open(os.path.join(dir_path + "yolov5_train.txt"), 'a')
+    test_file = open(os.path.join(dir_path + "yolov5_val.txt"), 'a')
     list_imgs = os.listdir(image_dir)  # list image files
     prob = random.randint(1, 100)
     print("Probability: %d" % prob)
@@ -145,14 +149,14 @@ if __name__ == '__main__':
             label_name = nameWithoutExtention + '.txt'
             label_path = os.path.join(yolo_labels_dir, label_name)
         prob = random.randint(1, 100)
-        print("Probability: %d" % prob)
+        print('file:', annotation_name, '|', "Probability: %d" % prob)
 
         # 训练集
         if (prob < TRAIN_RATIO):
             if os.path.exists(annotation_path):
                 train_file.write(image_path + '\n')
                 # 转换label
-                convert_annotation(nameWithoutExtention)
+                convert_annotation(dir_path=dir_path, dataset_name=dataset_name, image_id=nameWithoutExtention)
                 copyfile(image_path, yolov5_images_train_dir + voc_path)
                 copyfile(label_path, yolov5_labels_train_dir + label_name)
         else:
@@ -160,8 +164,16 @@ if __name__ == '__main__':
             if os.path.exists(annotation_path):
                 test_file.write(image_path + '\n')
                 # 转换label
-                convert_annotation(nameWithoutExtention)
+                convert_annotation(dir_path=dir_path, dataset_name=dataset_name, image_id=nameWithoutExtention)
                 copyfile(image_path, yolov5_images_test_dir + voc_path)
                 copyfile(label_path, yolov5_labels_test_dir + label_name)
     train_file.close()
     test_file.close()
+
+
+if __name__ == '__main__':
+    # 设置数据集根目录路径
+    dir_path = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/3-输电线路异物数据集（VOC）/'
+    # 设置数据集名称
+    dataset_name = 'foreignbody_dataset_part1'
+    trans_prepare_config(dir_path, dataset_name)
