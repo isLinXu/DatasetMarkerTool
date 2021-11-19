@@ -7,9 +7,10 @@ import random
 from shutil import copyfile
 
 # 分类类别
-# 异物分类
-classes = ["nest", "trash", "kite", "balloon"]
-# classes = ['smoke']
+# classes = ["nest", "trash", "kite", "balloon"] # 异物分类
+classes = ["insulator", "defect"]              # 绝缘子分类
+# classes = ['smoke']                           # 烟雾检测
+
 # 划分训练集比率
 TRAIN_RATIO = 90
 
@@ -49,7 +50,7 @@ def convert(size, box):
     h = h * dh
     return (x, y, w, h)
 
-
+classlist = []
 def convert_annotation(dir_path, dataset_name, image_id):
     '''
     转换annotation
@@ -64,9 +65,11 @@ def convert_annotation(dir_path, dataset_name, image_id):
     w = int(size.find('width').text)
     h = int(size.find('height').text)
 
+
     for obj in root.iter('object'):
         cls = obj.find('name').text
-        # print(cls)
+        print(cls)
+        classlist.append(cls)
         if len(classes) > 1:
             difficult = obj.find('difficult').text
             if cls not in classes or int(difficult) == 1:
@@ -78,6 +81,10 @@ def convert_annotation(dir_path, dataset_name, image_id):
              float(xmlbox.find('ymax').text))
         bb = convert((w, h), b)
         out_file.write(str(cls_id) + " " + " ".join([str(a) for a in bb]) + '\n')
+
+    # 整理object类别列表
+    classdd = list(set(classlist))
+    print('classlist', classdd)
     in_file.close()
     out_file.close()
 
@@ -173,7 +180,7 @@ def trans_prepare_config(dir_path='data/', dataset_name='VOCdevkit_xxx'):
 
 if __name__ == '__main__':
     # 设置数据集根目录路径
-    dir_path = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/3-输电线路异物数据集（VOC）/'
+    dir_path = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/7-输电线路绝缘子数据集VOC/'
     # 设置数据集名称
-    dataset_name = 'foreignbody_dataset_part1'
+    dataset_name = 'dataset_insulator'
     trans_prepare_config(dir_path, dataset_name)

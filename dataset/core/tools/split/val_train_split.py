@@ -36,11 +36,7 @@ parser.add_argument('--test_output', help='Path to output test data', type=str)
 parser.add_argument('--image_ext', help='jpeg or jpg or png', type=str, default='jpeg')
 FLAGS = parser.parse_args()
 
-FLAGS.datadir = '/home/hxzh02/文档/datasets_smoke/'
-FLAGS.split = 0.1
-FLAGS.train_output = '/home/hxzh02/MyGithub/TrainNetHub/Efficient/EfficientDet_master/datasets/smoke_coco/train/'
-FLAGS.test_output = '/home/hxzh02/MyGithub/TrainNetHub/Efficient/EfficientDet_master/datasets/smoke_coco/test/'
-FLAGS.image_ext = 'jpg'
+
 
 def get_file_list_from_dir(datadir):
     '''
@@ -136,9 +132,19 @@ def main():
     check_dir(FLAGS.test_output)
     file_list = get_file_list_from_dir(FLAGS.datadir)
     print('Read -', file_list.shape[0], '- files from the directory -', FLAGS.datadir)
+    if file_list.shape[0] == 0:
+        for root, dirs, files in os.walk(FLAGS.datadir):
+            print('root',root, 'dirs', dirs, 'files', files)
+
+
     training, testing = get_training_and_testing_sets(file_list, FLAGS.split)
     write_data(training, testing, FLAGS.datadir, FLAGS.train_output, FLAGS.test_output)
 
 
 if __name__ == '__main__':
+    FLAGS.datadir = '/home/hxzh02/文档/Pokemon-sprites-classifier/dataset/pokemon_data/'
+    FLAGS.split = 0.1
+    FLAGS.train_output = '/home/hxzh02/文档/Pokemon-sprites-classifier/dataset/pokemon_data/train/'
+    FLAGS.test_output = '/home/hxzh02/文档/Pokemon-sprites-classifier/dataset/pokemon_data/test/'
+    FLAGS.image_ext = 'jpg'
     main()
