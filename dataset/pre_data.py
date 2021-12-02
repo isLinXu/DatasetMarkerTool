@@ -194,9 +194,9 @@ if __name__ == '__main__':
     # 设置数据集根目录路径
     # dir_path = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/7-输电线路绝缘子数据集VOC/'
     # dir_path = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/5-安全帽数据集5000张/'
-    dir_path = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/1-火焰数据集/'
+    dir_path = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/'
     # 设置数据集名称
     # dataset_name = 'dataset_insulator'
     # dataset_name = 'dataset_safetyHat'
-    dataset_name = 'fire_dataset'
+    dataset_name = 'dataset_plane_all'
     trans_prepare_config(dir_path, dataset_name)
