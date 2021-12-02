@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 import pickle
 import os
+from glob import glob
 from os import listdir, getcwd
 from os.path import join
 import random
@@ -15,11 +16,18 @@ from shutil import copyfile
 # classes = ['tower_body','tower_head','tower_foot','tower_body_down'] # 杆塔检测
 
 # 电塔巡检检测
+from tqdm import tqdm
+
 classes = ['tower_body','tower_head','tower_foot','tower_body_down',
            'insulator', 'defect',
            'line','line_break','line_extract',
            'nest', 'trash', 'kite', 'balloon',
-           'fire', 'smoke']
+           ]
+# classes = ['tower_body','tower_head','tower_foot','tower_body_down',
+#            'insulator', 'defect',
+#            'line','line_break','line_extract',
+#            'nest', 'trash', 'kite', 'balloon',
+#            'fire', 'smoke']
 
 # 划分训练集比率
 TRAIN_RATIO = 90
@@ -76,7 +84,6 @@ def convert_annotation(dir_path, dataset_name, image_id):
 
     for obj in root.iter('object'):
         cls = obj.find('name').text
-        print(cls)
         classlist.append(cls)
         if len(classes) > 1:
             difficult = obj.find('difficult').text
@@ -95,7 +102,7 @@ def convert_annotation(dir_path, dataset_name, image_id):
 
     # 整理object类别列表
     classdd = list(set(classlist))
-    print('classlist', classdd)
+    # print('classlist', classdd)
     in_file.close()
     out_file.close()
 
@@ -154,8 +161,9 @@ def trans_prepare_config(dir_path='data/', dataset_name='VOCdevkit_xxx'):
     test_file = open(os.path.join(dir_path + "yolov5_val.txt"), 'a')
     list_imgs = os.listdir(image_dir)  # list image files
     prob = random.randint(1, 100)
-    print("Probability: %d" % prob)
-    for i in range(0, len(list_imgs)):
+
+    # for i in range(0, len(list_imgs)):
+    for i in tqdm(range(0, len(list_imgs))):
         path = os.path.join(image_dir, list_imgs[i])
         if os.path.isfile(path):
             image_path = image_dir + list_imgs[i]
@@ -174,7 +182,7 @@ def trans_prepare_config(dir_path='data/', dataset_name='VOCdevkit_xxx'):
             if os.path.exists(annotation_path):
                 train_file.write(image_path + '\n')
                 # 转换label
-                print('nameWithoutExtention',nameWithoutExtention)
+                # print('nameWithoutExtention',nameWithoutExtention)
                 convert_annotation(dir_path=dir_path, dataset_name=dataset_name, image_id=nameWithoutExtention)
                 copyfile(image_path, yolov5_images_train_dir + voc_path)
                 copyfile(label_path, yolov5_labels_train_dir + label_name)
@@ -186,6 +194,8 @@ def trans_prepare_config(dir_path='data/', dataset_name='VOCdevkit_xxx'):
                 convert_annotation(dir_path=dir_path, dataset_name=dataset_name, image_id=nameWithoutExtention)
                 copyfile(image_path, yolov5_images_test_dir + voc_path)
                 copyfile(label_path, yolov5_labels_test_dir + label_name)
+
+    print('classlist', classlist)
     train_file.close()
     test_file.close()
 
