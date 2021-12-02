@@ -3,7 +3,7 @@
 @author: linxu
 @contact: 17746071609@163.com
 @time: 2021-11-24 上午012:56
-@desc: 模型执行-主函数
+@desc: 数据集处理
 '''
 
 import xml.etree.ElementTree as ET
