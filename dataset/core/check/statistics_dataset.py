@@ -1,4 +1,10 @@
 # -*- coding:utf-8 -*-
+'''
+@author: linxu
+@contact: 17746071609@163.com
+@time: 2021-12-03 上午10:56
+@desc: 数据集统计并更新
+'''
 import os
 import xml.etree.ElementTree as ET
 import numpy as np
@@ -54,7 +60,7 @@ def Analysis_statistics_dataset(xml_root_dir):
     # ---------------------------------------------------#
     # 分割xml的名称
     for name in filenamess:
-        print('name', name)
+        # print('name', name)
         if name.endswith('.xml'):
             name = name.split('.xml')[0]
             # print('nname',name)
@@ -81,7 +87,7 @@ def Analysis_statistics_dataset(xml_root_dir):
         element = 'object'
         search_name = 'name'
         result = 'insulator'
-        update_xml(root_name, element, search_name, result)
+        # update_xml(root_name, element, search_name, result)
 
     # ---------------------------------------------------#
     #   根据keys进行object信息的整理统计
@@ -107,12 +113,12 @@ def Analysis_statistics_dataset(xml_root_dir):
 
 if __name__ == '__main__':
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_tower_part/VOC2007/Annotations/'
-    # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/7-输电线路绝缘子数据集VOC/dataset_insulator/VOC2007/Annotations/'
+    xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/7-输电线路绝缘子数据集VOC/dataset_insulator/VOC2007/Annotations/'
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/3-输电线路异物数据集（VOC）/foreignbody_dataset_part1/VOC2007/Annotations/'
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/1-火焰数据集/fire_dataset/VOC2007/Annotations/'
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/5-安全帽数据集5000张/dataset_safetyHat/VOC2007/Annotations/'
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/6-井盖电箱线杆标石头2400张/D0009/Annotations/'
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/8-输电线路金具VOC/2511bwb_5/Annotations/'
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机杆塔航拍数据集/杆塔主体/VOCdevkit_tower_part/Annotations/'
-    xml_root_dir = '/media/hxzh02/TU100Pro/Insulator/train/voc labels/'
+    # xml_root_dir = '/media/hxzh02/TU100Pro/Insulator/train/voc labels/'
     Analysis_statistics_dataset(xml_root_dir=xml_root_dir)
