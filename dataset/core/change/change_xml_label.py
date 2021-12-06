@@ -9,17 +9,23 @@
 import os
 import xml.etree.ElementTree as ET
 
-if __name__ == '__main__':
-    # 设置原始标签路径为 Annos
-    origin_ann_dir = r'D:\Yuqian_Yang\project_yolov4\yolo\data\smokephone\annotation/'
-    # 设置新标签路径 Annotations
-    new_ann_dir = r'D:\Yuqian_Yang\project_yolov4\yolo\data\smokephone\Annotations/'
+from tqdm import tqdm
 
-    remove_list = []
-    
+
+def update_xml_label(origin_ann_dir, new_ann_dir, remove_list, update_label_list, new_name):
+    '''
+    更新xml_label
+    :param origin_ann_dir:原始标签路径
+    :param new_ann_dir:生成标签路径
+    :param remove_list:清除标签列表
+    :param update_label_list:更新标签列表
+    :param new_name:新修改标签名称
+    :return:
+    '''
     # os.walk游走遍历目录名
     for dirpaths, dirnames, filenames in os.walk(origin_ann_dir):
-        for filename in filenames:
+        for i in tqdm(range(0, len(filenames))):
+            filename = filenames[i]
             print("process...")
             if os.path.isfile(r'%s%s' % (origin_ann_dir, filename)):
                 origin_ann_path = os.path.join(r'%s%s' % (origin_ann_dir, filename))
@@ -28,15 +34,29 @@ if __name__ == '__main__':
                 root = tree.getroot()
                 for object in root.findall('object'):
                     name = str(object.find('name').text)
-
+                    print('name', name)
                     # 如果name等于str，则删除该节点
-                    if (name in ["phone"]):
-                        root.remove(object)
-                    if (name in ["normal"]):
+                    if (name in remove_list):
                         root.remove(object)
 
                     # 如果name等于str，则修改name
-                    if (name in ["smoke"]):
-                        object.find('name').text = "xy"
+                    if (name in update_label_list):
+                        object.find('name').text = new_name
 
-                tree.write(new_ann_path)  # write写入新的文件中。
+                # write写入新的文件中
+                tree.write(new_ann_path)
+
+
+if __name__ == '__main__':
+    # 设置原始标签路径为 Annos
+    origin_ann_dir = r'/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_tower_part/VOC2007/Annotations/'
+    # 设置新标签路径 Annotations
+    new_ann_dir = r'/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_tower_part/VOC2007/Annotations(复件)/'
+    # 设置清除标签
+    remove_list = ['tower_head', 'tower_foot']
+    # 更新标签名称
+    update_label_list = []
+    new_name = ''
+
+    # 更新xml标签：清除/修改xml文件中label
+    update_xml_label(origin_ann_dir, new_ann_dir, remove_list, update_label_list, new_name)
