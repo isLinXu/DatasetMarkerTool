@@ -49,11 +49,11 @@ def update_xml_label(origin_ann_dir, new_ann_dir, remove_list, update_label_list
 
 if __name__ == '__main__':
     # 设置原始标签路径为 Annos
-    origin_ann_dir = r'/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_tower_part/VOC2007/Annotations/'
+    origin_ann_dir = r'/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_tower_detect/VOC2007/Annotations/'
     # 设置新标签路径 Annotations
-    new_ann_dir = r'/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_tower_part/VOC2007/Annotations(复件)/'
+    new_ann_dir = r'/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_tower_detect/VOC2007/Annotations(复件)/'
     # 设置清除标签
-    remove_list = ['tower_head', 'tower_foot']
+    remove_list = ['tower_foot','tower_body','tower_body_down']
     # 更新标签名称
     update_label_list = []
     new_name = ''

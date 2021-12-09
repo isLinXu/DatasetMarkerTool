@@ -83,10 +83,10 @@ def Analysis_statistics_dataset(xml_root_dir):
         # ---------------------------------------------------#
         #   更新xml-object中label标签
         # ---------------------------------------------------#
-        root_name = xml_root_dir + nm
-        element = 'object'
-        search_name = 'name'
-        result = 'insulator'
+        # root_name = xml_root_dir + nm
+        # element = 'object'
+        # search_name = 'name'
+        # result = 'insulator'
         # update_xml(root_name, element, search_name, result)
 
     # ---------------------------------------------------#
@@ -113,7 +113,7 @@ def Analysis_statistics_dataset(xml_root_dir):
 
 if __name__ == '__main__':
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_tower_part/VOC2007/Annotations/'
-    xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/7-输电线路绝缘子数据集VOC/dataset_insulator/VOC2007/Annotations/'
+    # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/7-输电线路绝缘子数据集VOC/dataset_insulator/VOC2007/Annotations/'
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/3-输电线路异物数据集（VOC）/foreignbody_dataset_part1/VOC2007/Annotations/'
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/1-火焰数据集/fire_dataset/VOC2007/Annotations/'
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/5-安全帽数据集5000张/dataset_safetyHat/VOC2007/Annotations/'
@@ -121,4 +121,5 @@ if __name__ == '__main__':
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/8-输电线路金具VOC/2511bwb_5/Annotations/'
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机杆塔航拍数据集/杆塔主体/VOCdevkit_tower_part/Annotations/'
     # xml_root_dir = '/media/hxzh02/TU100Pro/Insulator/train/voc labels/'
+    xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_tower_detect/VOC2007/Annotations(复件)/'
     Analysis_statistics_dataset(xml_root_dir=xml_root_dir)

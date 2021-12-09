@@ -26,11 +26,15 @@ from shutil import copyfile
 # 电塔巡检检测
 from tqdm import tqdm
 
-classes = ['tower_body','tower_head','tower_foot','tower_body_down',
-           'insulator', 'defect',
-           'line','line_break','line_extract',
-           'nest', 'trash', 'kite', 'balloon',
-           ]
+# 塔头检测
+
+# 塔身检测
+classes = ['tower_body', 'tower_body_down']
+# classes = ['tower_body','tower_head','tower_foot','tower_body_down',
+#            'insulator', 'defect',
+#            'line','line_break','line_extract',
+#            'nest', 'trash', 'kite', 'balloon',
+#            ]
 # classes = ['tower_body','tower_head','tower_foot','tower_body_down',
 #            'insulator', 'defect',
 #            'line','line_break','line_extract',
@@ -110,7 +114,7 @@ def convert_annotation(dir_path, dataset_name, image_id):
 
     # 整理object类别列表
     classdd = list(set(classlist))
-    # print('classlist', classdd)
+    print('classlist', classdd)
     in_file.close()
     out_file.close()
 
@@ -203,7 +207,7 @@ def trans_prepare_config(dir_path='data/', dataset_name='VOCdevkit_xxx'):
                 copyfile(image_path, yolov5_images_test_dir + voc_path)
                 copyfile(label_path, yolov5_labels_test_dir + label_name)
 
-    print('classlist', classlist)
+    # print('classlist', classlist)
     train_file.close()
     test_file.close()
 
@@ -212,9 +216,10 @@ if __name__ == '__main__':
     # 设置数据集根目录路径
     # dir_path = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/7-输电线路绝缘子数据集VOC/'
     # dir_path = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/5-安全帽数据集5000张/'
-    dir_path = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/'
+    # dir_path = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/'
+    dir_path = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/'
     # 设置数据集名称
     # dataset_name = 'dataset_insulator'
     # dataset_name = 'dataset_safetyHat'
-    dataset_name = 'dataset_plane_all'
+    dataset_name = 'VOCdevkit_tower_part'
     trans_prepare_config(dir_path, dataset_name)
