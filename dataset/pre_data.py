@@ -29,7 +29,7 @@ from tqdm import tqdm
 # 塔头检测
 
 # 塔身检测
-classes = ['tower_body', 'tower_body_down']
+classes = ['tower_head', 'tower_head_defect']
 # classes = ['tower_body','tower_head','tower_foot','tower_body_down',
 #            'insulator', 'defect',
 #            'line','line_break','line_extract',
@@ -221,5 +221,5 @@ if __name__ == '__main__':
     # 设置数据集名称
     # dataset_name = 'dataset_insulator'
     # dataset_name = 'dataset_safetyHat'
-    dataset_name = 'VOCdevkit_tower_part'
+    dataset_name = 'VOCdevkit_towerhead_detect'
     trans_prepare_config(dir_path, dataset_name)

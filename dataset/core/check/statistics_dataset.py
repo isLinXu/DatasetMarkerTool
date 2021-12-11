@@ -6,8 +6,12 @@
 @desc: 数据集统计并更新
 '''
 import os
+import sys
 import xml.etree.ElementTree as ET
 import numpy as np
+from tqdm import tqdm
+
+from utils.LogHelper import Logger
 
 
 def parse_obj(xml_path, filename):
@@ -50,16 +54,17 @@ def update_xml(root_name, element='object', search_name='name', result=''):
     # ET.dump(root)  #打印xml
     root.write(root_dir)
 
+
 def Analysis_statistics_dataset(xml_root_dir):
-    filenamess = os.listdir(xml_root_dir)
+    filenames_path = os.listdir(xml_root_dir)
     filenames = []
-    print('filenamess', filenamess)
-    print('len', len(filenamess))
+    print('filenames_path', filenames_path)
+    print('len', len(filenames_path))
     # ---------------------------------------------------#
     #   整理xml信息
     # ---------------------------------------------------#
     # 分割xml的名称
-    for name in filenamess:
+    for name in filenames_path:
         # print('name', name)
         if name.endswith('.xml'):
             name = name.split('.xml')[0]
@@ -92,7 +97,8 @@ def Analysis_statistics_dataset(xml_root_dir):
     # ---------------------------------------------------#
     #   根据keys进行object信息的整理统计
     # ---------------------------------------------------#
-    for name in filenames:
+    for i in tqdm(range(0, len(filenames))):
+        name = filenames[i]
         # print('name', name)
         for object in recs[name]:
             if object['name'] not in num_objs.keys():
@@ -108,8 +114,8 @@ def Analysis_statistics_dataset(xml_root_dir):
     print('classnames:', classnames)
     for name in classnames:
         print('{}:{}个'.format(name, num_objs[name]))
-    print('信息统计完毕。')
 
+    return num_objs[name]
 
 if __name__ == '__main__':
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_tower_part/VOC2007/Annotations/'
@@ -121,5 +127,26 @@ if __name__ == '__main__':
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/8-输电线路金具VOC/2511bwb_5/Annotations/'
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机杆塔航拍数据集/杆塔主体/VOCdevkit_tower_part/Annotations/'
     # xml_root_dir = '/media/hxzh02/TU100Pro/Insulator/train/voc labels/'
-    xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_tower_detect/VOC2007/Annotations(复件)/'
-    Analysis_statistics_dataset(xml_root_dir=xml_root_dir)
+    xml_root_dir = '/media/hxzh02/SB@home/hxzh/imagenet/imagenet-object-localization-challenge/ILSVRC/Annotations/CLS-LOC/'
+
+    # 统计ImageNet 2017 1000个类别数据集
+    count = 0
+    size = 0
+    sys.stdout = Logger('imagenet.txt')
+    for root, dirs, files in os.walk(xml_root_dir):
+        if len(dirs) != 0:
+            # print('root', root)
+            for i in tqdm(range(0, len(dirs))):
+                if dirs[i] != 'train' and dirs[i] != '' and dirs[i] != 'val':
+                    print('============================【', str(count), '】============================')
+                    xml_file_path = root + '/' + dirs[i] + '/'
+                    print('xml_file_path', xml_file_path)
+                    data_size = Analysis_statistics_dataset(xml_root_dir=xml_file_path)
+                    count += 1
+                    size += data_size
+                    print('count:', count)
+                    print('size:', size)
+
+
+    print('信息统计完毕。')
+# Analysis_statistics_dataset(xml_root_dir=xml_root_dir)
