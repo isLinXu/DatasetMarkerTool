@@ -127,26 +127,27 @@ if __name__ == '__main__':
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/8-输电线路金具VOC/2511bwb_5/Annotations/'
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机杆塔航拍数据集/杆塔主体/VOCdevkit_tower_part/Annotations/'
     # xml_root_dir = '/media/hxzh02/TU100Pro/Insulator/train/voc labels/'
-    xml_root_dir = '/media/hxzh02/SB@home/hxzh/imagenet/imagenet-object-localization-challenge/ILSVRC/Annotations/CLS-LOC/'
+
+    xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_towerbody_detect/VOC2007/Annotations/'
+    # xml_root_dir = '/media/hxzh02/SB@home/hxzh/imagenet/imagenet-object-localization-challenge/ILSVRC/Annotations/CLS-LOC/'
 
     # 统计ImageNet 2017 1000个类别数据集
-    count = 0
-    size = 0
-    sys.stdout = Logger('imagenet.txt')
-    for root, dirs, files in os.walk(xml_root_dir):
-        if len(dirs) != 0:
-            # print('root', root)
-            for i in tqdm(range(0, len(dirs))):
-                if dirs[i] != 'train' and dirs[i] != '' and dirs[i] != 'val':
-                    print('============================【', str(count), '】============================')
-                    xml_file_path = root + '/' + dirs[i] + '/'
-                    print('xml_file_path', xml_file_path)
-                    data_size = Analysis_statistics_dataset(xml_root_dir=xml_file_path)
-                    count += 1
-                    size += data_size
-                    print('count:', count)
-                    print('size:', size)
-
-
+    # count = 0
+    # size = 0
+    # sys.stdout = Logger('imagenet.txt')
+    # for root, dirs, files in os.walk(xml_root_dir):
+    #     if len(dirs) != 0:
+    #         # print('root', root)
+    #         for i in tqdm(range(0, len(dirs))):
+    #             if dirs[i] != 'train' and dirs[i] != '' and dirs[i] != 'val':
+    #                 print('============================【', str(count), '】============================')
+    #                 xml_file_path = root + '/' + dirs[i] + '/'
+    #                 print('xml_file_path', xml_file_path)
+    #                 data_size = Analysis_statistics_dataset(xml_root_dir=xml_file_path)
+    #                 count += 1
+    #                 size += data_size
+    #                 print('count:', count)
+    #                 print('size:', size)
+    # print('信息统计完毕。')
+    Analysis_statistics_dataset(xml_root_dir=xml_root_dir)
     print('信息统计完毕。')
-# Analysis_statistics_dataset(xml_root_dir=xml_root_dir)
