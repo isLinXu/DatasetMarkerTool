@@ -10,7 +10,7 @@ import os
 from tqdm import *
 
 
-def checkJpgXml(jpeg_dir, annot_dir):
+def checkJpgXml(jpeg_dir, annot_dir,if_clear = False):
     """
     dir1 是图片所在文件夹
     dir2 是标注文件所在文件夹
@@ -69,12 +69,14 @@ def checkJpgXml(jpeg_dir, annot_dir):
             print('errorJPGFile:', jpeg_error)
             errorJPGFile = jpeg_dir + jpeg_error + '.JPG'
             print('remove_file:', errorJPGFile)
-            os.remove(errorJPGFile)
+            if if_clear:
+                os.remove(errorJPGFile)
         for xml_error in errorXml_list:
             print('errorXMLFile:', xml_error)
             errorXMLFile = annot_dir + xml_error + '.xml'
             print('remove_file:', errorXMLFile)
-            os.remove(errorXMLFile)
+            if if_clear:
+                os.remove(errorXMLFile)
     else:
         print("检查无误：所有图片和对应的xml文件都是一一对应的。")
 
@@ -84,4 +86,4 @@ if __name__ == "__main__":
     # annot_dir = r"/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_tower_part/VOC2007/Annotations/"
     jpeg_dir = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_towerhead_detect/VOC2007/JPEGImages/'
     annot_dir = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_towerhead_detect/VOC2007/Annotations/'
-    checkJpgXml(jpeg_dir, annot_dir)
+    checkJpgXml(jpeg_dir, annot_dir,if_clear = False)
