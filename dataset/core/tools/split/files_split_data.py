@@ -8,6 +8,8 @@
 import os
 import shutil
 
+from tqdm import tqdm
+
 
 def files_split_data(path_files):
     # 读取指定文件夹中的所有文件,并将文件夹中所有的文件名字存入变量files_list中
@@ -16,9 +18,10 @@ def files_split_data(path_files):
     # 文件夹中所有文件的数目，并打印文件数目
     num_files = len(files_list)
     print(str(num_files) + '个文件')
-
+    # files_list
     # 遍历所有文件
-    for file in files_list:
+    for i in tqdm(range(0,len(files_list))):
+        file = files_list[i]
         type = os.path.splitext(file)[1]  # 获取文件的类型
 
         # 根据文件类型设置路径
@@ -47,6 +50,6 @@ def files_split_data(path_files):
 
 if __name__ == '__main__':
     # 指定文件夹路径
-    path_files = r'/home/hxzh02/文档/call-phone_datasets/'
+    path_files = r'/media/hxzh02/SB@home/hxzh/Dataset/变电站异物数据集/鸟巢/'
     files_split_data(path_files)
 
