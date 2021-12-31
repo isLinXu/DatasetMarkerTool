@@ -3,7 +3,7 @@
 @author: linxu
 @contact: 17746071609@163.com
 @time: 2021-11-04 下午16:24
-@desc: 遍历文件夹,根据后缀文件类型划分文件
+@desc: 遍历文件夹,根据后缀文件类型xml和jpg划分文件
 '''
 import os
 import shutil
@@ -17,7 +17,7 @@ def files_split_data(path_files):
 
     # 文件夹中所有文件的数目，并打印文件数目
     num_files = len(files_list)
-    print(str(num_files) + '个文件')
+    print('当前目录共包含：' + str(num_files) + '个文件')
     # files_list
     # 遍历所有文件
     for i in tqdm(range(0,len(files_list))):
