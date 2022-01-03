@@ -71,7 +71,6 @@ class labelme2coco(object):
     def categorie(self,label):
         categorie={}
         categorie['supercategory'] = label
-#        categorie['supercategory'] = label
         categorie['id']=len(self.label)+1
         categorie['name'] = label
 #        categorie['name'] = label[1]
@@ -89,7 +88,7 @@ class labelme2coco(object):
         area = cv2.contourArea(contour)
         print("contour is ", contour, " area = ", area)
         annotation['segmentation']= [list(np.asarray([[x1, y1], [x2, y1], [x2, y2], [x1, y2]]).flatten())]
-            #[list(np.asarray(contour).flatten())]
+        #[list(np.asarray(contour).flatten())]
         annotation['iscrowd'] = 0
         annotation['area'] = area
         annotation['image_id'] = num+1
@@ -109,7 +108,6 @@ class labelme2coco(object):
 
     def getcatid(self,label):
         for categorie in self.categories:
-#            if label[1]==categorie['name']:
             if label == categorie['name']:
                 return categorie['id']
         return -1
@@ -120,22 +118,15 @@ class labelme2coco(object):
         return self.mask2box(mask)
 
     def mask2box(self, mask):
-
-        # np.where(mask==1)
         index = np.argwhere(mask == 1)
         rows = index[:, 0]
         clos = index[:, 1]
 
         left_top_r = np.min(rows)  # y
         left_top_c = np.min(clos)  # x
-
-
         right_bottom_r = np.max(rows)
         right_bottom_c = np.max(clos)
 
-        # return [(left_top_r,left_top_c),(right_bottom_r,right_bottom_c)]
-        # return [(left_top_c, left_top_r), (right_bottom_c, right_bottom_r)]
-        # return [left_top_c, left_top_r, right_bottom_c, right_bottom_r]  # [x1,y1,x2,y2]
         return [left_top_c, left_top_r, right_bottom_c-left_top_c, right_bottom_r-left_top_r]
 
     def polygons_to_mask(self,img_shape, polygons):
@@ -184,8 +175,8 @@ if __name__ == "__main__":
     # if args.labelme_images is None:
     #     args.labelme_images = '/home/hxzh02/WORK/yolact/data/data_tower/json/'
     #     args.output = '/home/hxzh02/WORK/yolact/data/data_tower/json_output'
-    args.labelme_images = '/home/hxzh02/WORK/yolact/data/data_segamation/images/'
-    args.output = '/home/hxzh02/WORK/yolact/data/data_segamation/annations/instance_train.json'
+    args.labelme_images = '/media/hxzh02/SB@home/hxzh/Dataset/PPLTA航拍输电线路数据集/data_original_size/'
+    args.output = '/media/hxzh02/SB@home/hxzh/Dataset/PPLTA航拍输电线路数据集/data_original_size/instance_train2017.json'
 
     labelme_json = glob.glob(os.path.join(args.labelme_images, "*.json"))
     labelme2coco(labelme_json, args.output)

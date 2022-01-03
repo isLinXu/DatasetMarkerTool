@@ -66,15 +66,17 @@ def checkJpgXml(jpeg_dir, annot_dir,if_clear = False):
         errorfile_list = sorted(error_FILE_list)
         errorXml_list = sorted(error_XML_list)
         for jpeg_error in errorfile_list:
-            print('errorJPGFile:', jpeg_error)
+            # print('errorJPGFile:', jpeg_error)
             errorJPGFile = jpeg_dir + jpeg_error + '.JPG'
-            print('remove_file:', errorJPGFile)
+            if not os.path.exists(errorJPGFile):
+                errorJPGFile = jpeg_dir + jpeg_error + '.jpg'
+            # print('remove_file:', errorJPGFile)
             if if_clear:
                 os.remove(errorJPGFile)
         for xml_error in errorXml_list:
-            print('errorXMLFile:', xml_error)
+            # print('errorXMLFile:', xml_error)
             errorXMLFile = annot_dir + xml_error + '.xml'
-            print('remove_file:', errorXMLFile)
+            # print('remove_file:', errorXMLFile)
             if if_clear:
                 os.remove(errorXMLFile)
     else:
@@ -84,6 +86,10 @@ def checkJpgXml(jpeg_dir, annot_dir,if_clear = False):
 if __name__ == "__main__":
     # jpeg_dir = r"/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_tower_part/VOC2007/JPEGImages/"
     # annot_dir = r"/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_tower_part/VOC2007/Annotations/"
-    jpeg_dir = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_towerhead_detect/VOC2007/JPEGImages/'
-    annot_dir = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_towerhead_detect/VOC2007/Annotations/'
+    # jpeg_dir = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_towerhead_detect/VOC2007/JPEGImages/'
+    # annot_dir = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_towerhead_detect/VOC2007/Annotations/'
+    # jpeg_dir = '/media/hxzh02/SB@home/hxzh/Dataset/变电站异物数据集/母线构架鸟巢/JPEGImages/'
+    # annot_dir = '/media/hxzh02/SB@home/hxzh/Dataset/变电站异物数据集/母线构架鸟巢/Annotations/'
+    jpeg_dir = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_foreignbody_detect/VOC2007/JPEGImages/'
+    annot_dir = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_foreignbody_detect/VOC2007/Annotations/'
     checkJpgXml(jpeg_dir, annot_dir,if_clear = False)

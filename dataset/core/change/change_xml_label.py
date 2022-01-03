@@ -22,6 +22,10 @@ def update_xml_label(origin_ann_dir, new_ann_dir, remove_list, update_label_list
     :param new_name:新修改标签名称
     :return:
     '''
+    # 判断是否存在新目录，若不存在则进行创建
+    if not os.path.exists(new_ann_dir):
+        os.makedirs(new_ann_dir)
+
     # os.walk游走遍历目录名
     for dirpaths, dirnames, filenames in os.walk(origin_ann_dir):
         for i in tqdm(range(0, len(filenames))):
@@ -49,14 +53,15 @@ def update_xml_label(origin_ann_dir, new_ann_dir, remove_list, update_label_list
 
 if __name__ == '__main__':
     # 设置原始标签路径为 Annos
-    origin_ann_dir = r'/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_tower_detect/VOC2007/Annotations/'
+    origin_ann_dir = r'/media/hxzh02/SB@home/hxzh/Dataset/变电站异物数据集/母线构架鸟巢/Annotations/'
     # 设置新标签路径 Annotations
-    new_ann_dir = r'/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_tower_detect/VOC2007/Annotations(复件)/'
+    new_ann_dir = r'/media/hxzh02/SB@home/hxzh/Dataset/变电站异物数据集/母线构架鸟巢/Annotations1/'
+
     # 设置清除标签
-    remove_list = ['tower_foot','tower_body','tower_body_down']
+    remove_list = ['tower_foot','tower_body','tower_body_down','tree_branch']
     # 更新标签名称
-    update_label_list = []
-    new_name = ''
+    update_label_list = ['bird_nest']
+    new_name = 'nest'
 
     # 更新xml标签：清除/修改xml文件中label
     update_xml_label(origin_ann_dir, new_ann_dir, remove_list, update_label_list, new_name)
