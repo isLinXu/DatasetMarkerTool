@@ -3,7 +3,7 @@
 @author: linxu
 @contact: 17746071609@163.com
 @time: 2021-11-24 上午12:56
-@desc: 数据集处理
+@desc: 数据集处理为YOLO格式
 '''
 
 import xml.etree.ElementTree as ET
@@ -27,9 +27,9 @@ from shutil import copyfile
 from tqdm import tqdm
 
 # 塔头检测
-
-# 塔身检测
 classes = ['tower_head', 'tower_head_defect']
+# 塔身检测
+# classes = ['tower_body', 'tower_body_defect']
 # classes = ['tower_body','tower_head','tower_foot','tower_body_down',
 #            'insulator', 'defect',
 #            'line','line_break','line_extract',
@@ -207,7 +207,7 @@ def trans_prepare_config(dir_path='data/', dataset_name='VOCdevkit_xxx'):
                 copyfile(image_path, yolov5_images_test_dir + voc_path)
                 copyfile(label_path, yolov5_labels_test_dir + label_name)
 
-    # print('classlist', classlist)
+    print('classlist', classlist)
     train_file.close()
     test_file.close()
 
@@ -221,5 +221,7 @@ if __name__ == '__main__':
     # 设置数据集名称
     # dataset_name = 'dataset_insulator'
     # dataset_name = 'dataset_safetyHat'
-    dataset_name = 'VOCdevkit_towerhead_detect'
+    # dataset_name = 'VOCdevkit_towerhead_detect'
+    # dataset_name = 'VOCdevkit_towerbody_detect'
+    dataset_name = 'VOCdevkit_foreignbody_detect'
     trans_prepare_config(dir_path, dataset_name)
