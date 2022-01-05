@@ -18,8 +18,15 @@ def normalize_walkfile(path, new_path):
     count = 1
     for root, dirs, files in os.walk(path):
         for i in tqdm(range(0, len(files))):
-            # 筛选文件以.jpg为后缀
-            if (files[i][-3:] == 'jpg' or files[i][-3:] == 'JPG' or files[i][-3:] == 'png'):
+            # 以'.'作为枢纽进行分割，则'.'前为文件名，其后为文件格式
+            strlist = files[i].split('.')
+            name = strlist[0]
+            end_form = strlist[1]
+            print('root',root)
+            fileslist = root.split('/')
+            print('fileslist',fileslist)
+            print(name, end_form)
+            if (end_form == 'jpg' or end_form == 'JPG' or end_form == 'png'):
                 # 文件路径拼接
                 file_path = root + '/' + files[i]
                 new_file_path = new_path + '/' + files[i]
@@ -28,8 +35,6 @@ def normalize_walkfile(path, new_path):
                 # shutil.mov(file_path,new_file_path)
                 print(count, ':file_path', file_path)
                 count += 1
-
-
 
 
 if __name__ == '__main__':
