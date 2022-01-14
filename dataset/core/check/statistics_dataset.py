@@ -55,7 +55,8 @@ def update_xml(root_name, element='object', search_name='name', result=''):
     root.write(root_dir)
 
 
-def Analysis_statistics_dataset(xml_root_dir):
+def Analysis_statistics_dataset(xml_root_dir,isupdate=False):
+    global object
     filenames_path = os.listdir(xml_root_dir)
     filenames = []
     print('filenames_path', filenames_path)
@@ -88,11 +89,12 @@ def Analysis_statistics_dataset(xml_root_dir):
         # ---------------------------------------------------#
         #   更新xml-object中label标签
         # ---------------------------------------------------#
-        # root_name = xml_root_dir + nm
-        # element = 'object'
-        # search_name = 'name'
-        # result = 'insulator'
-        # update_xml(root_name, element, search_name, result)
+        if isupdate:
+            root_name = xml_root_dir + nm
+            element = 'object'
+            search_name = 'name'
+            result = 'insulator'
+            update_xml(root_name, element, search_name, result)
 
     # ---------------------------------------------------#
     #   根据keys进行object信息的整理统计
@@ -149,5 +151,6 @@ if __name__ == '__main__':
     #                 print('count:', count)
     #                 print('size:', size)
     # print('信息统计完毕。')
-    Analysis_statistics_dataset(xml_root_dir=xml_root_dir)
+    isupdate = True
+    Analysis_statistics_dataset(xml_root_dir=xml_root_dir,isupdate=isupdate)
     print('信息统计完毕。')
