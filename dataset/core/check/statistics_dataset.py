@@ -150,6 +150,7 @@ if __name__ == '__main__':
     #                 size += data_size
     #                 print('count:', count)
     #                 print('size:', size)
+
     # print('信息统计完毕。')
     isupdate = True
     Analysis_statistics_dataset(xml_root_dir=xml_root_dir,isupdate=isupdate)
