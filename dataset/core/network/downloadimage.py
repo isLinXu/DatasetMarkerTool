@@ -6,6 +6,7 @@ import numpy
 import imghdr
 from PIL import Image
 
+
 # 获取百度图片下载图片
 def download_image(key_word, save_name, download_max):
     download_sum = 0
@@ -21,7 +22,8 @@ def download_image(key_word, save_name, download_max):
               'word=' + key_word + '&pn=' + str_pn + '&gsm=80&ct=&ic=0&lm=-1&width=0&height=0'
         try:
             s = requests.session()
-            s.headers['User-Agent'] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36'
+            s.headers[
+                'User-Agent'] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36'
             # 获取当前页面的源码
             result = s.get(url).content.decode('utf-8')
             # 获取当前页面的图片URL
@@ -44,6 +46,7 @@ def download_image(key_word, save_name, download_max):
             print(e)
             continue
     print('下载完成')
+
 
 # 删除不是JPEG或者PNG格式的图片
 def delete_error_image(father_path):
@@ -77,3 +80,47 @@ def delete_error_image(father_path):
         pass
 
 
+# 删除不是JPEG或者PNG格式的图片
+def delete_error_image(father_path):
+    # 获取父级目录的所有文件以及文件夹
+    try:
+        image_dirs = os.listdir(father_path)
+        for image_dir in image_dirs:
+            image_dir = os.path.join(father_path, image_dir)
+            # 如果是文件夹就继续获取文件夹中的图片
+            if os.path.isdir(image_dir):
+                images = os.listdir(image_dir)
+                for image in images:
+                    image = os.path.join(image_dir, image)
+                    try:
+                        # 获取图片的类型
+                        image_type = imghdr.what(image)
+                        # 如果图片格式不是JPEG同时也不是PNG就删除图片
+                        if image_type is not 'jpeg' and image_type is not 'png':
+                            os.remove(image)
+                            print('已删除：%s' % image)
+                            continue
+                        # 删除灰度图
+                        img = numpy.array(Image.open(image))
+                        if len(img.shape) is 2:
+                            os.remove(image)
+                            print('已删除：%s' % image)
+                    except:
+                        os.remove(image)
+                        print('已删除：%s' % image)
+    except:
+        pass
+
+
+if __name__ == '__main__':
+    # 定义要下载的图片中文名称和英文名称，ps：英文名称主要是为了设置文件夹名
+    key_words = {'西瓜': 'watermelon', '哈密瓜': 'cantaloupe',
+                 '樱桃': 'cherry', '苹果': 'apple', '黄瓜': 'cucumber', '胡萝卜': 'carrot'}
+    # 每个类别下载一千个
+    max_sum = 500
+    for key_word in key_words:
+        save_name = key_words[key_word]
+        download_image(key_word, save_name, max_sum)
+
+    # 删除错误图片
+    delete_error_image('images/')
