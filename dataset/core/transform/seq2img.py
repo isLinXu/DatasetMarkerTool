@@ -7,7 +7,8 @@ def open_save(file, savepath):
     # read .seq file, and save the images into the savepath
 
     f = open(file, 'rb')
-    string = str(f.read())
+    # string = str(f.read())
+    string = f.read().decode('latin-1')
     splitstring = "\xFF\xD8\xFF\xE0\x00\x10\x4A\x46\x49\x46"
     # split .seq file into segment with the image prefix
     strlist = string.split(splitstring)
@@ -26,14 +27,16 @@ def open_save(file, savepath):
         # abandon the first one, which is filled with .seq header
         if count > 0:
             i = open(filenamewithpath, 'wb+')
-            i.write(splitstring)
-            i.write(img)
+            i.write(splitstring.encode('latin-1'))
+            i.write(img.encode('latin-1'))
+            # i.write(splitstring)
+            # i.write(img)
             i.close()
         count += 1
 
 
 if __name__ == "__main__":
-    rootdir = "E:\\GPassport\\Work\\Search\\PedestrianDetection\\CaltechDatasets\\set\\set01"
+    rootdir = "/home/linxu/Downloads/Caltech_Pedestrian_Detection_Benchmark/data/set00/set00/"
     # walk in the rootdir, take down the .seq filename and filepath
     for parent, dirnames, filenames in os.walk(rootdir):
         for filename in filenames:
@@ -42,7 +45,7 @@ if __name__ == "__main__":
                 # take down the filename with path of .seq file
                 thefilename = os.path.join(parent, filename)
                 # create the image folder by combining .seq file path with .seq filename
-                thesavepath = parent + '/' + filename.split('.')[0]
+                thesavepath = parent + filename.split('.')[0]
                 print("Filename=" + thefilename)
                 print("Savepath=" + thesavepath)
                 open_save(thefilename, thesavepath)
