@@ -36,7 +36,7 @@ def open_save(file, savepath):
 
 
 if __name__ == "__main__":
-    rootdir = "/home/linxu/Downloads/Caltech_Pedestrian_Detection_Benchmark/data/set00/set00/"
+    rootdir = "/home/linxu/Downloads/Caltech_Pedestrian_Detection_Benchmark/data/"
     # walk in the rootdir, take down the .seq filename and filepath
     for parent, dirnames, filenames in os.walk(rootdir):
         for filename in filenames:

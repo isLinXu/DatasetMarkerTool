@@ -1,96 +1,45 @@
-import os, glob, argparse
-import cv2
+# -*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
+import os, glob
 from scipy.io import loadmat
 from collections import defaultdict
 import numpy as np
 from lxml import etree, objectify
 
 
-def vbb_anno2dict(vbb_file, cam_id, person_types=None):
-    """
-    Parse caltech vbb annotation file to dict
-    Args:
-        vbb_file: input vbb file path
-        cam_id: camera id
-        person_types: list of person type that will be used (total 4 types: person, person-fa, person?, people).
-            If None, all will be used:
-    Return:
-        Annotation info dict with filename as key and anno info as value
-    """
+def vbb_anno2dict(vbb_file, cam_id):
     filename = os.path.splitext(os.path.basename(vbb_file))[0]
+
+    # 定义字典对象annos
     annos = defaultdict(dict)
     vbb = loadmat(vbb_file)
     # object info in each frame: id, pos, occlusion, lock, posv
     objLists = vbb['A'][0][0][1][0]
-    objLbl = [str(v[0]) for v in vbb['A'][0][0][4][0]]
+    objLbl = [str(v[0]) for v in vbb['A'][0][0][4][0]]  # 可查看所有类别
     # person index
-    if not person_types:
-        person_types = ["person", "person-fa", "person?", "people"]
-    person_index_list = [x for x in range(len(objLbl)) if objLbl[x] in person_types]
+    person_index_list = np.where(np.array(objLbl) == "person")[0]  # 只选取类别为‘person’的xml
     for frame_id, obj in enumerate(objLists):
         if len(obj) > 0:
-            frame_name = str(cam_id) + "_" + str(filename) + "_" + str(frame_id+1) + ".jpg"
+            frame_name = str(cam_id) + "_" + str(filename) + "_" + str(frame_id + 1) + ".jpg"
             annos[frame_name] = defaultdict(list)
             annos[frame_name]["id"] = frame_name
-            for fid, pos, occl in zip(obj['id'][0], obj['pos'][0], obj['occl'][0]):
-                fid = int(fid[0][0]) - 1  # for matlab start from 1 not 0
-                if not fid in person_index_list:  # only use bbox whose label is given person type
+            annos[frame_name]["label"] = "person"
+            for id, pos, occl in zip(obj['id'][0], obj['pos'][0], obj['occl'][0]):
+                id = int(id[0][0]) - 1  # for matlab start from 1 not 0
+                if not id in person_index_list:  # only use bbox whose label is person
                     continue
-                annos[frame_name]["label"] = objLbl[fid]
                 pos = pos[0].tolist()
                 occl = int(occl[0][0])
                 annos[frame_name]["occlusion"].append(occl)
                 annos[frame_name]["bbox"].append(pos)
             if not annos[frame_name]["bbox"]:
                 del annos[frame_name]
+    print(annos)
     return annos
 
 
-def seq2img(annos, seq_file, outdir, cam_id):
-    """
-    Extract frames in seq files to given output directories
-    Args:
-         annos: annos dict returned from parsed vbb file
-         seq_file: seq file path
-         outdir: frame save dir
-         cam_id: camera id
-    Returns:
-        camera captured image size
-    """
-    cap = cv2.VideoCapture(seq_file)
-    index = 1
-    # captured frame list
-    v_id = os.path.splitext(os.path.basename(seq_file))[0]
-    cap_frames_index = np.sort([int(os.path.splitext(id)[0].split("_")[2]) for id in annos.keys()])
-    while True:
-        ret, frame = cap.read()
-        if ret:
-            if not index in cap_frames_index:
-                index += 1
-                continue
-            if not os.path.exists(outdir):
-                os.makedirs(outdir)
-            outname = os.path.join(outdir, str(cam_id)+"_"+v_id+"_"+str(index)+".jpg")
-            print("Current frame: ", v_id, str(index))
-            cv2.imwrite(outname, frame)
-            height, width, _ = frame.shape
-        else:
-            break
-        index += 1
-    img_size = (width, height)
-    return img_size
-
-
-def instance2xml_base(anno, img_size, bbox_type='xyxy'):
-    """
-    Parse annotation data to VOC XML format
-    Args:
-        anno: annotation info returned by vbb_anno2dict function
-        img_size: camera captured image size
-        bbox_type: bbox coordinate record format: xyxy (xmin, ymin, xmax, ymax); xywh (xmin, ymin, width, height)
-    Returns:
-        Annotation xml info tree
-    """
+def instance2xml_base(anno, bbox_type='xyxy'):
+    """bbox_type: xyxy (xmin, ymin, xmax, ymax); xywh (xmin, ymin, width, height)"""
     assert bbox_type in ['xyxy', 'xywh']
     E = objectify.ElementMaker(annotate=False)
     anno_tree = E.annotation(
@@ -103,8 +52,8 @@ def instance2xml_base(anno, img_size, bbox_type='xyxy'):
             E.url('None')
         ),
         E.size(
-            E.width(img_size[0]),
-            E.height(img_size[1]),
+            E.width(640),
+            E.height(480),
             E.depth(3)
         ),
         E.segmented(0),
@@ -113,76 +62,54 @@ def instance2xml_base(anno, img_size, bbox_type='xyxy'):
         bbox = [float(x) for x in bbox]
         if bbox_type == 'xyxy':
             xmin, ymin, w, h = bbox
-            xmax = xmin+w
-            ymax = ymin+h
+            xmax = xmin + w
+            ymax = ymin + h
         else:
             xmin, ymin, xmax, ymax = bbox
-        xmin = int(xmin)
-        ymin = int(ymin)
-        xmax = int(xmax)
-        ymax = int(ymax)
-        if xmin < 0:
-            xmin = 0
-        if xmax > img_size[0] - 1:
-            xmax = img_size[0] - 1
-        if ymin < 0:
-            ymin = 0
-        if ymax > img_size[1] - 1:
-            ymax = img_size[1] - 1
-        if ymax <= ymin or xmax <= xmin:
-            continue
         E = objectify.ElementMaker(annotate=False)
         anno_tree.append(
             E.object(
-            E.name(anno['label']),
-            E.bndbox(
-                E.xmin(xmin),
-                E.ymin(ymin),
-                E.xmax(xmax),
-                E.ymax(ymax)
-            ),
-            E.difficult(0),
-            E.occlusion(anno["occlusion"][index])
+                E.name(anno['label']),
+                E.bndbox(
+                    E.xmin(int(xmin)),
+                    E.ymin(int(ymin)),
+                    E.xmax(int(xmax)),
+                    E.ymax(int(ymax))
+                ),
+                E.difficult(0),
+                E.occlusion(anno["occlusion"][index])
             )
         )
     return anno_tree
 
 
-def parse_anno_file(vbb_inputdir, seq_inputdir, vbb_outputdir, seq_outputdir, person_types=None):
-    """
-    Parse Caltech data stored in seq and vbb files to VOC xml format
-    Args:
-        vbb_inputdir: vbb file saved pth
-        seq_inputdir: seq file saved path
-        vbb_outputdir: vbb data converted xml file saved path
-        seq_outputdir: seq data converted frame image file saved path
-        person_types: list of person type that will be used (total 4 types: person, person-fa, person?, people).
-            If None, all will be used:
-    """
+def parse_anno_file(vbb_inputdir, vbb_outputdir):
     # annotation sub-directories in hda annotation input directory
     assert os.path.exists(vbb_inputdir)
-    sub_dirs = os.listdir(vbb_inputdir)
+    sub_dirs = os.listdir(vbb_inputdir)  # 对应set00,set01...
     for sub_dir in sub_dirs:
         print("Parsing annotations of camera: ", sub_dir)
         cam_id = sub_dir
+        # 获取某一个子set下面的所有vbb文件
         vbb_files = glob.glob(os.path.join(vbb_inputdir, sub_dir, "*.vbb"))
         for vbb_file in vbb_files:
-            annos = vbb_anno2dict(vbb_file, cam_id, person_types=person_types)
+            # 返回一个vbb文件中所有的帧的标注结果
+            annos = vbb_anno2dict(vbb_file, cam_id)
+
             if annos:
-                vbb_outdir = os.path.join(vbb_outputdir, "annotations", sub_dir, "bbox")
-                # extract frames from seq
-                seq_file = os.path.join(seq_inputdir, sub_dir, os.path.splitext(os.path.basename(vbb_file))[0]+".seq")
-                seq_outdir = os.path.join(seq_outputdir, sub_dir, "frame")
+                # 组成xml文件的存储文件夹，形如“/Users/chenguanghao/Desktop/Caltech/xmlresult/”
+                vbb_outdir = vbb_outputdir
+
+                # 如果不存在 vbb_outdir
                 if not os.path.exists(vbb_outdir):
                     os.makedirs(vbb_outdir)
-                if not os.path.exists(seq_outdir):
-                    os.makedirs(seq_outdir)
-                img_size = seq2img(annos, seq_file, seq_outdir, cam_id)
+
                 for filename, anno in sorted(annos.items(), key=lambda x: x[0]):
                     if "bbox" in anno:
-                        anno_tree = instance2xml_base(anno, img_size)
-                        outfile = os.path.join(vbb_outdir, os.path.splitext(filename)[0]+".xml")
+                        anno_tree = instance2xml_base(anno)
+                        outfile = os.path.join(vbb_outdir, os.path.splitext(filename)[0] + ".xml")
                         print("Generating annotation xml file of picture: ", filename)
+                        # 生成最终的xml文件，对应一张图片
                         etree.ElementTree(anno_tree).write(outfile, pretty_print=True)
 
 
@@ -191,58 +118,28 @@ def visualize_bbox(xml_file, img_file):
     tree = etree.parse(xml_file)
     # load image
     image = cv2.imread(img_file)
-    # get bbox
+    origin = cv2.imread(img_file)
+    # 获取一张图片的所有bbox
     for bbox in tree.xpath('//bndbox'):
         coord = []
         for corner in bbox.getchildren():
             coord.append(int(float(corner.text)))
-        # draw rectangle
-        # coord = [int(x) for x in coord]
-        image = cv2.rectangle(image, (coord[0], coord[1]), (coord[2], coord[3]), (0, 0, 255), 2)
+        print(coord)
+        cv2.rectangle(image, (coord[0], coord[1]), (coord[2], coord[3]), (0, 0, 255), 2)
+
     # visualize image
     cv2.imshow("test", image)
+    cv2.imshow('origin', origin)
     cv2.waitKey(0)
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-seq_dir", help="Caltech dataset seq data root directory")
-    parser.add_argument("-vbb_dir", help="Caltech dataset vbb data root directory")
-    parser.add_argument("-output_dir", help="Root saving path for frame and annotation files")
-    parser.add_argument("-person_type", default="person", type=str, help="Person type extracted within 4 options: "
-                                                      "'person', 'person-fa', 'person?', 'people'. If multiple type used,"
-                                                      "separated with comma",
-                        choices=["person", "person-fa", "person?", "people"])
-    args = parser.parse_args()
-
-    # seq_dir = path / to / caltech / seq / dir \
-    #           - -vbb_dir = path / to / caltech / vbb / dir \
-    #                        - -output_dir = / 输出 / 保存 / 路径 \
-    #                                          - -person_type = 人
-    args.seq_dir = '/home/linxu/Downloads/Caltech_Pedestrian_Detection_Benchmark/data/set00/set00/'
-    args.vbb_dir = '/home/linxu/Downloads/Caltech_Pedestrian_Detection_Benchmark/data/annotations/annotations/set00/'
-    args.output_dir = '/home/linxu/Downloads/Caltech_Pedestrian_Detection_Benchmark/VOC/'
-    args.person_type = 'person'
-
-    outdir = args.output_dir
-    frame_out = os.path.join(outdir, "frame")
-    anno_out = os.path.join(outdir, "annotation")
-    person_type = args.person_type.split(",")
-    parse_anno_file(args.vbb_dir, args.seq_dir, frame_out, anno_out, person_type)
-    print("Generating done!")
-
-
-def test():
-    seq_inputdir = "/startdt_data/caltech_pedestrian_dataset"
-    vbb_inputdir = "/startdt_data/caltech_pedestrian_dataset/annotations"
-    seq_outputdir = "/startdt_data/caltech_pedestrian_dataset/test"
-    vbb_outputdir = "/startdt_data/caltech_pedestrian_dataset/test"
-    person_types = ["person"]
-    parse_anno_file(vbb_inputdir, seq_inputdir, vbb_outputdir, seq_outputdir, person_types=person_types)
-    # xml_file = "/startdt_data/caltech_pedestrian_dataset/annotations/set00/bbox/set00_V013_1511.xml"
-    # img_file = "/startdt_data/caltech_pedestrian_dataset/set00/frame/set00_V013_1511.jpg"
-    # visualize_bbox(xml_file, img_file)
+    vbb_inputdir = "/home/linxu/Downloads/Caltech_Pedestrian_Detection_Benchmark/data/annotations/annotations/"
+    vbb_outputdir = "/home/linxu/Downloads/Caltech_Pedestrian_Detection_Benchmark/data/annotations/annotations/set_ann"
+    parse_anno_file(vbb_inputdir, vbb_outputdir)
 
 
 if __name__ == "__main__":
     main()
+    print("Success!")
+
