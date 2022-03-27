@@ -27,8 +27,9 @@ def checkJpgXml(jpeg_dir, annot_dir,if_clear = False):
         #   根据JPEG名称在Annotations中寻找对应的XML文件
         # ---------------------------------------------------#
         jpeg_file = jpeg_dir_list[i]
+        print('jpeg_file', jpeg_file)
         f_name, f_ext = jpeg_file.split(".")
-        # print('f_name', f_name, ',f_ext', f_ext)
+        # print('f_name：', f_name, ',f_ext：', f_ext)
         # ---------------------------------------------------#
         #   检查统计对应文件
         # ---------------------------------------------------#
@@ -47,14 +48,14 @@ def checkJpgXml(jpeg_dir, annot_dir,if_clear = False):
         # ---------------------------------------------------#
         #   检查统计对应文件
          # ---------------------------------------------------#
-        JPGxml = os.path.join(jpeg_dir, x_name + ".JPG")
-        # JPEGxml = os.path.join(jpeg_dir, x_name + ".JPEG")
-        jpgxml = os.path.join(jpeg_dir, x_name + ".jpg")
-        # print('File', JPEGxml,JPGxml,jpgxml)
-        if not os.path.exists(JPGxml) and not os.path.exists(jpgxml):
-            error_XML_list.append(x_name)
-            print('JPG',JPGxml)
-            xnt += 1
+        # JPGxml = os.path.join(jpeg_dir, x_name + ".JPG")
+        # # JPEGxml = os.path.join(jpeg_dir, x_name + ".JPEG")
+        # jpgxml = os.path.join(jpeg_dir, x_name + ".jpg")
+        # # print('File', JPEGxml,JPGxml,jpgxml)
+        # if not os.path.exists(JPGxml) and not os.path.exists(jpgxml):
+        #     error_XML_list.append(x_name)
+        #     print('JPG',JPGxml)
+        #     xnt += 1
 
     # ---------------------------------------------------#
     #   整理xml信息
@@ -90,6 +91,8 @@ if __name__ == "__main__":
     # annot_dir = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_towerhead_detect/VOC2007/Annotations/'
     # jpeg_dir = '/media/hxzh02/SB@home/hxzh/Dataset/变电站异物数据集/母线构架鸟巢/JPEGImages/'
     # annot_dir = '/media/hxzh02/SB@home/hxzh/Dataset/变电站异物数据集/母线构架鸟巢/Annotations/'
-    jpeg_dir = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_foreignbody_detect/VOC2007/JPEGImages/'
-    annot_dir = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_foreignbody_detect/VOC2007/Annotations/'
+    jpeg_dir = '/home/linxu/Desktop/工装数据/JPEGImages/'
+    annot_dir = '/home/linxu/Desktop/工装数据/Annotations/'
+    # jpeg_dir = '/home/linxu/Desktop/工装数据/雨畋/JPEGImages'
+    # annot_dir = '/home/linxu/Desktop/工装数据/雨畋/Annotations'
     checkJpgXml(jpeg_dir, annot_dir,if_clear = False)

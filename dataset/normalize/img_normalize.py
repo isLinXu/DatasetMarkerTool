@@ -4,8 +4,6 @@ import os
 import numpy as np
 from tqdm import tqdm
 
-from utils.fileHelper import os_mkdir
-
 def check_dir(directory):
     '''
     检查路径

@@ -53,15 +53,15 @@ def update_xml_label(origin_ann_dir, new_ann_dir, remove_list, update_label_list
 
 if __name__ == '__main__':
     # 设置原始标签路径为 Annos
-    origin_ann_dir = r'/media/hxzh02/SB@home/hxzh/Dataset/变电站异物数据集/母线构架鸟巢/Annotations/'
+    origin_ann_dir = r'/media/linxu/LinXuHub/7.Dataset/防震锤/VOC2007/Annotations/'
     # 设置新标签路径 Annotations
-    new_ann_dir = r'/media/hxzh02/SB@home/hxzh/Dataset/变电站异物数据集/母线构架鸟巢/Annotations1/'
+    new_ann_dir = r'/media/linxu/LinXuHub/7.Dataset/防震锤/VOC2007/Annotations1/'
 
     # 设置清除标签
     remove_list = ['tower_foot','tower_body','tower_body_down','tree_branch']
     # 更新标签名称
-    update_label_list = ['bird_nest']
-    new_name = 'nest'
+    update_label_list = ['shockproof_hammer ']
+    new_name = 'shockproof_hammer'
 
     # 更新xml标签：清除/修改xml文件中label
     update_xml_label(origin_ann_dir, new_ann_dir, remove_list, update_label_list, new_name)

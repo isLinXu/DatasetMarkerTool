@@ -2,7 +2,7 @@
 import os
 import sys
 #需要修改后缀的文件目录
-os.chdir(r'/home/linxu/Desktop/GAN/Paddle-CIC/imglist/')
+os.chdir(r'/home/linxu/Desktop/GAN/Paddle-Colorization/data/train/')
 
 # 列出当前目录下所有的文件
 files = os.listdir('./')

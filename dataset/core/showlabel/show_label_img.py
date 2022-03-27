@@ -17,7 +17,6 @@ import os
 
 from tqdm import tqdm
 
-
 class Colors:
     # Ultralytics color palette https://ultralytics.com/
     def __init__(self):

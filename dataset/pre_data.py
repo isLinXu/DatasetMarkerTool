@@ -23,11 +23,11 @@ from shutil import copyfile
 # classes = ['fire', 'smoke']                    # 烟火检测
 # classes = ['tower_body','tower_head','tower_foot','tower_body_down'] # 杆塔检测
 
-# 电塔巡检检测
 from tqdm import tqdm
 
 # 塔头检测
-classes = ['tower_head', 'tower_head_defect']
+# classes = ['tower_head', 'tower_head_defect']
+classes = ['shockproof_hammer']
 # 塔身检测
 # classes = ['tower_body', 'tower_body_defect']
 # classes = ['tower_body','tower_head','tower_foot','tower_body_down',
@@ -174,7 +174,6 @@ def trans_prepare_config(dir_path='data/', dataset_name='VOCdevkit_xxx'):
     list_imgs = os.listdir(image_dir)  # list image files
     prob = random.randint(1, 100)
 
-    # for i in range(0, len(list_imgs)):
     for i in tqdm(range(0, len(list_imgs))):
         path = os.path.join(image_dir, list_imgs[i])
         if os.path.isfile(path):
@@ -217,11 +216,11 @@ if __name__ == '__main__':
     # dir_path = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/7-输电线路绝缘子数据集VOC/'
     # dir_path = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/5-安全帽数据集5000张/'
     # dir_path = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/'
-    dir_path = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/'
+    dir_path = '/media/linxu/LinXuHub/7.Dataset/'
     # 设置数据集名称
     # dataset_name = 'dataset_insulator'
     # dataset_name = 'dataset_safetyHat'
     # dataset_name = 'VOCdevkit_towerhead_detect'
     # dataset_name = 'VOCdevkit_towerbody_detect'
-    dataset_name = 'VOCdevkit_foreignbody_detect'
+    dataset_name = '防震锤'
     trans_prepare_config(dir_path, dataset_name)

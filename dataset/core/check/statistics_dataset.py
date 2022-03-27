@@ -130,7 +130,7 @@ if __name__ == '__main__':
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机杆塔航拍数据集/杆塔主体/VOCdevkit_tower_part/Annotations/'
     # xml_root_dir = '/media/hxzh02/TU100Pro/Insulator/train/voc labels/'
 
-    xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_towerbody_detect/VOC2007/Annotations/'
+    xml_root_dir = '/home/linxu/Desktop/工装数据/Annotations/'
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/imagenet/imagenet-object-localization-challenge/ILSVRC/Annotations/CLS-LOC/'
 
     # 统计ImageNet 2017 1000个类别数据集
