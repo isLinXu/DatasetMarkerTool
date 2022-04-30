@@ -40,7 +40,7 @@ def images_Normalization(path, size=(640, 480), rotate=0, color_space=0, img_sho
                     src = cv2.resize(img_src, size)
 
                 # 旋转角度逆时针rotate=0,1,2,3
-                src = np.rot90(img_src, rotate)
+                src = np.rot90(src, rotate)
 
                 # 修改颜色空间
                 if color_space != 0:
@@ -59,10 +59,13 @@ def images_Normalization(path, size=(640, 480), rotate=0, color_space=0, img_sho
 
 
 if __name__ == '__main__':
-    img_path = '/home/linxu/Desktop/20220319电表采集/电表流水线0/'
+    img_path = '/home/linxu/Desktop/matlab/'
     color_space = 0
     # color_space = cv2.COLOR_RGB2BGR
-    rotate = 3
-    images_Normalization(path=img_path, size=(0, 0),
+    rotate = 0
+    # images_Normalization(path=img_path, size=(0, 0),
+    #                      rotate=rotate, color_space=color_space,
+    #                      img_show=False)
+    images_Normalization(path=img_path, size=(640, 425),
                          rotate=rotate, color_space=color_space,
                          img_show=False)
