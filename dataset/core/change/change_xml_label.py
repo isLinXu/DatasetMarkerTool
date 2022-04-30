@@ -34,31 +34,41 @@ def update_xml_label(origin_ann_dir, new_ann_dir, remove_list, update_label_list
             if os.path.isfile(r'%s%s' % (origin_ann_dir, filename)):
                 origin_ann_path = os.path.join(r'%s%s' % (origin_ann_dir, filename))
                 new_ann_path = os.path.join(r'%s%s' % (new_ann_dir, filename))
-                tree = ET.parse(origin_ann_path)
-                root = tree.getroot()
-                for object in root.findall('object'):
-                    name = str(object.find('name').text)
-                    print('name', name)
-                    # 如果name等于str，则删除该节点
-                    if (name in remove_list):
-                        root.remove(object)
+                print('origin_ann_path',origin_ann_path)
 
-                    # 如果name等于str，则修改name
-                    if (name in update_label_list):
-                        object.find('name').text = new_name
+                # 判断xml内容是否为空
+                labelread = open(origin_ann_path, 'r')  # 读取标注信息文件
+                contens = labelread.readlines()  # 一次性全读出
 
+                if contens:
+                    tree = ET.parse(origin_ann_path)
+                    root = tree.getroot()
+                    for object in root.findall('object'):
+                        name = str(object.find('name').text)
+                        print('name', name)
+                        # 如果name等于str，则删除该节点
+                        if (name in remove_list):
+                            root.remove(object)
+
+                        # 如果name等于str，则修改name
+                        if (name in update_label_list):
+                            object.find('name').text = new_name
+                else:
+                    labelread.close()  # 将读的文件关闭，这里必须关闭
+                    os.remove(origin_ann_path)  # 移除空标注文件
                 # write写入新的文件中
                 tree.write(new_ann_path)
 
 
 if __name__ == '__main__':
     # 设置原始标签路径为 Annos
-    origin_ann_dir = r'/media/linxu/LinXuHub/7.Dataset/防震锤/VOC2007/Annotations/'
+    origin_ann_dir = r'/media/hxzh02/Double/数据集/xml/'
     # 设置新标签路径 Annotations
-    new_ann_dir = r'/media/linxu/LinXuHub/7.Dataset/防震锤/VOC2007/Annotations1/'
+    new_ann_dir = r'/media/hxzh02/Double/数据集/xml/'
 
     # 设置清除标签
-    remove_list = ['tower_foot','tower_body','tower_body_down','tree_branch']
+    remove_list = ['keyboard','skateboard','suitcase','boat','refrigerator','baseball glove']
+
     # 更新标签名称
     update_label_list = ['shockproof_hammer ']
     new_name = 'shockproof_hammer'

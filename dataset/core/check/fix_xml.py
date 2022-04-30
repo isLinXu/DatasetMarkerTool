@@ -4,10 +4,13 @@ import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element
 from PIL import Image
 
-def fix_xml(filename):
+
+def fix_xml(root,filename):
     filepath = filename + ".xml"
-    xmlFilePath = os.path.abspath(filepath)
+    # xmlFilePath = os.path.abspath(filepath)
+    xmlFilePath = root + filepath
     print(xmlFilePath)
+    print('filepath', filepath)
     try:
         tree = ET.parse(xmlFilePath)
         root = tree.getroot()
@@ -16,9 +19,9 @@ def fix_xml(filename):
         sys.exit()
 
     size = root.find("size")
-    if size==None: #查看size是否存在
-        img_width,img_height,img_depth = find_image_size(filename) 
-        #若不存在，查找图片size
+    if size == None:  # 查看size是否存在
+        img_width, img_height, img_depth = find_image_size(filename)
+        # 若不存在，查找图片size
         size_element = Element('size')
         width_element = Element('width')
         width_element.text = str(img_width)
@@ -30,7 +33,7 @@ def fix_xml(filename):
         size_element.append(height_element)
         size_element.append(depth_element)
         root.append(size_element)
-    else: #若存在，检查width和height是否为0
+    else:  # 若存在，检查width和height是否为0
         width = size.find("width")
         text_width = width.text
         height = size.find("height")
@@ -43,7 +46,8 @@ def fix_xml(filename):
             depth = size.find("depth")
             depth.text = str(img_depth)
 
-    tree.write(filepath,encoding='utf-8',xml_declaration=True)
+    tree.write(xmlFilePath, encoding='utf-8', xml_declaration=True)
+
 
 def find_image_size(filename):
     filepath = filename + ".jpg"
@@ -64,13 +68,18 @@ def find_image_size(filename):
         print("image : weight = %d, height =%d depth =%d " % (img_width, img_height, img_depth))
         return img_width, img_height, img_depth
 
-imagedir = 'D:\\fix_face_mask\\'
-img_list = sorted(os.listdir(imagedir))
 
-for image in img_list: #遍历文件
+imagedir = '/media/hxzh02/Double/数据集/merge/merge/'
+root = '/media/hxzh02/Double/数据集/merge/merge/'
+img_list = sorted(os.listdir(imagedir))
+print('img_list', img_list)
+
+for image in img_list:  # 遍历文件
     fields = image.split(".")
     filename_wo_extension = fields[0]
     extention = fields[1]
-
-    if extention == 'xml': #分析xml文件恢复数据
-        fix_xml(filename_wo_extension)
+    # print('fields', fields)
+    # print('extention', extention)
+    # print('filename', filename_wo_extension)
+    if extention == 'xml':  # 分析xml文件恢复数据
+        fix_xml(root,filename_wo_extension)
