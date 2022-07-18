@@ -52,7 +52,7 @@ if __name__ == '__main__':
     # 图像文件地址
     img_dir = '/home/linxu/Desktop/PaddleDetection/dataset/voc/VOCdevkit/VOC2007/JPEGImages'
     # 输出地址
-    out_dir = '/home/linxu/Desktop/PaddleDetection/dataset/voc/'
+    out_dir = '/home/linxu/Desktop/PaddleDetection/dataset/voc/VOCdevkit/'
 
     # 生成标签文档
     # label = ['fall']  # 设置你想检测的类别

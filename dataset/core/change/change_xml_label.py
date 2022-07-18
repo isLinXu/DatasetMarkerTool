@@ -23,6 +23,7 @@ def update_xml_label(origin_ann_dir, new_ann_dir, remove_list, update_label_list
     :return:
     '''
     # 判断是否存在新目录，若不存在则进行创建
+    global tree
     if not os.path.exists(new_ann_dir):
         os.makedirs(new_ann_dir)
 
@@ -62,16 +63,16 @@ def update_xml_label(origin_ann_dir, new_ann_dir, remove_list, update_label_list
 
 if __name__ == '__main__':
     # 设置原始标签路径为 Annos
-    origin_ann_dir = r'/media/hxzh02/Double/数据集/xml/'
+    origin_ann_dir = r'/home/linxu/Desktop/龙岩_标注图像/xml/'
     # 设置新标签路径 Annotations
-    new_ann_dir = r'/media/hxzh02/Double/数据集/xml/'
+    new_ann_dir = r'/home/linxu/Desktop/龙岩_标注图像/Annotations/'
 
     # 设置清除标签
     remove_list = ['keyboard','skateboard','suitcase','boat','refrigerator','baseball glove']
 
     # 更新标签名称
-    update_label_list = ['shockproof_hammer ']
-    new_name = 'shockproof_hammer'
+    update_label_list = ['1_0_6_21_42_0']
+    new_name = 'Status indicator'
 
     # 更新xml标签：清除/修改xml文件中label
     update_xml_label(origin_ann_dir, new_ann_dir, remove_list, update_label_list, new_name)

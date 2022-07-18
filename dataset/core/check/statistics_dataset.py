@@ -13,7 +13,6 @@ from tqdm import tqdm
 
 from utils.LogHelper import Logger
 
-
 def parse_obj(xml_path, filename):
     '''
     解析对象属性
@@ -55,7 +54,7 @@ def update_xml(root_name, element='object', search_name='name', result=''):
     root.write(root_dir)
 
 
-def Analysis_statistics_dataset(xml_root_dir,isupdate=False):
+def Analysis_statistics_dataset(xml_root_dir, isupdate=False):
     global object
     filenames_path = os.listdir(xml_root_dir)
     filenames = []
@@ -119,6 +118,7 @@ def Analysis_statistics_dataset(xml_root_dir,isupdate=False):
 
     return num_objs[name]
 
+
 if __name__ == '__main__':
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_tower_part/VOC2007/Annotations/'
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/7-输电线路绝缘子数据集VOC/dataset_insulator/VOC2007/Annotations/'
@@ -130,7 +130,8 @@ if __name__ == '__main__':
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机杆塔航拍数据集/杆塔主体/VOCdevkit_tower_part/Annotations/'
     # xml_root_dir = '/media/hxzh02/TU100Pro/Insulator/train/voc labels/'
 
-    xml_root_dir = '/home/linxu/Desktop/工装数据/Annotations/'
+    # xml_root_dir = '/home/linxu/Desktop/龙岩_标注图像/xml/'
+    xml_root_dir = '/home/linxu/Desktop/龙岩_标注图像/Annotations/'
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/imagenet/imagenet-object-localization-challenge/ILSVRC/Annotations/CLS-LOC/'
 
     # 统计ImageNet 2017 1000个类别数据集
@@ -152,6 +153,6 @@ if __name__ == '__main__':
     #                 print('size:', size)
 
     # print('信息统计完毕。')
-    isupdate = True
-    Analysis_statistics_dataset(xml_root_dir=xml_root_dir,isupdate=isupdate)
+    isupdate = False
+    Analysis_statistics_dataset(xml_root_dir=xml_root_dir, isupdate=isupdate)
     print('信息统计完毕。')
