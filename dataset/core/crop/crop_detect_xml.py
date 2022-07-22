@@ -51,6 +51,15 @@ def _crop(num, annotation, file):
 
 
 def crop_from_xml(anno_path, image_path, crop_path):
+    '''
+    # 将数据集中的标注框从图片中剪裁出来
+    Args:
+        anno_path: 存放xml文件
+        image_path: 存放未剪裁图片
+        crop_path: 存放剪裁后图片
+    Returns:
+
+    '''
     file_dir_list = os.listdir(anno_path)
     all_annotation = 0
     all_image = 0
@@ -77,10 +86,10 @@ def crop_from_xml(anno_path, image_path, crop_path):
 
 
 if __name__ == '__main__':
-    # 将数据集中的标注框从图片中剪裁出来
+
     ####anno_path存放xml文件，image_path存放未剪裁图片，crop_path存放剪裁后图片
-    anno_path = '/home/linxu/Desktop/林旭xml/'
-    image_path = '/home/linxu/Desktop/林旭/'
-    crop_path = '/home/linxu/Desktop/林旭crop/'
+    anno_path = '/home/linxu/Desktop/xml/'
+    image_path = '/home/linxu/Desktop/images/'
+    crop_path = '/home/linxu/Desktop/crop/'
 
     crop_from_xml(anno_path, image_path, crop_path)
