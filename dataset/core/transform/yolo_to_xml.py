@@ -10,26 +10,26 @@ import os
 # (NOTICE #2)
 # Change this path variable
 # YOUR_IMG_FOLDER_PATH
-img_path = "/home/hxzh02/图片/coco128/images/train2017/"
-
-# path of save xml file
-save_path = '/home/hxzh02/图片/coco128/xml/'  # keep it blank
-
-# txt_folder is txt file root that using darknet rectbox
-# YOUR_TXT_FOLDER_PATH
-txt_folder = '/home/hxzh02/图片/coco128/labels/train2017/'
-
-# (NOTICE #3)
-# Change this labels
-labels = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
-        'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
-        'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
-        'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
-        'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
-        'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
-        'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone',
-        'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear',
-        'hair drier', 'toothbrush']
+# img_path = "/home/hxzh02/图片/coco128/images/train2017/"
+#
+# # path of save xml file
+# save_path = '/home/hxzh02/图片/coco128/xml/'  # keep it blank
+#
+# # txt_folder is txt file root that using darknet rectbox
+# # YOUR_TXT_FOLDER_PATH
+# txt_folder = '/home/hxzh02/图片/coco128/labels/train2017/'
+#
+# # (NOTICE #3)
+# # Change this labels
+# labels = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
+#         'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
+#         'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
+#         'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
+#         'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
+#         'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
+#         'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone',
+#         'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear',
+#         'hair drier', 'toothbrush']
 
 
 def yolotxt_to_xml(img_path, save_path, txt_folder,labels):
@@ -96,7 +96,7 @@ def yolotxt_to_xml(img_path, save_path, txt_folder,labels):
         root.append(segmented)
 
         for ii in range(len(txt_file)):
-            label = convert_label(txt_file[ii][0])
+            label = convert_label(txt_file[ii][0], labels)
             x_min_rect, x_max_rect, y_min_rect, y_max_rect = extract_coor(
                 txt_file[ii], img_width, img_height)
 
@@ -135,9 +135,6 @@ def yolotxt_to_xml(img_path, save_path, txt_folder,labels):
         ff.write(file_output.decode('utf-8'))
 
 
-
-
-
 def csvread(fn):
     with open(fn, 'r') as csvfile:
         list_arr = []
@@ -148,7 +145,7 @@ def csvread(fn):
     return list_arr
 
 
-def convert_label(txt_file):
+def convert_label(txt_file, labels):
     global label
     for i in range(len(labels)):
         if txt_file == str(i):
@@ -178,3 +175,26 @@ def extract_coor(txt_file, img_width, img_height):
 
 
 
+if __name__ == '__main__':
+    img_path = "/home/hxzh02/图片/coco128/images/train2017/"
+
+    # path of save xml file
+    save_path = '/home/hxzh02/图片/coco128/xml/'  # keep it blank
+
+    # txt_folder is txt file root that using darknet rectbox
+    # YOUR_TXT_FOLDER_PATH
+    txt_folder = '/home/hxzh02/图片/coco128/labels/train2017/'
+
+    # (NOTICE #3)
+    # Change this labels
+    labels = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
+              'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
+              'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
+              'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
+              'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
+              'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
+              'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard',
+              'cell phone',
+              'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear',
+              'hair drier', 'toothbrush']
+    yolotxt_to_xml(img_path, save_path, txt_folder, labels)
