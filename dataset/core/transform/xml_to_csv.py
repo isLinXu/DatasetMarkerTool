@@ -60,7 +60,10 @@ def xml_to_csv(path):
     return xml_df, classes_names
 
 
-def main():
+
+
+
+def _main(inputDir,outputFile,labelMapDir):
     # Initiate argument parser
     parser = argparse.ArgumentParser(
         description="Sample TensorFlow XML-to-CSV converter"
@@ -84,6 +87,10 @@ def main():
     )
 
     args = parser.parse_args()
+
+    args.inputDir = inputDir
+    args.outputFile = outputFile
+    args.labelMapDir = labelMapDir
 
     if args.inputDir is None:
         args.inputDir = os.getcwd()
@@ -115,4 +122,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    inputDir = '/home/hxzh02/图片/Annotations/'
+    outputFile = '/home/hxzh02/图片/Annotations.csv'
+    labelMapDir = '/home/hxzh02/图片/'
+    _main(inputDir, outputFile, labelMapDir)
+    
