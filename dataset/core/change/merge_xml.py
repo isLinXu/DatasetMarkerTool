@@ -25,13 +25,12 @@ def __indent(elem, level=0):
 
 def merge_annotations(hole_path, arm_path, out_path):
     '''
-    合并同名标注文件
+    合并同名标注文件，融合多目标对象
     :param hole_path: 标注文件路径1
     :param arm_path:  目标标注文件路径2
     :param out_path:  合并输出文件路径3 => 2->1
     :return:
     '''
-
     if check_dir_bool(hole_path) and check_dir_bool(arm_path) and check_dir_bool(out_path):
         for hole_xml in os.listdir(hole_path):
             # 将同名xml合并
@@ -64,7 +63,7 @@ def merge_annotations(hole_path, arm_path, out_path):
 
 
 if __name__ == '__main__':
-    hole_path = '/media/hxzh02/Double/数据集/merge/Annotations'
-    arm_path = '/media/hxzh02/Double/数据集/merge1/xml'
-    out_path = '/media/hxzh02/Double/数据集/merge/merge'
+    hole_path = '/home/linxu/Desktop/test/merge/'
+    arm_path = '/home/linxu/Desktop/test/merge2/'
+    out_path = '/home/linxu/Desktop/test/mergeall/'
     merge_annotations(hole_path, arm_path, out_path)

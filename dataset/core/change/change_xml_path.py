@@ -6,7 +6,6 @@ import os
 import os.path
 import xml.dom.minidom
 
-# file_path = "./data/VOCdevkit2007/VOC2007/Annotations"
 xml_file_path = '/media/hxzh02/SB@home/hxzh/Dataset/11-5电塔照片视频/照片/annotaions'
 jpeg_file_path = '/media/hxzh02/SB@home/hxzh/Dataset/11-5电塔照片视频/照片/'
 files = os.listdir(xml_file_path)  # 得到文件夹下所有文件名称
@@ -19,7 +18,7 @@ for xmlFile in files:  # 遍历文件夹
         # ---------------------------------------------------#
         #   最核心的部分,路径拼接,输入的是具体路径
         # ---------------------------------------------------#
-        dom = xml.dom.minidom.parse(os.path.join(xml_file_path, xmlFile))  ###最核心的部分,路径拼接,输入的是具体路径
+        dom = xml.dom.minidom.parse(os.path.join(xml_file_path, xmlFile))
         root = dom.documentElement
         # 获取标签对path之间的值
         original_path = root.getElementsByTagName('path')
