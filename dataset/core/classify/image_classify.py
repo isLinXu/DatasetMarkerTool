@@ -12,7 +12,6 @@ width = 640
 height = 480
 top.geometry(f'{width}x{height}')
 
-
 # 标记当前图片，并切换到下一个图片
 def next_img(type):
     global index
