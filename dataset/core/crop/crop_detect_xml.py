@@ -12,7 +12,7 @@ def _ParseAnnotation(filepath):
         print(filepath + ' :not found')
     tree = ET.parse(anno_path + filepath)
     # None是一个特殊的空对象，可以用来占位。
-    annos = [None]*10
+    annos = [None]*500
     num = 0
     for annoobject in tree.iter():
         if 'object' in annoobject.tag:
@@ -45,9 +45,17 @@ def _crop(num, annotation, file):
         return
     box = (annotation['xmin'], annotation['ymin'], annotation['xmax'], annotation['ymax'])
     pil_im = Image.open(image_path + filename)
-    region = pil_im.crop(box)
-    pil_region = Image.fromarray(uint8(region))
-    pil_region.save(crop_path + annotation['name'] + filenum[0] + '_' + str(num) + '.jpg')
+
+    x_d = annotation['xmax'] - annotation['xmin']
+    y_d = annotation['ymax'] - annotation['ymin']
+    # 检查box正确性
+    if x_d > 0 and y_d > 0:
+        print('box:', box,'x_d:', x_d, 'y_d:',y_d)
+        region = pil_im.crop(box)
+        pil_region = Image.fromarray(uint8(region))
+        pil_region.save(crop_path + annotation['name'] + filenum[0] + '_' + str(num) + '.jpg')
+    else:
+        print('box check error!')
 
 
 def crop_from_xml(anno_path, image_path, crop_path):
@@ -82,14 +90,14 @@ def crop_from_xml(anno_path, image_path, crop_path):
             _crop(i, annos[j], file)
             print(file)
         all_image += 1
-    print(all_image)
+    print('all_image:', all_image)
 
 
 if __name__ == '__main__':
 
     ####anno_path存放xml文件，image_path存放未剪裁图片，crop_path存放剪裁后图片
-    anno_path = '/home/linxu/Desktop/xml/'
-    image_path = '/home/linxu/Desktop/images/'
-    crop_path = '/home/linxu/Desktop/crop/'
+    anno_path = '/home/linxu/Desktop/VOCdevkit/voc2007/Annotations/'
+    image_path = '/home/linxu/Desktop/VOCdevkit/voc2007/JPEGImages/'
+    crop_path = '/home/linxu/Desktop/VOCdevkit/crop/'
 
     crop_from_xml(anno_path, image_path, crop_path)

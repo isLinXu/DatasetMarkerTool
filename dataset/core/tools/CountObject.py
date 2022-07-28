@@ -4,7 +4,7 @@ import os
 import xml.etree.ElementTree as ET
 #sys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding='utf8')
 ##修改下面的地址为你存放xml文件的位置，注意斜杠使用/,最后末尾需要加上/
-anno_path = 'F:/张珂老师巡检图像/new gradingring/xml/'
+anno_path = 'F:/巡检图像/new gradingring/xml/'
 #anno_num = [0 for i in range(18)]
 #将下面改成你自己的VOC数据集类别
 class_name = ('insulator bunch-drop', 'insulator damage', 'insulator pollution', 
