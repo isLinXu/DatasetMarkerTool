@@ -12,11 +12,11 @@ import seaborn as sns
 from matplotlib.font_manager import FontProperties
 from PIL import Image
 import random
-myfont = FontProperties(fname=r"NotoSansCJKsc-Medium.otf", size=12)
+myfont = FontProperties(size=12)
 plt.rcParams['figure.figsize'] = (12, 12)
-plt.rcParams['font.family']= myfont.get_family()
-plt.rcParams['font.sans-serif'] = myfont.get_name()
-plt.rcParams['axes.unicode_minus'] = False
+# plt.rcParams['font.family']= myfont.get_family()
+# plt.rcParams['font.sans-serif'] = myfont.get_name()
+# plt.rcParams['axes.unicode_minus'] = False
 
 
 def generate_anno_eda(dataset_path, anno_file):
@@ -68,17 +68,20 @@ def generate_anno_eda(dataset_path, anno_file):
                                       shadow=False, startangle=90, pctdistance=0.6,
                                       textprops={'fontproperties': myfont})
     plt.axis("equal")  # 设置横轴和纵轴大小相等，这样饼才是圆的
-    plt.legend(prop=myfont)
+    plt.legend()
     plt.show()
 
 if __name__ == '__main__':
     # Setup the paths to train and test images
-    TRAIN_DIR = 'wheat/train/'
-    TRAIN_CSV_PATH = 'wheat/train.json'
+    # SB@hTRAIN_DIR = '/media/hxzh02/SB@home/hxzh/Downloads/wheat/wheat/train'
+    #     # TRAIN_CSV_PATH = '/media/hxzh02/ome/hxzh/Downloads/wheat/wheat/train2017.json'
+
+    TRAIN_DIR = '/home/hxzh02/图片/coco128/coco128/train2017'
+    TRAIN_CSV_PATH = '/home/hxzh02/图片/coco128/coco128/annotations/instances_train.json'
 
     # Glob the directories and get the lists of train and test images
     train_fns = glob.glob(TRAIN_DIR + '*')
     print('数据集图片数量: {}'.format(len(train_fns)))
 
     # 分析训练集数据
-    generate_anno_eda('wheat', 'train.json')
+    generate_anno_eda(TRAIN_DIR, TRAIN_CSV_PATH)
