@@ -13,6 +13,7 @@ import numpy as np
 import PIL.Image
 
 import labelme
+from tqdm import tqdm
 
 
 def main():
@@ -24,12 +25,14 @@ def main():
     parser.add_argument('-labels', help='labels file')
     args = parser.parse_args()
 
-    # args.input_dir = '/home/hxzh02/BaiduDownload/网课deeplab-pytorch/mydataset文件/mydataset/roadscene_train'
-    # args.output_dir = '/home/hxzh02/BaiduDownload/网课deeplab-pytorch/mydataset文件/mydataset/roadscene_train/coco_voc'
-    # args.labels = '/home/hxzh02/BaiduDownload/网课deeplab-pytorch/mydataset文件/labels.txt'
-    args.input_dir = '/media/hxzh02/SB@home/hxzh/Dataset/PPLTA航拍输电线路数据集/data_original_size/images/train2017'
-    args.output_dir = '/media/hxzh02/SB@home/hxzh/Dataset/PPLTA航拍输电线路数据集/data_original_size/images/train2017/coco_voc'
-    args.labels = '/media/hxzh02/SB@home/hxzh/Dataset/PPLTA航拍输电线路数据集/data_original_size/labels.txt'
+    args.input_dir = '/home/hxzh02/BaiduDownload/网课deeplab-pytorch/mydataset文件/mydataset/roadscene_train'
+    args.output_dir = '/home/hxzh02/BaiduDownload/网课deeplab-pytorch/mydataset文件/mydataset/roadscene_train/coco_voc'
+    args.labels = '/home/hxzh02/BaiduDownload/网课deeplab-pytorch/mydataset文件/labels.txt'
+    # args.input_dir = '/media/hxzh02/SB@home/hxzh/Dataset/PPLTA航拍输电线路数据集/data_original_size/images/train2017'
+    # args.output_dir = '/media/hxzh02/SB@home/hxzh/Dataset/PPLTA航拍输电线路数据集/data_original_size/images/train2017/coco_voc'
+    # args.input_dir = '/home/hxzh02/文档/plane_line_datasets/use'
+    # args.output_dir = '/home/hxzh02/文档/plane_line_datasets/use/voc_coco'
+    # args.labels = '/home/hxzh02/文档/plane_line_datasets/labels.txt'
 
     if osp.exists(args.output_dir):
         print('Output directory already exists:', args.output_dir)
@@ -62,7 +65,7 @@ def main():
 
     colormap = labelme.utils.label_colormap(255)
 
-    for label_file in glob.glob(osp.join(args.input_dir, '*.json')):
+    for label_file in tqdm(glob.glob(osp.join(args.input_dir, '*.json'))):
         print('Generating dataset from:', label_file)
         with open(label_file) as f:
             base = osp.splitext(osp.basename(label_file))[0]

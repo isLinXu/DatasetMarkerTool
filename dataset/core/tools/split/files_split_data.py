@@ -50,6 +50,8 @@ def files_split_data(path_files):
 
 if __name__ == '__main__':
     # 指定文件夹路径
-    path_files = r'/media/hxzh02/SB@home/hxzh/Dataset/变电站异物数据集/鸟巢/'
+    # path_files = r'/media/hxzh02/SB@home/hxzh/Dataset/变电站异物数据集/鸟巢/'
+    # path_files = '/media/hxzh02/SB@home/hxzh/Dataset/变电站异物数据集/挂空悬浮物/'
+    path_files = '/media/hxzh02/SB@home/hxzh/Dataset/变电站异物数据集/母线构架鸟巢/'
     files_split_data(path_files)
 

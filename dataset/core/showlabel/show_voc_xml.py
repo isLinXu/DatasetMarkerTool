@@ -49,7 +49,7 @@ if __name__ == '__main__':
     with open('./VOCdevkit/VOC2012/ImageSets/Main/train.txt') as file:
         line = file.readline()
         while line:
-            convert_annotation('2012',line[:-1])
+            convert_annotation('2007',line[:-1])
             line = file.readline()
             # break
         file.close

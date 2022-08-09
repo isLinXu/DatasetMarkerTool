@@ -27,7 +27,8 @@ from tqdm import tqdm
 
 # 塔头检测
 # classes = ['tower_head', 'tower_head_defect']
-classes = ['shockproof_hammer']
+# classes = ['tower_body', 'tower_body_down', 'tower_body_lean']
+classes = ['insulator', 'breakage', 'defect']
 # 塔身检测
 # classes = ['tower_body', 'tower_body_defect']
 # classes = ['tower_body','tower_head','tower_foot','tower_body_down',
@@ -216,11 +217,12 @@ if __name__ == '__main__':
     # dir_path = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/7-输电线路绝缘子数据集VOC/'
     # dir_path = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/5-安全帽数据集5000张/'
     # dir_path = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/'
-    dir_path = '/media/linxu/LinXuHub/7.Dataset/'
+    dir_path = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/'
     # 设置数据集名称
     # dataset_name = 'dataset_insulator'
     # dataset_name = 'dataset_safetyHat'
     # dataset_name = 'VOCdevkit_towerhead_detect'
     # dataset_name = 'VOCdevkit_towerbody_detect'
-    dataset_name = '防震锤'
+    # dataset_name = 'VOCdevkit_towerbody_detect'
+    dataset_name = 'VOCdevkit_Insulator_datasets'
     trans_prepare_config(dir_path, dataset_name)

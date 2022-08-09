@@ -68,7 +68,7 @@ if __name__ == '__main__':
     new_ann_dir = r'/home/linxu/Desktop/龙岩_标注图像/Annotations/'
 
     # 设置清除标签
-    remove_list = ['keyboard','skateboard','suitcase','boat','refrigerator','baseball glove']
+    remove_list = ['refrigerator','potted plant','keyboard','skateboard','suitcase','boat','refrigerator','baseball glove','bench','laptop','baseball bat','truck','refrigerator']
 
     # 更新标签名称
     update_label_list = ['1_0_6_21_42_0']

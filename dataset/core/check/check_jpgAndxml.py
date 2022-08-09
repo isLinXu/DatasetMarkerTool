@@ -91,8 +91,6 @@ if __name__ == "__main__":
     # annot_dir = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_towerhead_detect/VOC2007/Annotations/'
     # jpeg_dir = '/media/hxzh02/SB@home/hxzh/Dataset/变电站异物数据集/母线构架鸟巢/JPEGImages/'
     # annot_dir = '/media/hxzh02/SB@home/hxzh/Dataset/变电站异物数据集/母线构架鸟巢/Annotations/'
-    jpeg_dir = '/home/linxu/Desktop/工装数据/JPEGImages/'
-    annot_dir = '/home/linxu/Desktop/工装数据/Annotations/'
-    # jpeg_dir = '/home/linxu/Desktop/工装数据/雨畋/JPEGImages'
-    # annot_dir = '/home/linxu/Desktop/工装数据/雨畋/Annotations'
-    checkJpgXml(jpeg_dir, annot_dir,if_clear = False)
+    jpeg_dir = '/media/hxzh02/mobilePan/Datasets/Plane_detect_datasets/VOCdevkit_foreignbody_detect/VOC2007/JPEGImages/'
+    annot_dir = '/media/hxzh02/mobilePan/Datasets/Plane_detect_datasets/VOCdevkit_foreignbody_detect/VOC2007/Annotations/'
+    checkJpgXml(jpeg_dir, annot_dir,if_clear = True)

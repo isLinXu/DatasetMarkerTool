@@ -7,22 +7,24 @@ import os
 from os import listdir, getcwd
 from os.path import join
 
-total_object=0 #total obj  count
-def calc_total_objcount(xml_dir):
+total_object = 0  # total obj  count
 
-    files=os.listdir(xml_dir)
+
+def calc_total_objcount(xml_dir):
+    files = os.listdir(xml_dir)
     for image_add in files:
-        in_file = open(xml_dir + image_add,'rb')
+        in_file = open(xml_dir + image_add, 'rb')
+        print('in_file', in_file)
         tree = ET.parse(in_file)
         root = tree.getroot()
         # 在一个XML中每个Object的迭代
         for obj in root.iter('object'):
             global total_object
-            total_object=total_object+1
+            total_object = total_object + 1
 
-    print("obj count:",total_object)
+    print("obj count:", total_object)
 
 
 if __name__ == "__main__":
-    xml_dir=""
+    xml_dir = "/media/hxzh02/Double/数据集/merge/merge/"
     calc_total_objcount(xml_dir)

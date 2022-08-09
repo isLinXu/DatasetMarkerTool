@@ -234,17 +234,30 @@ def voc_get_coco_annotation(obj, label2id):
     ymin = float(bndbox.findtext('ymin'))
     xmax = float(bndbox.findtext('xmax'))
     ymax = float(bndbox.findtext('ymax'))
-    assert xmax > xmin and ymax > ymin, "Box size error."
-    o_width = xmax - xmin
-    o_height = ymax - ymin
-    anno = {
-        'area': o_width * o_height,
-        'iscrowd': 0,
-        'bbox': [xmin, ymin, o_width, o_height],
-        'category_id': category_id,
-        'ignore': 0,
-    }
-    return anno
+    # assert xmax > xmin and ymax > ymin, "Box size error."
+    if xmin >= xmax or ymin >= ymax:
+        print('"Box size error."')
+        o_width = abs(xmax - xmin)
+        o_height = abs(ymax - ymin)
+        anno = {
+            'area': o_width * o_height,
+            'iscrowd': 0,
+            'bbox': [xmin, ymin, o_width, o_height],
+            'category_id': category_id,
+            'ignore': 0,
+        }
+        return anno
+    else:
+        o_width = xmax - xmin
+        o_height = ymax - ymin
+        anno = {
+            'area': o_width * o_height,
+            'iscrowd': 0,
+            'bbox': [xmin, ymin, o_width, o_height],
+            'category_id': category_id,
+            'ignore': 0,
+        }
+        return anno
 
 
 def voc_xmls_to_cocojson(annotation_paths, label2id, output_dir, output_file):
@@ -417,12 +430,29 @@ def main():
         type=str,
         default=None)
     args = parser.parse_args()
+
+    args.dataset_type = 'voc'
+    args.voc_anno_dir = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc/VOCdevkit/voc2007/Annotations'
+    args.voc_anno_list = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc/VOCdevkit/voc2007/val.txt'
+    args.voc_label_list = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc/VOCdevkit/voc2007/label_list.txt'
+    args.voc_out_name = 'voc_val_json'
+
     try:
         assert args.dataset_type in ['voc', 'labelme', 'cityscape', 'widerface']
     except AssertionError as e:
         print(
             'Now only support the voc, cityscape dataset and labelme dataset!!')
         os._exit(0)
+
+    # args.dataset_type = 'voc'
+    # args.json_input_dir = ''
+    # args.image_input_dir = ''
+    # args.output_dir = ''
+    # args.train_proportion = 0.8
+    # args.val_proportion = 0.2
+    # args.test_proportion = 0.0
+
+
 
     if args.dataset_type == 'voc':
         assert args.voc_anno_dir and args.voc_anno_list and args.voc_label_list

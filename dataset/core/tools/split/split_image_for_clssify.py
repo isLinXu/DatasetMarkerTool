@@ -40,6 +40,6 @@ def split_create_Data(src_path):
 
 if __name__ == '__main__':
     start_time = time.time()
-    file_path = '/home/linxu/Desktop/Variational-AutoEncoder-in-Pytorch/Lips/xunfei/'
+    file_path = '/home/hxzh02/图片/coco128/images/train2017/'
     split_create_Data(file_path)
     print('times:',time.time() - start_time)

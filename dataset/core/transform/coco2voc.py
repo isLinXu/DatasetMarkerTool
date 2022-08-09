@@ -145,7 +145,7 @@ if __name__ == "__main__":
     #传入coco的annotations.json地址，image文件存放的地址 和输出的voc数据存放地址
     # Convert_coco_to_voc(, "D:/00_indemind_lyk/dataset/COCO/COCO/val2017", ,)
 
-    annotation_path = "D:/00_indemind_lyk/dataset/COCO/COCO/annotations/instances_val2017.json"
-    JPEGImage_path = "D:/00_indemind_lyk/dataset/COCO/COCO//voc/val"
+    annotation_path = "/media/hxzh02/SB@home/hxzh/Dataset/PPLTA航拍输电线路数据集/data_original_size/instance_train.json"
+    JPEGImage_path = "/media/hxzh02/SB@home/hxzh/Dataset/PPLTA航拍输电线路数据集/data_original_size/imgs/"
     out_path = ""
     Convert_coco_to_voc()

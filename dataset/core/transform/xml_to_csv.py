@@ -120,10 +120,39 @@ def _main(inputDir,outputFile,labelMapDir):
         with open(label_map_path, "w") as f:
             f.write(pbtxt_content)
 
+def run(inputDir,outputFile,labelMapDir):
+    if inputDir is None:
+        inputDir = os.getcwd()
+    if outputFile is None:
+        outputFile = inputDir + "/labels.csv"
+
+    os.makedirs(os.path.dirname(outputFile), exist_ok=True)
+    xml_df, classes_names = xml_to_csv(inputDir)
+    xml_df.to_csv(outputFile, index=None)
+    print("Successfully converted xml to csv.")
+    if labelMapDir:
+        os.makedirs(labelMapDir, exist_ok=True)
+        label_map_path = os.path.join(labelMapDir, "label_map.pbtxt")
+        print("Generate `{}`".format(label_map_path))
+
+        # Create the `label_map.pbtxt` file
+        pbtxt_content = ""
+        for i, class_name in enumerate(classes_names):
+            pbtxt_content = (
+                pbtxt_content
+                + "item {{\n    id: {0}\n    name: '{1}'\n}}\n\n".format(
+                    i + 1, class_name
+                )
+            )
+        pbtxt_content = pbtxt_content.strip()
+        with open(label_map_path, "w") as f:
+            f.write(pbtxt_content)
+
+
 
 if __name__ == "__main__":
-    inputDir = '/home/hxzh02/图片/Annotations/'
-    outputFile = '/home/hxzh02/图片/Annotations.csv'
-    labelMapDir = '/home/hxzh02/图片/'
-    _main(inputDir, outputFile, labelMapDir)
-    
+    inputDir = '/media/hxzh02/mobilePan/easyData/voc128/Annotations'
+    outputFile = '/media/hxzh02/mobilePan/easyData/voc128/Annotations.csv'
+    labelMapDir = '/media/hxzh02/mobilePan/easyData/voc128/'
+    # _main(inputDir, outputFile, labelMapDir)
+    run(inputDir, outputFile, labelMapDir)

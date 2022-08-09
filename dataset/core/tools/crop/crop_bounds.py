@@ -460,7 +460,7 @@ def main():
             processImage(img,os.path.splitext(filename)[0])
     else:
         print("Not a working input_folder path: " + args.input_folder)
-        return;
+        return
 
     if(args.skip_tags != None):
         import mac_tag

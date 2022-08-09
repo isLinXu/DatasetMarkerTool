@@ -131,7 +131,7 @@ if __name__ == '__main__':
     # xml_root_dir = '/media/hxzh02/TU100Pro/Insulator/train/voc labels/'
 
     # xml_root_dir = '/home/linxu/Desktop/龙岩_标注图像/xml/'
-    xml_root_dir = '/home/linxu/Desktop/龙岩_标注图像/Annotations/'
+    xml_root_dir = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc/VOCdevkit/voc2007/Annotations/'
     # xml_root_dir = '/media/hxzh02/SB@home/hxzh/imagenet/imagenet-object-localization-challenge/ILSVRC/Annotations/CLS-LOC/'
 
     # 统计ImageNet 2017 1000个类别数据集

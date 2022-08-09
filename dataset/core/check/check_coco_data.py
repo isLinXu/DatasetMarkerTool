@@ -33,7 +33,8 @@ def check_parse_coco(coco_dir):
 
 
 if __name__ == '__main__':
-    coco_dir = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/coco/coco2017/annotations/instances_train.json'
+    # coco_dir = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/coco/coco2017/annotations/instances_train.json'
+    coco_dir = '/home/hxzh02/图片/coco128/coco128/annotations/instances_val.json'
     check_parse_coco(coco_dir)
     # coco_anno = json.load(open(coco_dir))
     #

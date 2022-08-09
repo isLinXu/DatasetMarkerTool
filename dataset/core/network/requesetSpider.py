@@ -96,9 +96,9 @@ def get_images_from_baidu(keyword, page_num, save_dir):
 
 if __name__ == '__main__':
     # 设置搜索-关键字
-    keywords = ['金属腐蚀', '金属生锈','表面生锈','表面腐蚀']
+    keywords = []
     for keyword in keywords:
-        save_dir = "/home/hxzh02/文档/金属腐蚀/" + keyword
+        save_dir = "/home/hxzh02/文档/柑橘末梢/" + keyword
         page_num = 300
         get_images_from_baidu(keyword, page_num, save_dir)
         print('Get images finished.')
