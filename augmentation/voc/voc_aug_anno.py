@@ -117,13 +117,17 @@ class VOCAug(object):
                 continue
             bboxes, cls_id_list, image, image_name = self.get_xml_data(xml)
 
+
             anno_dict = {'image': image, 'bboxes': bboxes, 'category_id': cls_id_list}
             # 获得增强后的数据 {"image", "bboxes", "category_id"}
-            augmented = self.aug(**anno_dict)
 
-            # 保存增强后的数据
-            flag = self.save_aug_data(augmented, image_name, cnt)
+            try:
+                augmented = self.aug(**anno_dict)
 
+                # 保存增强后的数据
+                flag = self.save_aug_data(augmented, image_name, cnt)
+            except:
+                pass
             if flag:
                 cnt += 1
             else:
@@ -172,24 +176,26 @@ class VOCAug(object):
 
         # 修改每一个标注框
         for index, obj in enumerate(root.iter('object')):
-            obj.find('name').text = self.labels[aug_category_id[index]]
-            xmin, ymin, xmax, ymax = aug_bboxes[index]
-            xml_box = obj.find('bndbox')
-            xml_box.find('xmin').text = str(int(xmin))
-            xml_box.find('ymin').text = str(int(ymin))
-            xml_box.find('xmax').text = str(int(xmax))
-            xml_box.find('ymax').text = str(int(ymax))
-            if self.is_show:
-                tl = 2
-                text = f"{LABELS[aug_category_id[index]]}"
-                t_size = cv2.getTextSize(text, 0, fontScale=tl / 3, thickness=tl)[0]
-                cv2.rectangle(aug_image_copy, (int(xmin), int(ymin) - 3),
-                              (int(xmin) + t_size[0], int(ymin) - t_size[1] - 3),
-                              (0, 0, 255), -1, cv2.LINE_AA)  # filled
-                cv2.putText(aug_image_copy, text, (int(xmin), int(ymin) - 2), 0, tl / 3, (255, 255, 255), tl,
-                            cv2.LINE_AA)
-                cv2.rectangle(aug_image_copy, (int(xmin), int(ymin)), (int(xmax), int(ymax)), (255, 255, 0), 2)
-
+            try:
+                obj.find('name').text = self.labels[aug_category_id[index]]
+                xmin, ymin, xmax, ymax = aug_bboxes[index]
+                xml_box = obj.find('bndbox')
+                xml_box.find('xmin').text = str(int(xmin))
+                xml_box.find('ymin').text = str(int(ymin))
+                xml_box.find('xmax').text = str(int(xmax))
+                xml_box.find('ymax').text = str(int(ymax))
+                if self.is_show:
+                    tl = 2
+                    text = f"{LABELS[aug_category_id[index]]}"
+                    t_size = cv2.getTextSize(text, 0, fontScale=tl / 3, thickness=tl)[0]
+                    cv2.rectangle(aug_image_copy, (int(xmin), int(ymin) - 3),
+                                  (int(xmin) + t_size[0], int(ymin) - t_size[1] - 3),
+                                  (0, 0, 255), -1, cv2.LINE_AA)  # filled
+                    cv2.putText(aug_image_copy, text, (int(xmin), int(ymin) - 2), 0, tl / 3, (255, 255, 255), tl,
+                                cv2.LINE_AA)
+                    cv2.rectangle(aug_image_copy, (int(xmin), int(ymin)), (int(xmax), int(ymax)), (255, 255, 0), 2)
+            except:
+                pass
         if self.is_show:
             cv2.imshow('aug_image_show', aug_image_copy)
             # 按下s键保存增强，否则取消保存此次增强
@@ -212,24 +218,32 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
 
     # 原始的xml路径和图片路径
-    PRE_IMAGE_PATH = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/coco128/VOC/images/'
-    PRE_XML_PATH = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/coco128/VOC/xml'
+    PRE_IMAGE_PATH = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc/VOCdevkit/VOC2007/JPEGImages'
+    PRE_XML_PATH = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc/VOCdevkit/VOC2007/Annotations'
 
     # 增强后保存的xml路径和图片路径
-    AUG_SAVE_IMAGE_PATH = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/coco128/VOC/aug/images'
-    AUG_SAVE_XML_PATH = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/coco128/VOC/aug/labels'
+    AUG_SAVE_IMAGE_PATH = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc/VOCdevkit/VOC2007/aug/images'
+    AUG_SAVE_XML_PATH = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc/VOCdevkit/VOC2007/aug/labels'
 
     # 标签列表
     # LABELS = ['zu', 'pai', 'lan']
-    LABELS = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
-              'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
-              'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
-              'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
-              'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
-              'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
-              'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard',
-              'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors',
-              'teddy bear','hair drier', 'toothbrush']
+    # LABELS = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
+    #           'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
+    #           'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
+    #           'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
+    #           'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
+    #           'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
+    #           'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard',
+    #           'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors',
+    #           'teddy bear','hair drier', 'toothbrush']
+    LABELS = ['0_0_0_20_0_0', '0_0_0_18_0_0', '0_0_0_50_0_0', '1_0_4_21_40_0',
+              '0_0_0_40_1_0', '0_0_0_30_2_0', '1_0_0_1_8_1', '1_0_0_31_0_0',
+              '0_0_0_30_3_0', '1_0_0_1_4_0', '0_0_0_16_0_0', '0_0_0_28_0_0',
+              '1_0_0_2_30_0', '1_0_6_21_42_0', '1_0_3_22_41_0', '1_0_3_22_46_0',
+              '0_0_0_30_4_0', '1_0_3_22_45_0', '1_0_0_1_6_0', '1_0_0_1_8_0',
+              '1_0_0_1_53_0', '1_0_3_22_47_0', '1_0_0_30_3_0', '1_0_6_21_43_0']
+
+
 
     aug = VOCAug(
         pre_image_path=PRE_IMAGE_PATH,
