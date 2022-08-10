@@ -159,21 +159,28 @@ if __name__ == '__main__':
     XML_PATH = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc/VOCdevkit/VOC2007/Annotations'
 
     # 标签列表
-    LABELS = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
-              'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
-              'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
-              'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
-              'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
-              'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
-              'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard',
-              'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors',
-              'teddy bear','hair drier', 'toothbrush']
+    # LABELS = ['zu', 'pai', 'lan']
+    # LABELS = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
+    #           'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
+    #           'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
+    #           'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
+    #           'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
+    #           'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
+    #           'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard',
+    #           'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors',
+    #           'teddy bear','hair drier', 'toothbrush']
+    LABELS = ['0_0_0_20_0_0', '0_0_0_18_0_0', '0_0_0_50_0_0', '1_0_4_21_40_0',
+              '0_0_0_40_1_0', '0_0_0_30_2_0', '1_0_0_1_8_1', '1_0_0_31_0_0',
+              '0_0_0_30_3_0', '1_0_0_1_4_0', '0_0_0_16_0_0', '0_0_0_28_0_0',
+              '1_0_0_2_30_0', '1_0_6_21_42_0', '1_0_3_22_41_0', '1_0_3_22_46_0',
+              '0_0_0_30_4_0', '1_0_3_22_45_0', '1_0_0_1_6_0', '1_0_0_1_8_0',
+              '1_0_0_1_53_0', '1_0_3_22_47_0', '1_0_0_30_3_0', '1_0_6_21_43_0']
 
-    aug = VOCShow(
+    show = VOCShow(
         image_path=IMAGE_PATH,
         xml_path=XML_PATH,
         labels=LABELS,
         is_show=True,
     )
 
-    aug.show_image()
+    show.show_image()

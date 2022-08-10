@@ -1,11 +1,9 @@
-import albumentations as A
 import cv2
 import os
 import json
-import numpy as np
 
 # 定义增强类
-class COCOAug(object):
+class COCOShow(object):
 
     def __init__(self,
                  anno_path=None,
@@ -122,19 +120,16 @@ class COCOAug(object):
                     if key & 0xff == ord('s'):
                         pass
                     else:
-                        # cv2.destroyWindow(f'aug_image_show')
+                        cv2.destroyWindow(f'aug_image_show')
                         continue
-                    # cv2.destroyWindow(f'aug_image_show')
+                    cv2.destroyWindow(f'aug_image_show')
             except:
                 pass
 
 
 
 if __name__ == '__main__':
-    # 对示例数据集进行增强, 运行成功后会在相应目录下保存
-    # dir = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/coco128/coco128/coco_img/000000000009.jpg'
-    # img = cv2.imread(dir)
-    # print(img)
+
     # 图片路径
     IMAGE_PATH = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/coco128/coco128/val2017/'
     SAVE_IMAGE_PATH = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/coco128/coco128/coco_img/'
@@ -144,7 +139,7 @@ if __name__ == '__main__':
     # mode = 'val'  # ['train', 'val']
     mode = 'instances_val'
 
-    aug = COCOAug(
+    show = COCOShow(
         anno_path=ANNO_PATH,
         image_path=IMAGE_PATH,
         save_image_path=SAVE_IMAGE_PATH,
@@ -152,4 +147,4 @@ if __name__ == '__main__':
         is_show=True,
     )
     # aug.image_aug()
-    aug.image_show()
+    show.image_show()
