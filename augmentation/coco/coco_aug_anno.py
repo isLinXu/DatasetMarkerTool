@@ -115,12 +115,10 @@ class COCOAug(object):
                 if anno['image_id'] == image_id:
                     bboxes_list.append(anno['bbox'])
                     category_id_list.append(anno['category_id'])
-            # 读取图片
-            img_path = os.path.join(self.aug_image_path, image_name)
-            # print('img_path', img_path)
-            image = cv2.imread(img_path)
-            # print('img', image)
-            if image.all():
+
+            try:
+                # 读取图片
+                image = cv2.imread(os.path.join(self.aug_image_path, image_name))
                 h, w = image.shape[:2]
                 # 生成需要增强的图片的anno字典
                 # augmented {'image':, 'height':,'width:', 'bboxes':[(),()], 'category_id':[,,]}
@@ -128,7 +126,7 @@ class COCOAug(object):
 
                 # 得到增强后的数据 {"image", "height", "width", "bboxes", "category_id"}
                 augmented = self.aug(**aug_anno)
-                print(augmented)
+                # print(augmented)
                 aug_image = augmented['image']
                 aug_bboxes = augmented['bboxes']
                 aug_category_id = augmented['category_id']
@@ -157,7 +155,7 @@ class COCOAug(object):
                                                        (bbox[0] + bbox[2], bbox[1] + bbox[3]),
                                                        (255, 255, 0), 2)
 
-                    # cv2.imshow('aug_image_show', aug_image_show)
+                    cv2.imshow('aug_image_show', aug_image_show)
 
                     # 实时检测增强后的标注框是否有较大偏差, 符合要求按下's'健保存, 其他键跳过
                     key = cv2.waitKey(0)
@@ -165,47 +163,48 @@ class COCOAug(object):
                     if key & 0xff == ord('s'):
                         pass
                     else:
-                        cv2.destroyWindow(f'aug_image_show')
+                        # cv2.destroyWindow(f'aug_image_show')
                         continue
-                    cv2.destroyWindow(f'aug_image_show')
+                    # cv2.destroyWindow(f'aug_image_show')
+            except:
+                pass
+            # 获取新的图片名称 e.g.  cnt_filename=45   new_filename: 0045.image_suffix
+            name = '0' * max_len  # e.g. '0'*4 = '0000'
+            cnt_str = str(cnt_filename)
+            length = len(cnt_str)
+            new_filename = name[:-length] + cnt_str + f'.{image_suffix}'
+            # 保存增强后的图片
+            cv2.imwrite(os.path.join(self.save_image_path, new_filename), aug_image)
+            # 添加增强后的图片
+            dict_image = {
+                "file_name": new_filename,
+                "height": height,
+                "width": width,
+                "id": cnt_filename
+            }
+            aug_data['images'].append(dict_image)
 
-                # 获取新的图片名称 e.g.  cnt_filename=45   new_filename: 0045.image_suffix
-                name = '0' * max_len  # e.g. '0'*4 = '0000'
-                cnt_str = str(cnt_filename)
-                length = len(cnt_str)
-                new_filename = name[:-length] + cnt_str + f'.{image_suffix}'
-                # 保存增强后的图片
-                cv2.imwrite(os.path.join(self.save_image_path, new_filename), aug_image)
-                # 添加增强后的图片
-                dict_image = {
-                    "file_name": new_filename,
-                    "height": height,
-                    "width": width,
-                    "id": cnt_filename
-                }
-                aug_data['images'].append(dict_image)
+            # print("augmented['bboxes']: ", augmented['bboxes'])
+            for bbox, idx in zip(bboxes_list, category_id_list):
+                dict_anno = {'image_id': cnt_filename,
+                             'id': cnt_anno_id,
+                             'category_id': idx,
+                             'bbox': bbox,
+                             'area': int(bbox[2] * bbox[3]),
+                             'iscrowd': 0,
+                             "segmentation": []
+                             }
+                aug_data['annotations'].append(dict_anno)
 
-                # print("augmented['bboxes']: ", augmented['bboxes'])
-                for bbox, idx in zip(bboxes_list, category_id_list):
-                    dict_anno = {'image_id': cnt_filename,
-                                 'id': cnt_anno_id,
-                                 'category_id': idx,
-                                 'bbox': bbox,
-                                 'area': int(bbox[2] * bbox[3]),
-                                 'iscrowd': 0,
-                                 "segmentation": []
-                                 }
-                    aug_data['annotations'].append(dict_anno)
+                # 每一个增加的anno_id+1
+                cnt_anno_id += 1
 
-                    # 每一个增加的anno_id+1
-                    cnt_anno_id += 1
+            # 图片数+1
+            cnt_filename += 1
 
-                # 图片数+1
-                cnt_filename += 1
-
-            # 保存增强后的json文件
-            with open(os.path.join(self.anno_path, f'aug_{self.anno_mode}.json'), 'w') as ft:
-                json.dump(aug_data, ft)
+        # 保存增强后的json文件
+        with open(os.path.join(self.anno_path, f'aug_{self.anno_mode}.json'), 'w') as ft:
+            json.dump(aug_data, ft)
 
 
 if __name__ == '__main__':
