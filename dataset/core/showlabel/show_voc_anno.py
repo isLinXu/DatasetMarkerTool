@@ -17,7 +17,6 @@ class VOCShow(object):
                  max_len=4,
                  is_show=False):
         """
-
         :param pre_image_path:
         :param pre_xml_path:
         :param aug_image_save_path:
@@ -29,9 +28,6 @@ class VOCShow(object):
         """
         self.image_path = image_path
         self.xml_path = xml_path
-        # self.aug_image_save_path = aug_image_save_path
-        # self.aug_xml_save_path = aug_xml_save_path
-        # self.start_aug_id = start_aug_id
         self.labels = labels
         self.max_len = max_len
         self.is_show = is_show
@@ -81,28 +77,19 @@ class VOCShow(object):
 
     def show_image(self):
         xml_list = os.listdir(self.xml_path)
-
-        # cnt = self.start_aug_id
         cnt = 0
         flag = True
         for xml in xml_list:
-            # AI Studio下会存在.ipynb_checkpoints文件, 为了不报错, 根据文件后缀过滤
             file_suffix = xml.split('.')[-1]
             if file_suffix not in ['xml']:
                 continue
             bboxes, cls_id_list, image, image_name = self.get_xml_data(xml)
 
             anno_dict = {'image': image, 'bboxes': bboxes, 'category_id': cls_id_list}
-            # 获得增强后的数据 {"image", "bboxes", "category_id"}
             try:
-                augmented = {}
-                augmented['image'] = image
-                augmented['bboxes'] = bboxes
-                augmented['category_id'] = cls_id_list
-                # augmented = self.aug(**anno_dict)
-                # print('augmented',augmented)
-                # 保存增强后的数据
-                flag = self.show_voc_data(augmented, image_name, cnt)
+
+                # 显示数据
+                flag = self.show_voc_data(anno_dict, image_name, cnt)
             except:
                 pass
             if flag:
@@ -115,54 +102,25 @@ class VOCShow(object):
         _image = augmented['image']
         _bboxes = augmented['bboxes']
         _category_id = augmented['category_id']
-        # print(aug_bboxes)
-        # print(aug_category_id)
 
         name = '0' * self.max_len
         # 获取图片的后缀名
         image_suffix = image_name.split(".")[-1]
 
-        # 未增强对应的xml文件名
-        pre_xml_name = image_name.replace(image_suffix, 'xml')
-
-        # 获取新的增强图像的文件名
-        cnt_str = str(cnt)
-        length = len(cnt_str)
-        new_image_name = name[:-length] + cnt_str + "." + image_suffix
-
-        # 获取新的增强xml文本的文件名
-        new_xml_name = new_image_name.replace(image_suffix, 'xml')
-
-        # 获取增强后的图片新的宽和高
-        height, width = _image.shape[:2]
+        # 对应的xml文件名
+        _xml_name = image_name.replace(image_suffix, 'xml')
 
         # 深拷贝图片
-        aug_image_copy = _image.copy()
+        _image_copy = _image.copy()
 
-        # 在对应的原始xml上进行修改, 获得增强后的xml文本
-        with open(os.path.join(self.xml_path, pre_xml_name), 'r') as pre_xml:
+        # # 在对应的原始xml上进行修改, 获得增强后的xml文本
+        with open(os.path.join(self.xml_path, _xml_name), 'r') as pre_xml:
             aug_tree = ET.parse(pre_xml)
 
-        # 修改image_filename值
         root = aug_tree.getroot()
-        aug_tree.find('filename').text = new_image_name
-
-        # 修改变换后的图片大小
-        size = root.find('size')
-        size.find('width').text = str(width)
-        size.find('height').text = str(height)
-
-
-
-        # cv2.putText(aug_image_copy, text, (int(xmin), int(ymin) - 2), 0, tl / 3, (255, 255, 255), tl,
-        #             cv2.LINE_AA)
-        # cv2.rectangle(aug_image_copy, (int(0), int(0)), (int(width), int(height-20)), (255, 255, 0), 2)
-
-
-
-        # 修改每一个标注框
-        for index, obj in enumerate(root.iter('object')):
-            try:
+        try:
+            # 修改每一个标注框
+            for index, obj in enumerate(root.iter('object')):
                 obj.find('name').text = self.labels[_category_id[index]]
                 xmin, ymin, xmax, ymax = _bboxes[index]
                 xml_box = obj.find('bndbox')
@@ -174,18 +132,19 @@ class VOCShow(object):
                     tl = 2
                     text = f"{LABELS[_category_id[index]]}"
                     t_size = cv2.getTextSize(text, 0, fontScale=tl / 3, thickness=tl)[0]
-                    cv2.rectangle(aug_image_copy, (int(xmin), int(ymin) - 3),
+                    cv2.rectangle(_image_copy, (int(xmin), int(ymin) - 3),
                                   (int(xmin) + t_size[0], int(ymin) - t_size[1] - 3),
                                   (0, 0, 255), -1, cv2.LINE_AA)  # filled
-                    cv2.putText(aug_image_copy, text, (int(xmin), int(ymin) - 2), 0, tl / 3, (255, 255, 255), tl,
-                                cv2.LINE_AA)
-                    cv2.rectangle(aug_image_copy, (int(xmin), int(ymin)), (int(xmax), int(ymax)), (255, 255, 0), 2)
-            except:
-                pass
+                    cv2.putText(_image_copy, text, (int(xmin), int(ymin) - 2), 0, tl / 3, (255, 255, 255), tl,cv2.LINE_AA)
+                    # cv2.putText(aug_image_copy, text, (20, 20), 0, 0.5, (255, 255, 255), 0.5,cv2.LINE_AA)
+                    cv2.rectangle(_image_copy, (int(xmin), int(ymin)), (int(xmax), int(ymax)), (255, 255, 0), 2)
+            print('image_name', _xml_name)
+        except:
+            pass
         if self.is_show:
             show_title = 'voc_show'
-            cv2.imshow(str(show_title), aug_image_copy)
-            # 按下s键保存增强，否则取消保存此次增强
+            cv2.imshow(str(show_title), _image_copy)
+            # 按下s键保存
             key = cv2.waitKey(0)
             if key & 0xff == ord('s'):
                 pass
@@ -194,98 +153,10 @@ class VOCShow(object):
 
         return True
 
-    # def show_voc_data(self, augmented, image_name, cnt):
-    #     aug_image = augmented['image']
-    #     aug_bboxes = augmented['bboxes']
-    #     aug_category_id = augmented['category_id']
-    #     # print(aug_bboxes)
-    #     # print(aug_category_id)
-    #
-    #     name = '0' * self.max_len
-    #     # 获取图片的后缀名
-    #     image_suffix = image_name.split(".")[-1]
-    #
-    #     # 未增强对应的xml文件名
-    #     pre_xml_name = image_name.replace(image_suffix, 'xml')
-    #
-    #     # 获取新的增强图像的文件名
-    #     cnt_str = str(cnt)
-    #     length = len(cnt_str)
-    #     new_image_name = name[:-length] + cnt_str + "." + image_suffix
-    #
-    #     # 获取新的增强xml文本的文件名
-    #     new_xml_name = new_image_name.replace(image_suffix, 'xml')
-    #
-    #     # 获取增强后的图片新的宽和高
-    #     new_image_height, new_image_width = aug_image.shape[:2]
-    #
-    #     # 深拷贝图片
-    #     aug_image_copy = aug_image.copy()
-    #
-    #     # 在对应的原始xml上进行修改, 获得增强后的xml文本
-    #     with open(os.path.join(self.xml_path, pre_xml_name), 'r') as pre_xml:
-    #         aug_tree = ET.parse(pre_xml)
-    #
-    #     # 修改image_filename值
-    #     root = aug_tree.getroot()
-    #     aug_tree.find('filename').text = new_image_name
-    #
-    #     # 修改变换后的图片大小
-    #     size = root.find('size')
-    #     size.find('width').text = str(new_image_width)
-    #     size.find('height').text = str(new_image_height)
-    #
-    #     # 修改每一个标注框
-    #     for index, obj in enumerate(root.iter('object')):
-    #         try:
-    #             obj.find('name').text = self.labels[aug_category_id[index]]
-    #             xmin, ymin, xmax, ymax = aug_bboxes[index]
-    #             xml_box = obj.find('bndbox')
-    #             xml_box.find('xmin').text = str(int(xmin))
-    #             xml_box.find('ymin').text = str(int(ymin))
-    #             xml_box.find('xmax').text = str(int(xmax))
-    #             xml_box.find('ymax').text = str(int(ymax))
-    #             if self.is_show:
-    #                 tl = 2
-    #                 text = f"{LABELS[aug_category_id[index]]}"
-    #                 t_size = cv2.getTextSize(text, 0, fontScale=tl / 3, thickness=tl)[0]
-    #                 cv2.rectangle(aug_image_copy, (int(xmin), int(ymin) - 3),
-    #                               (int(xmin) + t_size[0], int(ymin) - t_size[1] - 3),
-    #                               (0, 0, 255), -1, cv2.LINE_AA)  # filled
-    #                 cv2.putText(aug_image_copy, text, (int(xmin), int(ymin) - 2), 0, tl / 3, (255, 255, 255), tl,
-    #                             cv2.LINE_AA)
-    #                 cv2.rectangle(aug_image_copy, (int(xmin), int(ymin)), (int(xmax), int(ymax)), (255, 255, 0), 2)
-    #         except:
-    #             pass
-    #     if self.is_show:
-    #         cv2.imshow('aug_image_show', aug_image_copy)
-    #         # 按下s键保存增强，否则取消保存此次增强
-    #         key = cv2.waitKey(0)
-    #         if key & 0xff == ord('s'):
-    #             pass
-    #         else:
-    #             return False
-    #     # 保存增强后的图片
-    #     cv2.imwrite(os.path.join(self.aug_image_save_path, new_image_name), aug_image)
-    #     # 保存增强后的xml文件
-    #     tree = ET.ElementTree(root)
-    #     tree.write(os.path.join(self.aug_xml_save_path, new_xml_name))
-    #
-    #     return True
-
-
 if __name__ == '__main__':
-    import albumentations as A
-    import xml.etree.ElementTree as ET
-    import matplotlib.pyplot as plt
-
     # 原始的xml路径和图片路径
     PRE_IMAGE_PATH = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc/VOCdevkit/VOC2007/JPEGImages'
     PRE_XML_PATH = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc/VOCdevkit/VOC2007/Annotations'
-
-    # 增强后保存的xml路径和图片路径
-    AUG_SAVE_IMAGE_PATH = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc/VOCdevkit/VOC2007/aug/images'
-    AUG_SAVE_XML_PATH = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc/VOCdevkit/VOC2007/aug/labels'
 
     # 标签列表
     # LABELS = ['zu', 'pai', 'lan']
@@ -312,5 +183,4 @@ if __name__ == '__main__':
         is_show=True,
     )
 
-    # aug.aug_image()
     aug.show_image()
