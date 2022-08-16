@@ -20,17 +20,18 @@ def make_dirs2(n):
         os.makedirs(os.path.join(root_dir, n))
 
 
-def Classification_Tools(data_dir,class_names):
+def Classification_Tools(data_dir,class_names,action_type='copy'):
 
     global image
     if not os.path.exists(data_dir):
         print('data_all not exists, please put data to: ', data_dir)
         time.sleep(5)
         exit()
+
     unconfirmed = 'unconfirmed'  # 不确定数据存放路径
     make_dirs2(unconfirmed)
-    # for i in range(num_cls):
-    #     make_dirs2(str(i))
+
+
     num_cls = len(class_names)
     for j in range(num_cls):
         make_dirs2(str(class_names[j]))
@@ -43,7 +44,7 @@ def Classification_Tools(data_dir,class_names):
     cv2.namedWindow('Classification_Tools', 0)
     i = 0
     coccus_label = None
-    while True:
+    for i in range(0, len(image_list)):
         assert i < len(image_list), ('no image left...')
         print('i', i)
         image_path = os.path.join(data_dir, image_list[i])
@@ -59,7 +60,10 @@ def Classification_Tools(data_dir,class_names):
 
         if key == ord('d'):
             coccus_label = 'unconfirmed'
-            shutil.move(image_path, os.path.join(root_dir, unconfirmed))
+            if action_type == 'copy':
+                shutil.copy(image_path, os.path.join(root_dir, unconfirmed))
+            else:
+                shutil.move(image_path, os.path.join(root_dir, unconfirmed))
             i += 1  # (i + 1) % len(image_list)
         if key in rightkeys:
             i += 1  # (i + 1) % len(image_list)
@@ -68,10 +72,14 @@ def Classification_Tools(data_dir,class_names):
             print('leftkeys:', os.path.join(('./' + str(coccus_label)), image_list[i - 1]))
             if os.path.exists(os.path.join(('./' + str(coccus_label)), image_list[i - 1])):
                 print('successful', os.path.join(('./' + str(coccus_label)), image_list[i - 1]))
-                shutil.move(os.path.join(('./' + str(coccus_label)), image_list[i - 1]), data_dir)
+                if action_type == 'copy':
+                    shutil.copy(os.path.join(('./' + str(coccus_label)), image_list[i - 1]), data_dir)
+                else:
+                    shutil.move(os.path.join(('./' + str(coccus_label)), image_list[i - 1]), data_dir)
             i -= 1
             if i < 0:
                 i = len(image_list) - 1
+
 
         if (key == ord('q')) or (key == 27):
             break
@@ -87,9 +95,9 @@ def Classification_Tools(data_dir,class_names):
 if __name__ == '__main__':
 
     # 待分类数据路径
-    data_dir = '/home/linxu/Desktop/coco128/coco128/images/train2017/'
+    data_dir = '/home/linxu/Desktop/配电站房/crop(副本)'
     # 待分类名称列表
-    class_names = ['a', 'b', 'c', 'd']
+    class_names = ['use', 'useless', 'other']
     # 分类标注器
-    Classification_Tools(data_dir,class_names)
+    Classification_Tools(data_dir,class_names,)
 
