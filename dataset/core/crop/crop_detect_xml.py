@@ -12,7 +12,7 @@ def _ParseAnnotation(filepath):
         print(filepath + ' :not found')
     tree = ET.parse(anno_path + filepath)
     # None是一个特殊的空对象，可以用来占位。
-    annos = [None]*500
+    annos = [None] * 500
     num = 0
     for annoobject in tree.iter():
         if 'object' in annoobject.tag:
@@ -30,16 +30,16 @@ def _ParseAnnotation(filepath):
                         if 'ymax' in size.tag:
                             ymax = size.text
                             annos[num] = {'name': name, 'xmin': int(xmin),
-                                            'ymin': int(ymin), 'xmax': int(xmax),
-                                            'ymax': int(ymax)}
+                                          'ymin': int(ymin), 'xmax': int(xmax),
+                                          'ymax': int(ymax)}
 
                             num += 1
     return num, annos
 
 
-def _crop(num, annotation, file):
+def _crop(image_path, crop_path, num, annotation, file, ext='jpg'):
     filenum = os.path.splitext(file)
-    filename = filenum[0] + '.jpg'
+    filename = filenum[0] + '.' + ext
     if os.path.exists(image_path + filename) != True:
         print(filename + 'not found')
         return
@@ -50,7 +50,7 @@ def _crop(num, annotation, file):
     y_d = annotation['ymax'] - annotation['ymin']
     # 检查box正确性
     if x_d > 0 and y_d > 0:
-        print('box:', box,'x_d:', x_d, 'y_d:',y_d)
+        print('box:', box, 'x_d:', x_d, 'y_d:', y_d)
         region = pil_im.crop(box)
         pil_region = Image.fromarray(uint8(region))
         pil_region.save(crop_path + annotation['name'] + filenum[0] + '_' + str(num) + '.jpg')
@@ -58,7 +58,7 @@ def _crop(num, annotation, file):
         print('box check error!')
 
 
-def crop_from_xml(anno_path, image_path, crop_path):
+def crop_from_xml(anno_path, image_path, crop_path, ext):
     '''
     # 将数据集中的标注框从图片中剪裁出来
     Args:
@@ -87,17 +87,17 @@ def crop_from_xml(anno_path, image_path, crop_path):
         i = 0
         for j in range(num):
             i += 1
-            _crop(i, annos[j], file)
+            _crop(image_path, crop_path, i, annos[j], file, ext)
             print(file)
         all_image += 1
     print('all_image:', all_image)
 
 
 if __name__ == '__main__':
-
     ####anno_path存放xml文件，image_path存放未剪裁图片，crop_path存放剪裁后图片
-    anno_path = '/home/linxu/Desktop/VOCdevkit/voc2007/Annotations/'
-    image_path = '/home/linxu/Desktop/VOCdevkit/voc2007/JPEGImages/'
-    crop_path = '/home/linxu/Desktop/VOCdevkit/crop/'
+    anno_path = '/home/linxu/Desktop/mark_save_1976/VOC2007/Annotations/'
+    image_path = '/home/linxu/Desktop/mark_save_1976/VOC2007/JPEGImages/'
+    crop_path = '/home/linxu/Desktop/mark_save_1976/crop/'
+    ext = 'jpeg'
 
-    crop_from_xml(anno_path, image_path, crop_path)
+    crop_from_xml(anno_path, image_path, crop_path, ext)
