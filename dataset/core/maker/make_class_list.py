@@ -1,6 +1,5 @@
 import json
 import os
-# from random import random
 import zipfile
 
 import numpy as np
@@ -146,7 +145,7 @@ if __name__ == '__main__':
     '''
     解压原始数据到指定路径
     '''
-    # unzip_data(src_path, target_path)
+    unzip_data(src_path, target_path)
 
 
     '''
