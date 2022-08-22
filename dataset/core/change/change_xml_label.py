@@ -8,6 +8,7 @@
 
 import os
 import xml.etree.ElementTree as ET
+from os.path import exists
 
 from tqdm import tqdm
 
@@ -31,11 +32,14 @@ def update_xml_label(origin_ann_dir, new_ann_dir, remove_list, update_label_list
     for dirpaths, dirnames, filenames in os.walk(origin_ann_dir):
         for i in tqdm(range(0, len(filenames))):
             filename = filenames[i]
-            print("process...")
-            if os.path.isfile(r'%s%s' % (origin_ann_dir, filename)):
-                origin_ann_path = os.path.join(r'%s%s' % (origin_ann_dir, filename))
+            print("process...", filename)
+            origin_ann_path = origin_ann_dir + '/' + filename
+            print('origin_ann_path', origin_ann_path)
+            if exists(origin_ann_path):
+                # if os.path.isfile(r'%s%s' % (origin_ann_dir, filename)):
+                # origin_ann_path = os.path.join(r'%s%s' % (origin_ann_dir, filename))
                 new_ann_path = os.path.join(r'%s%s' % (new_ann_dir, filename))
-                print('origin_ann_path',origin_ann_path)
+                print('origin_ann_path', origin_ann_path)
 
                 # 判断xml内容是否为空
                 labelread = open(origin_ann_path, 'r')  # 读取标注信息文件
@@ -63,16 +67,16 @@ def update_xml_label(origin_ann_dir, new_ann_dir, remove_list, update_label_list
 
 if __name__ == '__main__':
     # 设置原始标签路径为 Annos
-    origin_ann_dir = r'/home/linxu/Desktop/龙岩_标注图像/xml/'
+    origin_ann_dir = r'/home/linxu/Desktop/南宁电厂项目/Datasets/林旭xml1'
     # 设置新标签路径 Annotations
-    new_ann_dir = r'/home/linxu/Desktop/龙岩_标注图像/Annotations/'
+    new_ann_dir = r'/home/linxu/Desktop/南宁电厂项目/Datasets/林旭xml2/'
 
     # 设置清除标签
-    remove_list = ['refrigerator','potted plant','keyboard','skateboard','suitcase','boat','refrigerator','baseball glove','bench','laptop','baseball bat','truck','refrigerator']
+    remove_list = ['apple']
 
     # 更新标签名称
-    update_label_list = ['1_0_6_21_42_0']
-    new_name = 'Status indicator'
+    update_label_list = ['0_0_0_30_?_1']
+    new_name = '0_0_0_30_2_1'
 
     # 更新xml标签：清除/修改xml文件中label
     update_xml_label(origin_ann_dir, new_ann_dir, remove_list, update_label_list, new_name)
