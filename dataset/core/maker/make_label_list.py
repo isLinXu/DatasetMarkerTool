@@ -1,7 +1,8 @@
 import random
 import os
 
-def gen_label_list(xml_dir, img_dir, out_dir, label):
+
+def gen_label_list(xml_dir, img_dir, out_dir, label,ext='jpg'):
     '''
     生成label_list、train.txt和val.txt
     Args:
@@ -19,7 +20,7 @@ def gen_label_list(xml_dir, img_dir, out_dir, label):
     print('img_dir', img_dir)
     for img in os.listdir(img_dir):
         img_path = os.path.join(img_dir, img)
-        xml_path = os.path.join(xml_dir, img.replace('jpg', 'xml'))
+        xml_path = os.path.join(xml_dir, img.replace(ext, 'xml'))
         print('img_path', img_path)
         print('xml_path', xml_path)
         path_list.append((img_path, xml_path))
@@ -48,20 +49,29 @@ def gen_label_list(xml_dir, img_dir, out_dir, label):
 
 if __name__ == '__main__':
     # 标签文件地址
-    xml_dir = '/home/linxu/Desktop/PaddleDetection/dataset/voc/VOCdevkit/VOC2007/Annotations'
+    # xml_dir = '/home/linxu/Desktop/PaddleDetection/dataset/voc/VOCdevkit/VOC2007/Annotations'
+    xml_dir = '/media/hxzh02/SB@home/hxzh/PaddleDetection_Projects/dataset/VOC_PeiDian/Annotations'
+
     # 图像文件地址
-    img_dir = '/home/linxu/Desktop/PaddleDetection/dataset/voc/VOCdevkit/VOC2007/JPEGImages'
+    # img_dir = '/home/linxu/Desktop/PaddleDetection/dataset/voc/VOCdevkit/VOC2007/JPEGImages'
+    img_dir = '/media/hxzh02/SB@home/hxzh/PaddleDetection_Projects/dataset/VOC_PeiDian/JPEGImages'
+
     # 输出地址
-    out_dir = '/home/linxu/Desktop/PaddleDetection/dataset/voc/VOCdevkit/'
+    # out_dir = '/home/linxu/Desktop/PaddleDetection/dataset/voc/VOCdevkit/'
+    out_dir = '/media/hxzh02/SB@home/hxzh/PaddleDetection_Projects/dataset/VOC_PeiDian/'
 
     # 生成标签文档
     # label = ['fall']  # 设置你想检测的类别
-    label = ['0_0_0_20_0_0', '0_0_0_16_0_0', '1_0_6_21_42_0', '1_0_0_1_8_1',
-             '1_0_6_21_43_0', '0_0_0_50_0_0', '1_0_0_31_0_0', '0_0_0_30_3_0',
-             '1_0_3_22_46_0', '0_0_0_30_4_0', '0_0_0_40_1_0', '0_0_0_18_0_0',
-             '1_0_3_22_47_0', '1_0_0_2_30_0', '1_0_4_21_40_0', '0_0_0_30_2_0',
-             '1_0_0_30_3_0', '1_0_3_22_45_0', '1_0_0_1_8_0', '0_0_0_28_0_0',
-             '1_0_0_1_53_0', '1_0_0_1_4_0', '1_0_0_1_6_0', '1_0_3_22_41_0'
-             ]
+    # label = ['0_0_0_20_0_0', '0_0_0_16_0_0', '1_0_6_21_42_0', '1_0_0_1_8_1',
+    #          '1_0_6_21_43_0', '0_0_0_50_0_0', '1_0_0_31_0_0', '0_0_0_30_3_0',
+    #          '1_0_3_22_46_0', '0_0_0_30_4_0', '0_0_0_40_1_0', '0_0_0_18_0_0',
+    #          '1_0_3_22_47_0', '1_0_0_2_30_0', '1_0_4_21_40_0', '0_0_0_30_2_0',
+    #          '1_0_0_30_3_0', '1_0_3_22_45_0', '1_0_0_1_8_0', '0_0_0_28_0_0',
+    #          '1_0_0_1_53_0', '1_0_0_1_4_0', '1_0_0_1_6_0', '1_0_3_22_41_0'
+    #          ]
+    label = ['1_0_0_1_1_0', '0_0_0_28_0_0', '0_0_0_20_0_0',
+             '0_0_0_30_3_0', '0_0_0_30_2_0', '0_0_0_40_1_0', '0_0_0_30_7_0',
+             '0_0_0_30_4_0']
+    ext = 'jpeg'
+    gen_label_list(xml_dir, img_dir, out_dir, label,ext)
 
-    gen_label_list(xml_dir, img_dir, out_dir, label)

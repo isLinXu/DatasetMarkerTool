@@ -70,22 +70,6 @@ def plotExamples(images, all_bboxes):
         i += 1
 
 
-
-
-
-# def check_bbox(bbox):
-#     """Check if bbox boundaries are in range 0, 1 and minimums are lesser then maximums"""
-#     # my added block
-#     bbox = list(bbox)
-#     for i in range(4):
-#         if ((bbox[i]) < 0):
-#             bbox[i] = 0
-#         elif (bbox[i] > 1):
-#             bbox[i] = 1
-#     bbox = tuple(bbox)
-#     return bbox
-
-
 # end of block
 # rest of the code as it is
 
@@ -110,10 +94,10 @@ def getCoordinates(filename):
     for obj in my_root.findall('object'):
         classid = str(obj.find('name').text)
         bndbox = obj.find('bndbox')
-        xmin = 0
-        ymin = 0
-        xmax = 0
-        ymax = 0
+        # xmin = 0
+        # ymin = 0
+        # xmax = 0
+        # ymax = 0
         xmin = int(bndbox.find('xmin').text)
         xmax = int(bndbox.find('xmax').text)
         ymin = int(bndbox.find('ymin').text)
