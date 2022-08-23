@@ -3,7 +3,7 @@
 import os
 
 
-class BatchRename():
+class BatchRename:
     '''
     批量重命名文件夹中的图片文件
 
@@ -24,14 +24,12 @@ class BatchRename():
                 dst = os.path.join(os.path.abspath(self.path), str(0) * n + str(i) + '.jpg')
                 try:
                     os.rename(src, dst)
-                    print
-                    'converting %s to %s ...' % (src, dst)
+                    print('converting %s to %s ...' % (src, dst))
                     i = i + 1
 
                 except:
                     continue
-        print
-        'total %d to rename & converted %d jpgs' % (total_num, i)
+        print('total %d to rename & converted %d jpgs' % (total_num, i))
 
 
 if __name__ == '__main__':

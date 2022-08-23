@@ -43,7 +43,7 @@ if __name__ == '__main__':
     num_val = int(num_trainval / 5)
     num_train = num_trainval - num_val
     print("%s files split into: \ntrain: %s \nval: %s \ntrainval: %s \ntest: %s " % (
-    len(files), num_train, num_val, num_trainval, num_test))
+        len(files), num_train, num_val, num_trainval, num_test))
 
     file_indices = [os.path.splitext(f)[0] for f in files]
 
