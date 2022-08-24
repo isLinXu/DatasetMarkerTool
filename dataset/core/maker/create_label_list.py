@@ -1,14 +1,15 @@
 import os
 import random
+import shutil
 
 
-def create_label_list(xml_dir, img_dir, train_dir, val_dir, label, ratio, label_dir):
+def create_label_list(xml_dir, img_dir, train_dir, train_img_dir,
+                      val_dir, val_img_dir,
+                      label, ratio, label_dir):
     # 划分数据集
     # 根据挂载的数据集制作制作标签文件，并进行划分
     # 生成train.txt和val.txt
     random.seed(2020)
-    # xml_dir = '/home/aistudio/work/PaddleDetection/insulator/Annotations'  # 标签文件地址
-    # img_dir = '/home/aistudio/work/PaddleDetection/insulator/JPEGImages'  # 图像文件地址
     path_list = list()
     for img in os.listdir(img_dir):
         img_path = os.path.join(img_dir, img)
@@ -19,18 +20,24 @@ def create_label_list(xml_dir, img_dir, train_dir, val_dir, label, ratio, label_
     train_f = open(train_dir, 'w')  # 生成训练文件
     val_f = open(val_dir, 'w')  # 生成验证文件
 
+    if not os.path.exists(train_img_dir) or not os.path.exists(val_img_dir):
+        os.mkdir(train_img_dir)
+        os.mkdir(val_img_dir)
+
     for i, content in enumerate(path_list):
         img, xml = content
+        print('img:', img, 'xml:', xml)
         text = img + ' ' + xml + '\n'
+
         if i < len(path_list) * ratio:
             train_f.write(text)
+            shutil.copy(img, train_img_dir)
+
         else:
             val_f.write(text)
+            shutil.copy(img, val_img_dir)
     train_f.close()
     val_f.close()
-
-    # 生成标签文档
-    # label = ['insulator']  # 设置你想检测的类别
 
     with open(label_dir, 'w') as f:
         for text in label:
@@ -38,15 +45,16 @@ def create_label_list(xml_dir, img_dir, train_dir, val_dir, label, ratio, label_
 
 
 if __name__ == '__main__':
-    # label = ['insulator']  # 设置你想检测的类别
     xml_dir = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc128/Annotations'  # 标签文件地址
     img_dir = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc128/JPEGImages'  # 图像文件地址
-    train_dir = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc128/train.txt'
-    val_dir = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc128/val.txt'
+    train_xml_dir = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc128/train.txt'
+    val_xml_dir = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc128/val.txt'
+    train_img_dir = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc128/train'
+    val_img_dir = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc128/val'
     ratio = 0.9
     label_dir = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc128/label_list.txt'
 
-    # label = ['insulator']  # 设置你想检测的类别
+    # label = ['insulator']  #设置你想检测的类别,生成标签文档
     # label = ['0_0_0_20_0_0', '0_0_0_16_0_0', '1_0_6_21_42_0', '1_0_0_1_8_1',
     #          '1_0_6_21_43_0', '0_0_0_50_0_0', '1_0_0_31_0_0', '0_0_0_30_3_0',
     #          '1_0_3_22_46_0', '0_0_0_30_4_0', '0_0_0_40_1_0', '0_0_0_18_0_0',
@@ -63,12 +71,15 @@ if __name__ == '__main__':
     #                '1_0_0_1_53_0', '1_0_3_22_47_0', '1_0_0_30_3_0', '1_0_6_21_43_0']
 
     label = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
-        'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
-        'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
-        'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
-        'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
-        'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
-        'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone',
-        'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear',
-        'hair drier', 'toothbrush']
-    create_label_list(xml_dir, img_dir, train_dir, val_dir, label, ratio, label_dir)
+             'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
+             'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
+             'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
+             'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
+             'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
+             'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard',
+             'cell phone',
+             'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear',
+             'hair drier', 'toothbrush']
+    create_label_list(xml_dir, img_dir, train_xml_dir, train_img_dir,
+                      val_xml_dir, val_img_dir,
+                      label, ratio, label_dir)
