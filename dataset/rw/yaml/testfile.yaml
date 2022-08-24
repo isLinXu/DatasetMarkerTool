@@ -1,0 +1,9 @@
+weapons:
+  sword:
+    attack: 330
+    attack_rate: 326
+    defense: 320
+  axe:
+    attack: 500
+    attack_rate: 150
+    defense: 250
