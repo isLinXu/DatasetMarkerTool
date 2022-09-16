@@ -33,20 +33,24 @@ def crop_for_classify(img_file_dir, xml_file_dir, crop_img_dir):
             xmax = bb.find('xmax').text
             ymax = bb.find('ymax').text
 
-            # 保存crop img
-            crop_img = img[int(ymin):int(ymax), int(xmin):int(xmax)]
+            try:
 
-            # crop_img_name的命名方式：img_name+"_"+label+"_"+i
-            crop_img_name = os.path.splitext(img_name)[0] + "_" + label+"_"+str(i)+".jpg"
+                # 保存crop img
+                crop_img = img[int(ymin):int(ymax), int(xmin):int(xmax)]
 
-            crop_img_save_dir = os.path.join(crop_img_dir,label)
-            # crop_img_save_dir =
-            print(crop_img_save_dir)
-            if os.path.exists(crop_img_save_dir) == 0:
-                os.makedirs(crop_img_save_dir)
-            crop_img_save_path = os.path.join(crop_img_save_dir, crop_img_name)
-            cv2.imwrite(crop_img_save_path,crop_img)
+                # crop_img_name的命名方式：img_name+"_"+label+"_"+i
+                crop_img_name = os.path.splitext(img_name)[0] + "_" + label+"_"+str(i)+".jpg"
 
+                crop_img_save_dir = os.path.join(crop_img_dir,label)
+                # crop_img_save_dir =
+                print(crop_img_save_dir)
+                if os.path.exists(crop_img_save_dir) == 0:
+                    os.makedirs(crop_img_save_dir)
+                crop_img_save_path = os.path.join(crop_img_save_dir, crop_img_name)
+                cv2.imwrite(crop_img_save_path, crop_img)
+            except:
+                print('error file:', xml)
+                continue
 
 if __name__ == '__main__':
     img_file_dir = '/home/linxu/Desktop/Datasets/配电站房/JPEGImages'
