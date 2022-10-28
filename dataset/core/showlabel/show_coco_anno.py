@@ -2,6 +2,7 @@ import cv2
 import os
 import json
 
+
 # 定义增强类
 class COCOShow(object):
 
@@ -70,6 +71,7 @@ class COCOShow(object):
         :return: None
         """
         # 对每一张图片遍历
+        global aug_image_show
         for index, item in enumerate(self.load_dict['images'][:]):
             image_name = item['file_name']
             # print('image_name',image_name)
@@ -89,7 +91,8 @@ class COCOShow(object):
                 image = cv2.imread(os.path.join(self.aug_image_path, image_name))
                 h, w = image.shape[:2]
                 # 生成图片的anno字典
-                aug_anno = {'image': image, 'height': h, 'width': w, 'bboxes': bboxes_list, 'category_id': category_id_list}
+                aug_anno = {'image': image, 'height': h, 'width': w, 'bboxes': bboxes_list,
+                            'category_id': category_id_list}
 
                 # 对增强后的bbox取整
                 for index, bbox in enumerate(bboxes_list):
@@ -127,9 +130,7 @@ class COCOShow(object):
                 pass
 
 
-
 if __name__ == '__main__':
-
     # 图片路径
     IMAGE_PATH = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/coco128/coco128/val2017/'
     SAVE_IMAGE_PATH = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/coco128/coco128/coco_img/'
