@@ -1,0 +1,24 @@
+*{
+margin: ;
+padding:;
+}
+#content{
+position: relative;
+background-color: #;
+}
+.box{
+padding: px;
+float: left;
+}
+.box_img{ padding: px;
+border: px solid #cccccc;
+box-shadow: px #cccccc;
+border-radius: px;
+}
+img{
+width: 250px;
+height: auto;
+}
+canvas{
+width: 250px;
+}
