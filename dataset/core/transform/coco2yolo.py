@@ -3,6 +3,7 @@ import argparse
 import glob
 import os
 import json
+from tqdm import tqdm
 
 def coco2yolo(path,output_path):
     '''
@@ -15,6 +16,10 @@ def coco2yolo(path,output_path):
     # glob.glob 获取所有匹配的路径
     json_files = sorted(glob.glob(os.path.join(path, '*.json')))  # 得到json文件路径下的所有json文件
 
+
+    # for i in tqdm(range(0, len(json_files))):
+    # for i in tqdm(range(0, len(json_files))):
+    #    json_file = json_files[i]
     for json_file in json_files:
         with open(json_file) as f:
             data = json.load(f)  # 将json文件转化为字典
@@ -25,7 +30,7 @@ def coco2yolo(path,output_path):
             width = 500.0
             height = 500.0
 
-            for i in range(0, len(images)):
+            for i in tqdm(range(0, len(images))):
                 converted_results = []
                 for ann in annotations:
                     if ann['image_id'] == i and ann['category_id'] <= 6:  # FLIR数据集中只有1-3
@@ -63,6 +68,7 @@ def coco2yolo(path,output_path):
 
 
 if __name__ == '__main__':
-    path = '/media/hxzh02/SB@home/hxzh/Dataset/无人机杆塔航拍数据集/杆塔主体/plad/'
-    output_path = '/media/hxzh02/SB@home/hxzh/Dataset/无人机杆塔航拍数据集/杆塔主体/plad/'
+    path = '/media/hxzh02/SB@home/hxzh/Yolov8_Efficient/data/datasets/coco/annotations'
+
+    output_path = '/media/hxzh02/SB@home/hxzh/Yolov8_Efficient/data/datasets/coco/'
     coco2yolo(path, output_path)
