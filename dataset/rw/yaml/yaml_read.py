@@ -10,9 +10,6 @@ def yaml_loader(filepath):
     return data
 
 
-
-
-
 def yamltotext(filename):
     with open(filename, "r") as yaml_file:
         file_data = yaml.load_all(yaml_file, Loader=yaml.FullLoader)
@@ -39,18 +36,9 @@ def yamltotext(filename):
 
         return "Text files created successfully."
 
-
-# file_to_convert = "data/dataset.yaml"
-# print(yamltotext(file_to_convert))
-
 if __name__ == "__main__":
     file_path = "/home/hxzh02/PycharmProjects/PaddleWorkShop/PaddleDetection/configs/test.yaml"
     data = yaml_loader(file_path)
     print('data:', data)
-    # print(data["weapons"])
-    # pp = pprint.PrettyPrinter(indent=6, depth=4)
-    # pp.pprint(data)
-    # pp = pprint.PrettyPrinter(indent=6, depth=2)
-    # pp.pprint(data)
     pp = pprint.PrettyPrinter(indent=1, depth=4)
     pp.pprint(data)
