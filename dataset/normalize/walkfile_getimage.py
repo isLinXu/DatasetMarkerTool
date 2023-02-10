@@ -47,12 +47,12 @@ if __name__ == '__main__':
     # 原始数据路径(包含所有图片)
     # path = '/home/hxzh02/文档/deep-learning-for-image-processing/pytorch_classification/Test3_vggnet/data_set/flower_data/'
     # path = '/media/hxzh02/SB@home/hxzh/Dataset/PPLTA航拍输电线路数据集/data_original_size/'
-    path = '/home/linxu/Desktop/dlib-face-detection/detect_video/result/'
+    path = '/home/linxu/Desktop/denoising-diffusion-pytorch/flowers-recognition/flowers'
 
     # 整理输出路径(汇总所有文件目录下的路径)
     # new_path = '/home/hxzh02/文档/deep-learning-for-image-processing/pytorch_classification/Test3_vggnet/data_set/flower_data/'
     # new_path = '/media/hxzh02/SB@home/hxzh/Dataset/PPLTA航拍输电线路数据集/data_original_size/'
-    new_path = '/home/linxu/Desktop/Variational-AutoEncoder-in-Pytorch/Lips/xunfei/'
+    new_path = '/home/linxu/Desktop/denoising-diffusion-pytorch/flowers-recognition/flowers_datasets'
     # tips:path最好不要与new_path有交叉
 
     # 调用函数

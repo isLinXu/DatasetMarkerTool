@@ -1,4 +1,3 @@
-# from cv2 import namedWindow, imshow, waitKeyEx, imread, cv2
 
 import cv2
 import os
@@ -95,9 +94,9 @@ def Classification_Tools(data_dir,class_names,action_type='copy'):
 if __name__ == '__main__':
 
     # 待分类数据路径
-    data_dir = '/home/linxu/Desktop/配电站房/crop(副本)'
+    data_dir = '/home/linxu/Projects/PycharmProjects/AI-Map/core/tiles'
     # 待分类名称列表
-    class_names = ['use', 'useless', 'other']
+    class_names = ['house', 'road', 'space']
     # 分类标注器
     Classification_Tools(data_dir,class_names,)
 

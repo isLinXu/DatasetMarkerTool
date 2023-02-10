@@ -81,5 +81,6 @@ def create_data_list(data_root_path):
 if __name__ == '__main__':
     # 把生产的数据列表都放在自己的总类别文件夹中
     # data_root_path = "images/"
-    data_root_path = "/home/linxu/Desktop/sport_train/"
+    # data_root_path = "/home/linxu/Desktop/sport_train/"
+    data_root_path = "/media/linxu/LinXuHub/00.MyGithub/OpenMMLab-Learn-Exercise/homework/mmclassification/data/fruit30_split/val/"
     create_data_list(data_root_path)
