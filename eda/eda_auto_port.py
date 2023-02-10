@@ -25,7 +25,7 @@ def generate_profile_pandas(file_names, file_type):
 if __name__ == '__main__':
 
 
-    file_name = '/home/hxzh02/图片/Annotations.csv'
+    file_name = '/home/linxu/Downloads/GoogleDownload/Annotations.csv'
     file_type = 'html'
     generate_profile_pandas(file_name, file_type)
 
