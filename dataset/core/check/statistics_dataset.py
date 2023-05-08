@@ -120,19 +120,7 @@ def Analysis_statistics_dataset(xml_root_dir, isupdate=False):
 
 
 if __name__ == '__main__':
-    # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/Plane_detect_datasets/VOCdevkit_tower_part/VOC2007/Annotations/'
-    # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/7-输电线路绝缘子数据集VOC/dataset_insulator/VOC2007/Annotations/'
-    # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/3-输电线路异物数据集（VOC）/foreignbody_dataset_part1/VOC2007/Annotations/'
-    # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/1-火焰数据集/fire_dataset/VOC2007/Annotations/'
-    # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/5-安全帽数据集5000张/dataset_safetyHat/VOC2007/Annotations/'
-    # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/6-井盖电箱线杆标石头2400张/D0009/Annotations/'
-    # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机相关数据集合集/8-输电线路金具VOC/2511bwb_5/Annotations/'
-    # xml_root_dir = '/media/hxzh02/SB@home/hxzh/Dataset/无人机杆塔航拍数据集/杆塔主体/VOCdevkit_tower_part/Annotations/'
-    # xml_root_dir = '/media/hxzh02/TU100Pro/Insulator/train/voc labels/'
-
-    # xml_root_dir = '/home/linxu/Desktop/龙岩_标注图像/xml/'
-    xml_root_dir = '/home/linxu/Desktop/南宁电厂项目/Datasets/林旭xml3/'
-    # xml_root_dir = '/media/hxzh02/SB@home/hxzh/imagenet/imagenet-object-localization-challenge/ILSVRC/Annotations/CLS-LOC/'
+    xml_root_dir = '/media/hxzh02/SB@home/hxzh/imagenet/imagenet-object-localization-challenge/ILSVRC/Annotations/CLS-LOC/'
 
     # 统计ImageNet 2017 1000个类别数据集
     # count = 0
@@ -151,8 +139,6 @@ if __name__ == '__main__':
     #                 size += data_size
     #                 print('count:', count)
     #                 print('size:', size)
-
-    # print('信息统计完毕。')
     isupdate = False
     Analysis_statistics_dataset(xml_root_dir=xml_root_dir, isupdate=isupdate)
     print('信息统计完毕。')
