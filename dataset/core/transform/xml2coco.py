@@ -17,27 +17,6 @@ from tqdm import tqdm
 from PIL import Image
 
 # 检测目标类别（不含background）
-# cls_classes = ['smoke']
-# cls_classes = ['0_0_0_20_0_0', '0_0_0_18_0_0', '0_0_0_50_0_0', '1_0_4_21_40_0',
-#                '0_0_0_40_1_0', '0_0_0_30_2_0', '1_0_0_1_8_1', '1_0_0_31_0_0',
-#                '0_0_0_30_3_0', '1_0_0_1_4_0', '0_0_0_16_0_0', '0_0_0_28_0_0',
-#                '1_0_0_2_30_0', '1_0_6_21_42_0', '1_0_3_22_41_0', '1_0_3_22_46_0',
-#                '0_0_0_30_4_0', '1_0_3_22_45_0', '1_0_0_1_6_0', '1_0_0_1_8_0',
-#                '1_0_0_1_53_0', '1_0_3_22_47_0', '1_0_0_30_3_0', '1_0_6_21_43_0']
-# cls_classes = ['0_0_0_20_0_0', '0_0_0_18_0_0', '0_0_0_50_0_0', '1_0_4_21_40_0', '0_0_0_40_1_0',
-#                '0_0_0_30_2_0', '1_0_0_1_8_1', '1_0_0_31_0_0', '0_0_0_30_3_0', '1_0_0_1_4_0',
-#                '0_0_0_16_0_0', '0_0_0_28_0_0', '1_0_0_2_30_0', '1_0_6_21_42_0', '1_0_3_22_41_0',
-#                '1_0_3_22_46_0', '0_0_0_30_4_0', '1_0_3_22_45_0', '1_0_0_1_6_0', '1_0_0_1_8_0',
-#                '1_0_0_1_53_0', '1_0_3_22_47_0', '1_0_0_30_3_0', '1_0_6_21_43_0']
-# cls_classes = ['0_0_0_20_0_0', '0_0_0_16_0_0', '1_0_6_21_42_0', '1_0_0_1_8_1',
-#              '1_0_6_21_43_0', '0_0_0_50_0_0', '1_0_0_31_0_0', '0_0_0_30_3_0',
-#              '1_0_3_22_46_0', '0_0_0_30_4_0', '0_0_0_40_1_0', '0_0_0_18_0_0',
-#              '1_0_3_22_47_0', '1_0_0_2_30_0', '1_0_4_21_40_0', '0_0_0_30_2_0',
-#              '1_0_0_30_3_0', '1_0_3_22_45_0', '1_0_0_1_8_0', '0_0_0_28_0_0',
-#              '1_0_0_1_53_0', '1_0_0_1_4_0', '1_0_0_1_6_0', '1_0_3_22_41_0',
-#              '0_0_0_1_23_0', '0_0_0_30_2_1', '0_0_0_1_17_0','0_0_0_1_22_0',
-#              '0_0_0_1_8_0','0_0_0_17_0_0','0_0_0_1_52_0','1_0_0_1_22_0',
-#              '1_0_0_30_2_0','1_0_0_30_4_0']
 cls_classes = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
                'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
                'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
@@ -146,36 +125,13 @@ def cvt_annotations(img_path, xml_path, out_file):
 
 
 def main():
-    # /home/hxzh02/图片/coco128/xml
-
-    # # XML文件位置
-    # xml_path = "/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc/VOCdevkit/voc2007/Annotations"
-    # # Image文件位置
-    # img_path = "/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc/VOCdevkit/voc2007/JPEGImages"
-    # # COCO文件位置
-    # out_path = "/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc/COCO/annotations/instances_train.json"
-    # train_annotations = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc/COCO/annotations'
-    #
-    # mkr(train_annotations)
-    #
-    # # XML文件位置
-    # val_xml_path = "/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc/VOCdevkit/voc2007/Annotations"
-    # # Image文件位置
-    # val_img_path = "/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc/COCO/val2017"
-    # # COCO文件位置
-    # val_out_path = "/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/voc/COCO/annotations/instances_val.json"
-    #
-    # print('processing {} ...'.format("xml format annotations"))
-    # cvt_annotations(img_path, xml_path, out_path)
-    # cvt_annotations(val_img_path, val_xml_path, val_out_path)
-    # print('Done!')
     # XML文件位置
-    xml_path = "/home/hxzh02/图片/coco128/coco128/train_data/train_anno"
+    xml_path = "/data/home/linxu/datasets/voc128/Annotations"
     # Image文件位置
-    img_path = "/home/hxzh02/图片/coco128/coco128/train_data/train_image"
+    img_path = "/data/home/linxu/datasets/voc128/JPEGImages"
     # COCO文件位置
-    out_path = "/home/hxzh02/图片/coco128/coco128/annotations/instances_train.json"
-    train_annotations = '/home/hxzh02/图片/coco128/coco128/annotations'
+    out_path = "/data/home/linxu/datasets/voc128/instances_train.json"
+    train_annotations = '/data/home/linxu/datasets/voc128/annotations'
 
     mkr(train_annotations)
 
