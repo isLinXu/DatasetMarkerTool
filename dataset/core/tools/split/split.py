@@ -84,12 +84,12 @@ def ratio(input, output="output", seed=1337, ratio=(0.8, 0.1, 0.1), group_prefix
 
 
 def fixed(
-    input,
-    output="output",
-    seed=1337,
-    fixed=(100, 100),
-    oversample=False,
-    group_prefix=None,
+        input,
+        output="output",
+        seed=1337,
+        fixed=(100, 100),
+        oversample=False,
+        group_prefix=None,
 ):
     # make sure its reproducible
     if isinstance(fixed, int):
@@ -153,8 +153,8 @@ def group_by_prefix(files, len_pairs):
                 x
                 for x in files
                 if x.name not in results_set
-                and x.name.startswith(f_sub)
-                and f.name != x.name
+                   and x.name.startswith(f_sub)
+                   and f.name != x.name
             ]
             if len(matches) == len_pairs - 1:
                 results.append((f, *matches))

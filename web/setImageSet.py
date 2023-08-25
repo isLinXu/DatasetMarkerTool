@@ -98,10 +98,10 @@ def main():
     #     print(__doc__)
     #     return
     # editJS(getImages(sys.argv))
-    filepath = '/home/linxu/Desktop/visualize_imageset/林旭'
+    filepath = '/home/linxu/Desktop/visualize_imageset/'
     editJS(getImages(filepath))
     # if len(sys.argv) == 4:
-    annotationPath = '/home/linxu/Desktop/visualize_imageset/林旭xml2'
+    annotationPath = '/home/linxu/Desktop/visualize_imageset/'
     cache_file = 'indexss'
     voc2007(annotationPath, cache_file)
 

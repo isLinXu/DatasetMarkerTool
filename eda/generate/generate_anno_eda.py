@@ -67,7 +67,7 @@ def generate_anno_eda(dataset_path, anno_file):
     patches, l_text, p_text = plt.pie(size, labels=label_list, colors=color, labeldistance=1.1, autopct="%1.1f%%",
                                       shadow=False, startangle=90, pctdistance=0.6,
                                       textprops={'fontproperties': myfont})
-    plt.axis("equal")  # 设置横轴和纵轴大小相等，这样饼才是圆的
+    plt.axis("equal")  # 设置横轴和纵轴大小相等
     plt.legend()
     plt.show()
 

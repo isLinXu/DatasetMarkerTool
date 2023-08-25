@@ -1,4 +1,3 @@
-
 import os
 import random as rnd
 import shutil
@@ -16,10 +15,13 @@ if not os.path.isdir("Splitted_images/test"):
 if not os.path.isdir("Splitted_images/train"):
     os.makedirs("Splitted_images/train")
 
+
 def move_files(dic, train_or_test):
-    for key in  dic.keys():
+    for key in dic.keys():
         for file_path in dic[key]:
-            shutil.move(os.path.join(FLAGS.image_folder, key, file_path), os.path.join('Splitted_images', train_or_test, file_path))
+            shutil.move(os.path.join(FLAGS.image_folder, key, file_path),
+                        os.path.join('Splitted_images', train_or_test, file_path))
+
 
 def main():
     FILE_TRAIN = {}
@@ -44,6 +46,7 @@ def main():
     move_files(XML_TRAIN, 'train')
     move_files(FILE_TEST, 'test')
     move_files(XML_TEST, 'test')
+
 
 if __name__ == '__main__':
     main()

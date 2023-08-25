@@ -393,6 +393,3 @@ def _minmax(dataframe):
         res[feature_name] = (dataframe[feature_name] - min) / (max - min)
 
     return res
-
-
-Footer

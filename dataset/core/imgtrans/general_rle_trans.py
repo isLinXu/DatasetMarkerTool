@@ -38,7 +38,7 @@ class general_rle(object):
                                 [0, 0, 1, 1],
                                 [0, 0, 1, 1],
                                 [0, 0, 0, 0]])
-        assert rle_to_string(rle_encode(test_mask)) == '7 2 11 2'
+        assert self.rle_to_string(self.rle_encode(test_mask)) == '7 2 11 2'
 
 
 # M2:

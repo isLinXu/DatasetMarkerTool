@@ -30,31 +30,31 @@ def parse_args():
 		default=100,
 		help='Ending count (default: %(default)s)')
 
-	# parser.add_argument('--scale', type=float, 
-	# 	default=2.0,
-	# 	help='Scalar value. For use with scale process type (default: %(default)s)')
+	parser.add_argument('--scale', type=float,
+		default=2.0,
+		help='Scalar value. For use with scale process type (default: %(default)s)')
 
-	# parser.add_argument('--direction', type=str,
-	# 	default='AtoB',
-	# 	help='Paired Direction. For use with pix2pix process. ["AtoB","BtoA"] (default: %(default)s)')
+	parser.add_argument('--direction', type=str,
+		default='AtoB',
+		help='Paired Direction. For use with pix2pix process. ["AtoB","BtoA"] (default: %(default)s)')
 
-	# parser.add_argument('--border_type', type=str,
-	# 	default='stretch',
-	# 	help='Border style to use when using the square process type ["stretch","reflect","solid"] (default: %(default)s)')
+	parser.add_argument('--border_type', type=str,
+		default='stretch',
+		help='Border style to use when using the square process type ["stretch","reflect","solid"] (default: %(default)s)')
 
-	# parser.add_argument('--border_color', type=str,
-	# 	default='255,255,255',
-	# 	help='border color to use with the `solid` border type; use bgr values (default: %(default)s)')
+	parser.add_argument('--border_color', type=str,
+		default='255,255,255',
+		help='border color to use with the `solid` border type; use bgr values (default: %(default)s)')
 
-	# parser.add_argument('--blur_size', type=int, 
-	# 	default=3,
-	# 	help='Blur size. For use with "canny" process. (default: %(default)s)')
+	parser.add_argument('--blur_size', type=int,
+		default=3,
+		help='Blur size. For use with "canny" process. (default: %(default)s)')
 
-	# parser.add_argument('--mirror', action='store_true',
-	# 	help='Adds mirror augmentation.')
+	parser.add_argument('--mirror', action='store_true',
+		help='Adds mirror augmentation.')
 
-	# parser.add_argument('--rotate', action='store_true',
-	# 	help='Adds 90 degree rotation augmentation.')
+	parser.add_argument('--rotate', action='store_true',
+		help='Adds 90 degree rotation augmentation.')
 
 	parser.add_argument('--file_extension', type=str,
 		default='png',
