@@ -174,7 +174,8 @@ if __name__ == '__main__':
         # crawler.start('美女', 10, 2, 30)  # 抓取关键词为 “美女”，总数为 1 页，开始页码为 2，每页30张（即总共 2*30=60 张）
         # crawler.start('二次元 美女', 10, 1)  # 抓取关键词为 “二次元 美女”
         # crawler.start('l78', 5)  # 抓取关键词为 “帅哥”dataset/core/network/baiduSpider.py:174
-        arguments = {'word':'柑橘末梢', 'total_page':200, 'start_page':1, 'per_page':2000}
+        # arguments = {'word':'柑橘末梢', 'total_page':200, 'start_page':1, 'per_page':2000}
+        arguments = {'word':'高速隧道行人', 'total_page':200, 'start_page':1, 'per_page':2000}
         word = arguments['word']
 
         # crawler.start('输电塔', 5)  # 抓取关键词为 “帅哥”
