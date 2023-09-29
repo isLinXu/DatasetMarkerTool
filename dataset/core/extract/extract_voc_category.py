@@ -27,19 +27,20 @@ def extract_voc_data(voc_dir, output_dir, category_dict):
             name = obj.find('name').text
             if name in category_dict.keys():
                 bbox = obj.find('bndbox')
-                xmin = int(bbox.find('xmin').text)
-                ymin = int(bbox.find('ymin').text)
-                xmax = int(bbox.find('xmax').text)
-                ymax = int(bbox.find('ymax').text)
+                xmin = int(float(bbox.find('xmin').text))
+                ymin = int(float(bbox.find('ymin').text))
+                xmax = int(float(bbox.find('xmax').text))
+                ymax = int(float(bbox.find('ymax').text))
                 bboxes.append((category_dict[name], xmin, ymin, xmax, ymax))
 
         # 如果图像中包含指定的类别，则复制图像和标注数据到输出目录
         if len(bboxes) > 0:
-            output_image_dir = os.path.join(output_dir, 'images', 'train' if root.find('split').text == 'train' else 'val')
+            output_image_dir = os.path.join(output_dir, 'images', 'train')
+            # output_image_dir = os.path.join(output_dir, 'images', 'train' if root.find('split').text == 'train' else 'val')
             output_image_file = os.path.join(output_image_dir, image_file.split('/')[-1])
             shutil.copy(image_file, output_image_file)
 
-            output_label_dir = os.path.join(output_dir, 'labels', 'train' if root.find('split').text == 'train' else 'val')
+            output_label_dir = os.path.join(output_dir, 'labels', 'train')
             output_label_file = os.path.join(output_label_dir, os.path.splitext(image_id)[0] + '.txt')
             with open(output_label_file, 'w') as f:
                 for bbox in bboxes:
@@ -59,7 +60,11 @@ def bbox_to_yolo(bbox, size):
     return (category_index, x_center, y_center, bbox_width, bbox_height)
 
 # 测试代码
-voc_dir = 'path/to/voc2012'
-output_dir = 'path/to/output'
-category_dict = {'person': 0, 'car': 1, 'bus': 2, 'truck': 3}  # 指定要抽取的类别和对应的类别索引
+# voc_dir = '/media/linxu/MobilePan/2-Data/OpenDataLab___PASCAL_VOC2007/raw/VOCdevkit/VOC2007/'
+# output_dir = '/media/linxu/MobilePan/2-Data/OpenDataLab___PASCAL_VOC2007/raw/VOCdevkit/VOC2007/VOC_YOLO2007/'
+# voc_dir = '/media/linxu/MobilePan/2-Data/OpenDataLab___PASCAL_VOC2007/raw/VOCtest_06-Nov-2007/VOCdevkit/VOC2007/'
+# output_dir = '/media/linxu/MobilePan/2-Data/OpenDataLab___PASCAL_VOC2007/raw/VOCdevkit/VOC2007/VOC_YOLO2007/'
+voc_dir = '/media/linxu/MobilePan/2-Data/OpenDataLab___PASCAL_VOC2012/raw/VOCdevkit/VOC2012/'
+output_dir = '/media/linxu/MobilePan/2-Data/OpenDataLab___PASCAL_VOC2007/raw/VOCdevkit/VOC2012/VOC_YOLO2012/'
+category_dict = {'person': 1, 'car': 0, 'bus': 0, 'truck': 0}  # 指定要抽取的类别和对应的类别索引
 extract_voc_data(voc_dir, output_dir, category_dict)
