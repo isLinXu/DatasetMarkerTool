@@ -1,6 +1,8 @@
 import json
 import os
 import shutil
+
+import cv2
 from tqdm import tqdm
 
 def extract_coco_data(coco_file, output_dir, category_dict):
@@ -32,6 +34,10 @@ def extract_coco_data(coco_file, output_dir, category_dict):
             output_image_file = os.path.join(output_image_dir, image['file_name'])
             shutil.copy(image_file, output_image_file)
 
+            # 读取图片文件并获取其宽度和高度
+            img = cv2.imread(image_file)
+            img_height, img_width, _ = img.shape
+
             output_label_dir = os.path.join(output_dir, 'labels', 'train' if image['split'] == 'train' else 'val')
             output_label_file = os.path.join(output_label_dir, os.path.splitext(image['file_name'])[0] + '.txt')
             with open(output_label_file, 'w') as f:
@@ -45,7 +51,12 @@ def extract_coco_data(coco_file, output_dir, category_dict):
                             y_center = bbox[1] + bbox[3] / 2
                             width = bbox[2]
                             height = bbox[3]
-                            f.write('{0} {1:.6f} {2:.6f} {3:.6f} {4:.6f}\n'.format(category_index, x_center, y_center, width, height))
+                            # 归一化yolo格式
+                            x = float(x_center) / img_width
+                            y = float(y_center) / img_height
+                            w = float(width) / img_width
+                            h = float(height) / img_height
+                            f.write('{0} {1:.6f} {2:.6f} {3:.6f} {4:.6f}\n'.format(category_index, x, y, w, h))
 
     print('数据集提取完成！')
 
