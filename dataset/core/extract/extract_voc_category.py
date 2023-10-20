@@ -3,6 +3,29 @@ import shutil
 from tqdm import tqdm
 from xml.etree import ElementTree
 
+'''
+voc_classes:
+  0: aeroplane
+  1: bicycle
+  2: bird
+  3: boat
+  4: bottle
+  5: bus
+  6: car
+  7: cat
+  8: chair
+  9: cow
+  10: diningtable
+  11: dog
+  12: horse
+  13: motorbike
+  14: person
+  15: pottedplant
+  16: sheep
+  17: sofa
+  18: train
+  19: tvmonitor
+'''
 def extract_voc_data(voc_dir, output_dir, category_dict):
     # 创建输出目录
     os.makedirs(output_dir, exist_ok=True)
@@ -71,5 +94,7 @@ def bbox_to_yolo(bbox, size):
 # output_dir = '/media/linxu/MobilePan/2-Data/OpenDataLab___PASCAL_VOC2007/raw/VOCdevkit/VOC2012/VOC_YOLO2012/'
 voc_dir = '/media/linxu/MobilePan/2-Data/OpenDataLab___PASCAL_VOC2012/raw/VOC2012test/VOCdevkit/VOC2012/'
 output_dir = '/media/linxu/MobilePan/2-Data/OpenDataLab___PASCAL_VOC2007/raw/VOCdevkit/VOC2012/VOC_YOLO2012/'
-category_dict = {'person': 1, 'car': 0, 'bus': 0, 'truck': 0}  # 指定要抽取的类别和对应的类别索引
+# category_dict = {'person': 1, 'car': 0, 'bus': 0, 'truck': 0}  # 指定要抽取的类别和对应的类别索引
+
+category_dict = {'motorbike': 0, 'bicycle': 1}  # 指定要抽取的类别和对应的类别索引
 extract_voc_data(voc_dir, output_dir, category_dict)
