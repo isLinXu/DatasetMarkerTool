@@ -175,53 +175,9 @@ def extract_coco_data(coco_file, coco_img_dir, output_dir, category_dict):
                 except Exception as e:
                     print("e:{}".format(e))
                     continue
-    # except:
-    #     continue
-
-    # 如果图像中包含指定的类别，则复制图像和标注数据到输出目录
-    # if has_category:
-    # dir_name = 'train'
-    # images_dir = coco_img_dir + '/train2017'
-    # # if coco_file.find('train') != -1:
-    # #     dir_name = 'train'
-    # #     images_dir = coco_img_dir + '/train2017'
-    # # else:
-    # #     dir_name = 'val'
-    # #     images_dir = coco_img_dir + '/val2017'
-    # image_file = os.path.join(images_dir, image['file_name'])
-    # output_image_dir = os.path.join(output_dir, 'images', dir_name)
-    # output_image_file = os.path.join(output_image_dir, image['file_name'])
-    # print("image_file:{}".format(image_file))
-    # print("output_image_file:{}".format(output_image_file))
-    # if not os.path.exists(output_image_dir):
-    #     os.makedirs(output_image_dir)
-    # if not os.path.exists(output_image_file):
-    #     shutil.copy(image_file, output_image_file)
-    # output_label_dir = os.path.join(output_dir, 'labels', dir_name)
-    # output_label_file = os.path.join(output_label_dir, os.path.splitext(image['file_name'])[0] + '.txt')
-    # print("output_label_file:{}".format(output_label_file))
-    # print("output_label_dir:{}".format(output_label_dir))
-    # if not os.path.exists(output_label_dir):
-    #     os.makedirs(output_label_dir)
-    # if not os.path.exists(output_label_file):
-    #     with open(output_label_file, 'w') as f:
-    #         for annotation in coco_data['annotations']:
-    #             if annotation['image_id'] == image['id']:
-    #                 try:
-    #                     category = coco_data['categories'][annotation['category_id']]['name']
-    #                     if category in category_dict.keys():
-    #                         category_index = category_dict[category]
-    #                         bbox = annotation['bbox']
-    #                         x_center = bbox[0] + bbox[2] / 2
-    #                         y_center = bbox[1] + bbox[3] / 2
-    #                         width = bbox[2]
-    #                         height = bbox[3]
-    #                         f.write('{0} {1:.6f} {2:.6f} {3:.6f} {4:.6f}\n'.format(category_index, x_center, y_center, width, height))
-    #                 except:
-    #                     continue
-
 
     print('数据集提取完成！')
+
 
 # 测试代码
 # /media/linxu/LXWorkShop1/Dataset/coco数据集
