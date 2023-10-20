@@ -4,20 +4,8 @@ import shutil
 from tqdm import tqdm
 import skimage.io as io
 import matplotlib.pyplot as plt
-import cv2
-from PIL import Image, ImageDraw
 
-# the path you want to save your results for coco to voc
-savepath = "/coco_class/"
-img_dir = savepath + 'images/val2014/'
-anno_dir = savepath + 'Annotations/val2014/'
-# datasets_list=['train2014', 'val2014']
-# datasets_list=['train2014']
-datasets_list = ['val2014']
 classes_names = ["person", "bicycle", "car", "motorbike", "bus", "truck"]
-
-# Store annotations and train2014/val2014/... in this folder
-dataDir = '/coco/'
 
 headstr = """\
 <annotation>
@@ -49,62 +37,12 @@ objstr = """\
             <ymax>%d</ymax>
         </bndbox>
     </object>
-"""
+# """
 
 tailstr = '''\
 </annotation>
 '''
-
-
-# if the dir is not exists,make it,else delete it
-def mkr(path):
-    if os.path.exists(path):
-        shutil.rmtree(path)
-        os.mkdir(path)
-    else:
-        os.mkdir(path)
-
-
-mkr(img_dir)
-mkr(anno_dir)
-
-
-def id2name(coco):
-    classes = dict()
-    for cls in coco.dataset['categories']:
-        classes[cls['id']] = cls['name']
-    return classes
-
-
-def write_xml(anno_path, head, objs, tail):
-    f = open(anno_path, "w")
-    f.write(head)
-    for obj in objs:
-        f.write(objstr % (obj[0], obj[1], obj[2], obj[3], obj[4]))
-    f.write(tail)
-
-
-def save_annotations_and_imgs(coco, dataset, filename, objs):
-    # eg:COCO_train2014_000000196610.jpg-->COCO_train2014_000000196610.xml
-    anno_path = anno_dir + filename[:-3] + 'xml'
-    img_path = dataDir + 'images/' + dataset + '/' + filename
-    # print(img_path)
-    dst_imgpath = img_dir + filename
-    print(img_path, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-
-    img = cv2.imread(img_path)
-    # print(img)
-    if (img.shape[2] == 1):
-        print(filename + " not a RGB image")
-        return
-
-    shutil.copy(img_path, dst_imgpath)
-
-    head = headstr % (filename, img.shape[1], img.shape[0], img.shape[2])
-    tail = tailstr
-    write_xml(anno_path, head, objs, tail)
-
-
+#
 def showimg(coco, dataset, img, classes, cls_id, show=True):
     global dataDir
     I = Image.open('%s/%s/%s/%s' % (dataDir, 'images', dataset, img['file_name']))
@@ -137,53 +75,73 @@ def showimg(coco, dataset, img, classes, cls_id, show=True):
 
     return objs
 
-
-for dataset in datasets_list:
-    # ./COCO/annotations/instances_train2014.json
-    annFile = '{}/annotations/instances_{}.json'.format(dataDir, dataset)
-
-    # COCO API for initializing annotated data
-    coco = COCO(annFile)
-    '''
-    When the COCO object is created, the following information will be output:
-    loading annotations into memory...
-    Done (t=0.81s)
-    creating index...
-    index created!
-    So far, the JSON script has been parsed and the images are associated with the corresponding annotated data.
-    '''
-    # show all classes in coco
-    classes = id2name(coco)
-    print(classes)
-    # [1, 2, 3, 4, 6, 8]
-    classes_ids = coco.getCatIds(catNms=classes_names)
-    print(classes_ids)
-    # exit()
-    for cls in classes_names:
-        # Get ID number of this class
-        cls_id = coco.getCatIds(catNms=[cls])
-        img_ids = coco.getImgIds(catIds=cls_id)
-        print(cls, len(img_ids))
-        # imgIds=img_ids[0:10]
-        for imgId in tqdm(img_ids):
-            img = coco.loadImgs(imgId)[0]
-            filename = img['file_name']
-            # print(filename)
-            objs = showimg(coco, dataset, img, classes, classes_ids, show=False)
-            print(objs)
-            save_annotations_and_imgs(coco, dataset, filename, objs)
-
+from pycocotools.coco import COCO
 import os
+import shutil
+from tqdm import tqdm
+import cv2
+from PIL import Image, ImageDraw
 
-Dir = './coco_class/Annotations/val2014'
-ImageDir = './coco_class/images/val2014'
-cnt = 0
-for i, file_name in enumerate(os.listdir(Dir)):
-    fsize = os.path.getsize(os.path.join(Dir, file_name))
-    if fsize == 410:
-        print('removing {} of size{}'.format(file_name, fsize))
-        os.remove(os.path.join(ImageDir, file_name[:-3] + 'jpg'))
-        os.remove(os.path.join(Dir, file_name))
-        cnt += 1
 
-print('remove {} files'.format(cnt))
+def extract_coco_class(data_dir, save_path, classes_names, datasets_list=['train2014']):
+    img_dir = os.path.join(save_path, 'images/')
+    anno_dir = os.path.join(save_path, 'Annotations/')
+
+    def mkr(path):
+        if os.path.exists(path):
+            shutil.rmtree(path)
+            os.mkdir(path)
+        else:
+            os.mkdir(path)
+
+    mkr(img_dir)
+    mkr(anno_dir)
+
+    def id2name(coco):
+        classes = dict()
+        for cls in coco.dataset['categories']:
+            classes[cls['id']] = cls['name']
+        return classes
+
+    def write_xml(anno_path, head, objs, tail):
+        with open(anno_path, "w") as f:
+            f.write(head)
+            for obj in objs:
+                f.write(objstr % (obj[0], obj[1], obj[2], obj[3], obj[4]))
+            f.write(tail)
+
+    def save_annotations_and_imgs(coco, dataset, filename, objs):
+        anno_path = os.path.join(anno_dir, filename[:-3] + 'xml')
+        img_path = os.path.join(data_dir, dataset, filename)
+        dst_imgpath = os.path.join(img_dir, filename)
+
+        img = cv2.imread(img_path)
+        shutil.copy(img_path, dst_imgpath)
+
+        head = headstr % (filename, img.shape[1], img.shape[0], img.shape[2])
+        tail = tailstr
+        write_xml(anno_path, head, objs, tail)
+
+    for dataset in datasets_list:
+        ann_file = os.path.join(data_dir, 'annotations/instances_{}.json'.format(dataset))
+        coco = COCO(ann_file)
+        classes = id2name(coco)
+
+        classes_ids = coco.getCatIds(catNms=classes_names)
+
+        for cls in classes_names:
+            cls_id = coco.getCatIds(catNms=[cls])
+            img_ids = coco.getImgIds(catIds=cls_id)
+
+            for imgId in tqdm(img_ids):
+                img = coco.loadImgs(imgId)[0]
+                filename = img['file_name']
+                objs = showimg(coco, dataset, img, classes, classes_ids, show=False)
+                save_annotations_and_imgs(coco, dataset, filename, objs)
+
+
+# Example Usage:
+dataDir = '/media/deepnorth/14b6945d-9936-41a8-aeac-505b96fc2be8/COCO/'
+savePath = '/media/deepnorth/14b6945d-9936-41a8-aeac-505b96fc2be8/COCO_processed/'
+classesNames = ['bicycle']
+extract_coco_class(dataDir, savePath, classesNames)
