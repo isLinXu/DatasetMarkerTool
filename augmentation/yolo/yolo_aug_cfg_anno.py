@@ -9,7 +9,6 @@ class YOLOAug(object):
     def __init__(self, config_path):
         with open(config_path, 'r', encoding='utf-8') as f:
             config = json.load(f)
-
         self.pre_image_path = config['pre_image_path']
         self.pre_label_path = config['pre_label_path']
         self.aug_save_image_path = config['aug_save_image_path']
@@ -22,28 +21,44 @@ class YOLOAug(object):
         # 数据增强选项
         augmentation_params = config['augmentation_params']
         self.aug = A.Compose([
+            # 随机改变图像的亮度、对比度、饱和度、色调
             A.RandomBrightnessContrast(brightness_limit=augmentation_params['brightness_limit'],
                                        contrast_limit=augmentation_params['contrast_limit'],
                                        p=1),
+            # 高斯滤波
             A.GaussianBlur(p=augmentation_params['gaussian_blur_p']),
+            # 高斯模糊
             A.GaussNoise(p=augmentation_params['gauss_noise_p']),
+            # 直方图均衡
             A.CLAHE(clip_limit=augmentation_params['clahe_clip_limit'],
                     tile_grid_size=augmentation_params['clahe_tile_grid_size'],
                     p=augmentation_params['clahe_p']),
+            # 均衡图像直方图
             A.Equalize(p=augmentation_params['equalize_p']),
+            # 随机水平翻转
             A.HorizontalFlip(p=augmentation_params['horizontal_flip_p']),
+            # 随机选择一个增强方式
             A.OneOf([
+                # 随机改变图像的亮度、对比度、饱和度、色调
                 A.RGBShift(r_shift_limit=augmentation_params['rgb_shift_limit'],
                            g_shift_limit=augmentation_params['rgb_shift_limit'],
                            b_shift_limit=augmentation_params['rgb_shift_limit'],
                            p=augmentation_params['channel_shuffle_p']),
+                # 随机排列通道
                 A.ChannelShuffle(p=augmentation_params['channel_shuffle_p']),
+                # 随机改变图像的亮度、对比度、饱和度、色调
                 A.ColorJitter(p=augmentation_params['color_jitter_p']),
+                # 随机丢弃通道
                 A.ChannelDropout(p=augmentation_params['channel_dropout_p']),
             ], p=augmentation_params['downscale_p']),
+            # 随机缩小和放大来降低图像质量
             A.Downscale(p=augmentation_params['downscale_p']),
+            # 压印输入图像并将结果与原始图像叠加
             A.Emboss(p=augmentation_params['emboss_p']),
         ],
+            # 经过归一化
+            # min_area: 表示bbox占据的像素总个数, 当数据增强后, 若bbox小于这个值则从返回的bbox列表删除该bbox.
+            # min_visibility: 值域为[0,1], 如果增强后的bbox面积和增强前的bbox面积比值小于该值, 则删除该bbox
             A.BboxParams(format='yolo', min_area=augmentation_params['min_area'],
                          min_visibility=augmentation_params['min_visibility'], label_fields=['category_id'])
         )
