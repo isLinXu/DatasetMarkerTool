@@ -59,6 +59,11 @@ class YOLOAug(object):
             A.BboxParams(format='yolo', min_area=0., min_visibility=0., label_fields=['category_id'])
         )
 
+        if not os.path.exists(self.aug_save_image_path):
+            os.makedirs(self.aug_save_image_path)
+        if not os.path.exists(self.aug_save_label_path):
+            os.makedirs(self.aug_save_label_path)
+
         print("--------*--------")
         image_len = len(os.listdir(self.pre_image_path))
         print("the length of images: ", image_len)
@@ -77,20 +82,21 @@ class YOLOAug(object):
         """
         image = cv2.imread(os.path.join(self.pre_image_path, image_name))
 
-        with open(os.path.join(self.pre_label_path, image_name.split('.')[0] + '.txt'), 'r',
-                  encoding='utf-8') as f:
-            label_txt = f.readlines()
+        pre_img_label_path = os.path.join(self.pre_label_path, image_name.split('.')[0] + '.txt')
+        if os.path.exists(pre_img_label_path):
+            with open(pre_img_label_path, 'r', encoding='utf-8') as f:
+                label_txt = f.readlines()
 
-        label_list = []
-        cls_id_list = []
-        for label in label_txt:
-            label_info = label.strip().split(' ')
-            cls_id_list.append(int(label_info[0]))
-            label_list.append([float(x) for x in label_info[1:]])
-            # print(label_info[1:])
+            label_list = []
+            cls_id_list = []
+            for label in label_txt:
+                label_info = label.strip().split(' ')
+                cls_id_list.append(int(label_info[0]))
+                label_list.append([float(x) for x in label_info[1:]])
+                # print(label_info[1:])
 
-        anno_info = {'image': image, 'bboxes': label_list, 'category_id': cls_id_list}
-        return anno_info
+            anno_info = {'image': image, 'bboxes': label_list, 'category_id': cls_id_list}
+            return anno_info
 
     def aug_image(self):
         image_list = os.listdir(self.pre_image_path)
@@ -154,7 +160,9 @@ class YOLOAug(object):
                 cv2.destroyWindow(f'aug_image_{new_image_filename}')
 
             # 保存增强后的信息
+            print("aug_save_image_path: ", self.aug_save_image_path)
             cv2.imwrite(os.path.join(self.aug_save_image_path, new_image_filename), aug_image)
+
             with open(os.path.join(self.aug_save_label_path, new_label_filename), 'w', encoding='utf-8') as lf:
                 for cls_id, bbox in zip(aug_category_id, aug_bboxes):
                     lf.write(str(cls_id) + ' ')
@@ -169,12 +177,12 @@ class YOLOAug(object):
 if __name__ == '__main__':
     # 对示例数据集进行增强, 运行成功后会在相应目录下保存
     # 原始图片和label路径
-    PRE_IMAGE_PATH = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/coco128/YOLO/images/train2017/'
-    PRE_LABEL_PATH = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/coco128/YOLO/labels/train2017/'
+    PRE_IMAGE_PATH = '/Users/gatilin/Downloads/coco128/images/train2017/'
+    PRE_LABEL_PATH = '/Users/gatilin/Downloads/coco128/labels/train2017/'
 
     # 增强后的图片和label保存的路径
-    AUG_SAVE_IMAGE_PATH = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/coco128/YOLO/aug/images/'
-    AUG_SAVE_LABEL_PATH = '/media/hxzh02/SB@home/hxzh/PaddleDetection/dataset/coco128/YOLO/aug/labels/'
+    AUG_SAVE_IMAGE_PATH = '/Users/gatilin/Downloads/coco128/aug/images/'
+    AUG_SAVE_LABEL_PATH = '/Users/gatilin/Downloads/coco128/aug/labels/'
 
     # 类别列表, 需要根据自己的修改
     # labels = ['side-walk', 'speed-limit', 'turn-left', 'slope', 'speed']
@@ -186,12 +194,12 @@ if __name__ == '__main__':
               'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
               'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard',
               'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors',
-              'teddy bear','hair drier', 'toothbrush']
+              'teddy bear', 'hair drier', 'toothbrush']
 
     aug = YOLOAug(pre_image_path=PRE_IMAGE_PATH,
                   pre_label_path=PRE_LABEL_PATH,
                   aug_save_image_path=AUG_SAVE_IMAGE_PATH,
                   aug_save_label_path=AUG_SAVE_LABEL_PATH,
                   labels=labels,
-                  is_show=True)
+                  is_show=False)
     aug.aug_image()
