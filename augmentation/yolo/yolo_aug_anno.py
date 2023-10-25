@@ -181,8 +181,8 @@ if __name__ == '__main__':
     PRE_LABEL_PATH = '/Users/gatilin/Downloads/coco128/labels/train2017/'
 
     # 增强后的图片和label保存的路径
-    AUG_SAVE_IMAGE_PATH = '/Users/gatilin/Downloads/coco128/aug/images/'
-    AUG_SAVE_LABEL_PATH = '/Users/gatilin/Downloads/coco128/aug/labels/'
+    AUG_SAVE_IMAGE_PATH = '/Users/gatilin/Downloads/coco128/aug3/images/'
+    AUG_SAVE_LABEL_PATH = '/Users/gatilin/Downloads/coco128/aug3/labels/'
 
     # 类别列表, 需要根据自己的修改
     # labels = ['side-walk', 'speed-limit', 'turn-left', 'slope', 'speed']

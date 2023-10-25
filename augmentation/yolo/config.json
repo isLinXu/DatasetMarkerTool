@@ -1,8 +1,8 @@
 {
     "pre_image_path": "/Users/gatilin/Downloads/coco128/images/train2017/",
     "pre_label_path": "/Users/gatilin/Downloads/coco128/labels/train2017/",
-    "aug_save_image_path": "/Users/gatilin/Downloads/coco128/aug1/images/",
-    "aug_save_label_path": "/Users/gatilin/Downloads/coco128/aug1/labels/",
+    "aug_save_image_path": "/Users/gatilin/Downloads/coco128/aug2/images/",
+    "aug_save_label_path": "/Users/gatilin/Downloads/coco128/aug2/labels/",
     "labels": [
         "person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "traffic light",
         "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow",
@@ -16,5 +16,24 @@
     ],
     "is_show": true,
     "start_filename_id": 0,
-    "max_len": 4
+    "max_len": 4,
+    "augmentation_params": {
+        "brightness_limit": 0.3,
+        "contrast_limit": 0.3,
+        "gaussian_blur_p": 0.7,
+        "gauss_noise_p": 0.7,
+        "clahe_clip_limit": 2.0,
+        "clahe_tile_grid_size": [4, 4],
+        "clahe_p": 0.5,
+        "equalize_p": 0.5,
+        "horizontal_flip_p": 1,
+        "rgb_shift_limit": 50,
+        "channel_shuffle_p": 0.3,
+        "color_jitter_p": 0.3,
+        "channel_dropout_p": 0.3,
+        "downscale_p": 0.1,
+        "emboss_p": 0.2,
+        "min_area": 0,
+        "min_visibility": 0.1
+    }
 }
