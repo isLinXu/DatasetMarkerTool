@@ -1,14 +1,19 @@
 import os
 import json
 import cv2
+from tqdm import tqdm
 
 def lvis_to_yolo(lvis_path, images_path, output_path):
     # 读取LVIS数据集的标注文件
     with open(lvis_path, 'r') as f:
         lvis_data = json.load(f)
 
+    image_list = list(lvis_data['images'])
+    # print("image_list:",image_list)
+    for image_data in tqdm(image_list):
+        # image_data = image_list[i]
     # 遍历每个图像及其对应的标注
-    for image_data in lvis_data['images']:
+    # for image_data in lvis_data['images']:
         image_id = image_data['id']
         image_width = image_data['width']
         image_height = image_data['height']
@@ -40,8 +45,11 @@ def lvis_to_yolo(lvis_path, images_path, output_path):
             f.write('\n'.join(yolo_annotations))
 
 if __name__ == "__main__":
-    lvis_path = "/media/linxu/mobileSSD/datasets/LVIS_v1.0/annotations/lvis_v1_val.json"
+    #lvis_path = "/media/linxu/mobileSSD/datasets/LVIS_v1.0/annotations/lvis_v1_val.json"
+    #images_path = "/media/linxu/mobileSSD/datasets/LVIS_v1.0/images"
+    #output_path = "/media/linxu/ImportPan/outputs_data"
+    # /media/linxu/ImportPan/lvis_train_yolo
+    lvis_path = "/media/linxu/mobileSSD/datasets/LVIS_v1.0/annotations/lvis_v1_train.json"
     images_path = "/media/linxu/mobileSSD/datasets/LVIS_v1.0/images"
-    output_path = "/media/linxu/ImportPan/outputs_data"
-
+    output_path = "/media/linxu/ImportPan/lvis_train_yolo"
     lvis_to_yolo(lvis_path, images_path, output_path)
