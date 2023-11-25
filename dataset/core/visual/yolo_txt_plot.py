@@ -91,48 +91,6 @@ class Visualizer:
 
         return img, pred_boxes + gt_boxes
 
-    # def draw_boxes(self, img_path, pred_path):
-    #     """
-    #     绘制预测框
-    #     """
-    #     img = cv2.imread(img_path)
-    #     with open(pred_path, "r") as f:
-    #         lines = f.readlines()
-    #     boxes = []
-    #     for line in lines:
-    #         line = line.strip().split(" ")
-    #         if len(line) == 6:
-    #             # vis pred label
-    #             class_id = int(line[0])
-    #             confidence = float(line[5])
-    #             bbox = line[1:5]
-    #             img_w, img_h = img.shape[1], img.shape[0]
-    #             # txt里面是【类别，cx,cy,w,h,score】
-    #             cx, cy, w, h = bbox
-    #             cx = float(cx)
-    #             cy = float(cy)
-    #             w = float(w)
-    #             h = float(h)
-    #             x1 = int((cx - w / 2) * img_w)
-    #             y1 = int((cy - h / 2) * img_h)
-    #             x2 = int(x1 + w * img_w)
-    #             y2 = int(y1 + h * img_h)
-    #
-    #         elif len(line) == 5:
-    #             # vis gt label
-    #             label = line[0]
-    #             label = int(label)
-    #             x, y, w, h = map(float, line[1:])
-    #
-    #             if img is not None:
-    #                 img_width, img_height = img.shape[1], img.shape[0]
-    #                 x_min = int((x - w / 2) * img_width)
-    #                 y_min = int((y - h / 2) * img_height)
-    #                 x_max = int((x + w / 2) * img_width)
-    #                 y_max = int((y + h / 2) * img_height)
-    #                 boxes.append([x_min, y_min, x_max, y_max, label])
-    #     return img, boxes
-
     def draw_detections(self, image, boxes, scores, class_ids, mask_alpha=0.3):
         mask_img = image.copy()
         det_img = image.copy()
