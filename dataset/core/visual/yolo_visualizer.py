@@ -20,8 +20,8 @@ if class_names:
     class_names = [name.strip() for name in class_names.split(",")]
 
 # 生成颜色列表
-colors = [(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)) for _ in
-          range(len(class_names) if class_names else 100)]
+num_classes = len(class_names) if class_names else 100
+colors = [(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)) for _ in range(num_classes)]
 
 if image_folder_path:
     image_files = os.listdir(image_folder_path)
@@ -58,7 +58,7 @@ if image_folder_path:
                             x_max = int((x + w / 2) * width)
                             y_min = int((y - h / 2) * height)
                             y_max = int((y + h / 2) * height)
-                            color = colors[int(class_id)] if class_names else (0, 255, 0)
+                            color = colors[int(class_id)]
                             cv2.rectangle(image_cv, (x_min, y_min), (x_max, y_max), color, 2)
                             if class_names:
                                 class_name = class_names[int(class_id)]
@@ -66,6 +66,8 @@ if image_folder_path:
                                 class_name = str(int(class_id))
                             cv2.putText(image_cv, class_name, (x_min, y_min - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color,
                                         2)
+                    # 将图像从BGR颜色空间转换为RGB颜色空间
+                    image_cv = cv2.cvtColor(image_cv, cv2.COLOR_BGR2RGB)
                 col1, col2 = st.columns(2)
                 col1.image(image, caption="原始图像", use_column_width=True)
                 col2.image(image_cv, caption="带边界框的图像", use_column_width=True)
