@@ -1,5 +1,9 @@
 import os
 import shutil
+from tqdm import tqdm
+
+def update_labels(lines, class_mapping):
+    return [str(class_mapping[int(line.split()[0])]) + line[line.find(' '):] for line in lines]
 
 def merge_datasets(dataset1_path, dataset2_path, merged_dataset_path, class_mapping, splits=['train', 'test']):
     # 创建新数据集的目录结构
@@ -9,18 +13,18 @@ def merge_datasets(dataset1_path, dataset2_path, merged_dataset_path, class_mapp
 
     # 遍历第一个数据集的标签文件
     for split in splits:
-        for label_file in os.listdir(os.path.join(dataset1_path, 'labels', split)):
+        for label_file in tqdm(os.listdir(os.path.join(dataset1_path, 'labels', split)), desc=f'Processing {split} data'):
             # 读取第一个数据集的标签并更新类别索引
             with open(os.path.join(dataset1_path, 'labels', split, label_file), 'r') as f:
                 labels1 = f.readlines()
-                labels1 = [str(class_mapping[int(line.split()[0])]) + line[line.find(' '):] for line in labels1]
+            labels1 = update_labels(labels1, class_mapping)
+
             # 查找并读取第二个数据集中相应的标签文件
             labels2_path = os.path.join(dataset2_path, 'labels', split, label_file)
             if os.path.exists(labels2_path):
                 with open(labels2_path, 'r') as f:
                     labels2 = f.readlines()
-                    labels2 = [str(class_mapping[int(line.split()[0])]) + line[line.find(' '):] for line in labels2]
-
+                labels2 = update_labels(labels2, class_mapping)
             else:
                 labels2 = []
 
@@ -41,14 +45,13 @@ def merge_datasets(dataset1_path, dataset2_path, merged_dataset_path, class_mapp
 
     print("合并完成！新数据集已保存到：", merged_dataset_path)
 
-if __name__ == '__main__':
-    # 指定数据集路径
-    dataset1_path = '/Users/gatilin/PycharmProjects/DatasetMarkerTool/data5'
-    dataset2_path = '/Users/gatilin/PycharmProjects/DatasetMarkerTool/data4'
-    merged_dataset_path = '/Users/gatilin/PycharmProjects/DatasetMarkerTool/data_merge'
+# 指定数据集路径
+dataset1_path = '/Users/gatilin/PycharmProjects/DatasetMarkerTool/data5'
+dataset2_path = '/Users/gatilin/PycharmProjects/DatasetMarkerTool/data4'
+merged_dataset_path = '/Users/gatilin/PycharmProjects/DatasetMarkerTool/data_merge'
 
-    # 类别映射（示例）
-    class_mapping = {0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7}
+# 类别映射（示例）
+class_mapping = {0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7}
 
-    # 合并两个数据集
-    merge_datasets(dataset1_path, dataset2_path, merged_dataset_path, class_mapping)
+# 合并两个数据集
+merge_datasets(dataset1_path, dataset2_path, merged_dataset_path, class_mapping)
