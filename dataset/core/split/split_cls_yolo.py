@@ -21,8 +21,14 @@ def extract_classes(src_dataset_path, new_dataset_path, classes_to_extract, orig
             with open(os.path.join(src_dataset_path, 'labels', split, label_file), 'r') as f:
                 lines = f.readlines()
 
-            # 检查并提取包含指定类别的标签
-            new_lines = [line for line in lines if int(line.split()[0]) in classes_to_extract_ids]
+            # 检查并提取包含指定类别的标签，同时更新类别索引
+            new_lines = []
+            for line in lines:
+                cls_id = int(line.split()[0])
+                if cls_id in classes_to_extract_ids:
+                    new_cls_id = classes_to_extract_ids.index(cls_id)
+                    new_line = line.replace(str(cls_id), str(new_cls_id), 1)
+                    new_lines.append(new_line)
 
             if new_lines:
                 # 复制相关的图像文件到新数据集
@@ -41,7 +47,7 @@ def extract_classes(src_dataset_path, new_dataset_path, classes_to_extract, orig
 if __name__ == '__main__':
     # 指定源数据集路径和新数据集路径
     src_dataset_path = '/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128'
-    new_dataset_path = '/Users/gatilin/PycharmProjects/DatasetMarkerTool/data5'
+    new_dataset_path = '/Users/gatilin/PycharmProjects/DatasetMarkerTool/data6'
     # 原始数据集的类别列表
     coco_classes = [
         'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
