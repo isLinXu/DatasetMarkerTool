@@ -2,8 +2,10 @@ import os
 import shutil
 from tqdm import tqdm
 
+
 def update_labels(lines, class_mapping):
     return [str(class_mapping[int(line.split()[0])]) + line[line.find(' '):] for line in lines]
+
 
 def merge_datasets(dataset1_path, dataset2_path, merged_dataset_path, class_mapping, splits=['train', 'test']):
     # 创建新数据集的目录结构
@@ -13,7 +15,8 @@ def merge_datasets(dataset1_path, dataset2_path, merged_dataset_path, class_mapp
 
     # 遍历第一个数据集的标签文件
     for split in splits:
-        for label_file in tqdm(os.listdir(os.path.join(dataset1_path, 'labels', split)), desc=f'Processing {split} data'):
+        for label_file in tqdm(os.listdir(os.path.join(dataset1_path, 'labels', split)),
+                               desc=f'Processing {split} data'):
             # 读取第一个数据集的标签并更新类别索引
             with open(os.path.join(dataset1_path, 'labels', split, label_file), 'r') as f:
                 labels1 = f.readlines()
@@ -44,6 +47,7 @@ def merge_datasets(dataset1_path, dataset2_path, merged_dataset_path, class_mapp
                 f.writelines(merged_labels)
 
     print("合并完成！新数据集已保存到：", merged_dataset_path)
+
 
 # 指定数据集路径
 dataset1_path = '/Users/gatilin/PycharmProjects/DatasetMarkerTool/data5'
