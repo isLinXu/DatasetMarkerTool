@@ -174,45 +174,53 @@ def filter_fp_fn_images(prediction_path, ground_truth_path, image_path, root_pat
 
     return fp_images, fn_images, tp_images, tn_images, fp_count, fn_count, tp_count, tn_count
 
+def calculate_metrics(tp_count, fn_count, fp_count, tn_count, num_classes):
+    recall = {}
+    precision = {}
+    far = {}
 
-root_path = 'datasets_v240402_04_01_large_infer'
-prediction_path = root_path + '/yolov6predictions'
-ground_truth_path = 'datasets_v240402/labels/test'
-image_path = 'datasets_v240402/images/test'
+    for class_id in range(num_classes):
+        tp = tp_count.get(class_id, 0)
+        fn = fn_count.get(class_id, 0)
+        fp = fp_count.get(class_id, 0)
+        tn = tn_count.get(class_id, 0)
 
-fp_images, fn_images, tp_images, tn_images, fp_count, fn_count, tp_count, tn_count = filter_fp_fn_images(
-    prediction_path, ground_truth_path, image_path, root_path)
+        # Print counts
+        print(f"Class {class_id}: TP = {tp}, FN = {fn}, FP = {fp}, TN = {tn}")
+        if tp + fn != 0:
+            recall[class_id] = tp / (tp + fn)
+        else:
+            recall[class_id] = None
 
-# Initialize dictionaries to store recall, precision and far for each class
-recall = {}
-precision = {}
-far = {}
+        if tp + fp != 0:
+            precision[class_id] = tp / (tp + fp)
+        else:
+            precision[class_id] = None
 
-# Calculate recall, precision and far for each class
-num_classes = 2
-for class_id in range(num_classes):  # assuming num_classes is the number of classes
-    tp = tp_count.get(class_id, 0)
-    fn = fn_count.get(class_id, 0)
-    fp = fp_count.get(class_id, 0)
-    tn = tn_count.get(class_id, 0)
+        if fp + tn != 0:
+            far[class_id] = fp / (fp + tn)
+        else:
+            far[class_id] = None
 
-    # Print counts
-    print(f"Class {class_id}: TP = {tp}, FN = {fn}, FP = {fp}, TN = {tn}")
-    if tp + fn != 0:
-        recall[class_id] = tp / (tp + fn)
-    else:
-        recall[class_id] = None  # or some default value
+    return recall, precision, far
 
-    if tp + fp != 0:
-        precision[class_id] = tp / (tp + fp)
-    else:
-        precision[class_id] = None  # or some default value
 
-    if fp + tn != 0:
-        far[class_id] = fp / (fp + tn)
-    else:
-        far[class_id] = None  # or some default value
+def main():
+    root_path = 'datasets_v240402_04_01_large_infer'
+    prediction_path = root_path + '/yolov6predictions'
+    ground_truth_path = 'datasets_v240402/labels/test'
+    image_path = 'datasets_v240402/images/test'
 
-# Print results
-for class_id in recall.keys():
-    print(f"Class {class_id}: Recall = {recall[class_id]}, Precision = {precision[class_id]}, FAR = {far[class_id]}")
+    fp_images, fn_images, tp_images, tn_images, fp_count, fn_count, tp_count, tn_count = filter_fp_fn_images(
+        prediction_path, ground_truth_path, image_path, root_path)
+
+    num_classes = 2
+    recall, precision, far = calculate_metrics(tp_count, fn_count, fp_count, tn_count, num_classes)
+
+    # Print results
+    for class_id in recall.keys():
+        print(f"Class {class_id}: Recall = {recall[class_id]}, Precision = {precision[class_id]}, FAR = {far[class_id]}")
+
+
+if __name__ == "__main__":
+    main()
