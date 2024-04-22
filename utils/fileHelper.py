@@ -27,6 +27,25 @@ def os_mkdir(path):
         print(path + ' 目录已存在')
         return False
 
+import os
+import json
+from tqdm import tqdm
+
+def get_files_in_directory(dir_path):
+    files_dict = {}
+    for root, dirs, files in tqdm(os.walk(dir_path)):
+        files_dict[root] = files
+    return files_dict
+
+def save_to_json(data, json_file):
+    with open(json_file, 'w') as f:
+        json.dump(data, f, indent=4)
+
+# dir_path = '/path/to/your/directory'  # Replace with your directory path
+# json_file = '/path/to/your/json/file'  # Replace with your json file path
+#
+# files_dict = get_files_in_directory(dir_path)
+# save_to_json(files_dict, json_file)
 
 def trans_endwith_lower_upper(realpath,mode='lower'):
     # 将图片jpg文件后缀小写或者大写
