@@ -12,7 +12,7 @@ def parse_args():
     Parse input arguments
     """
     parser = argparse.ArgumentParser(description='split data into train, val, test')
-    parser.add_argument('input_dir', help='image directory')
+    parser.add_argument('input_img_dir', help='image directory')
 
     parser.add_argument('output_dir', help='output directory')
 
