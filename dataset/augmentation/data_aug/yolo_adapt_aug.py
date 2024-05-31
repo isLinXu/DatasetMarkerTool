@@ -3,15 +3,17 @@ import numpy as np
 import os
 import random
 from collections import defaultdict
+from pathlib import Path
+from typing import Tuple
 
 # 数据增强函数
-def random_rotation(image, angle_range=(-20, 20)):
+def random_rotation(image: np.ndarray, angle_range: Tuple[int, int] = (-20, 20)) -> np.ndarray:
     h, w = image.shape[:2]
     angle = random.randint(*angle_range)
     matrix = cv2.getRotationMatrix2D((w/2, h/2), angle, 1)
     return cv2.warpAffine(image, matrix, (w, h))
 
-def random_flip(image, horizontal=True, vertical=False):
+def random_flip(image: np.ndarray, horizontal: bool = True, vertical: bool = False) -> np.ndarray:
     if horizontal:
         image = cv2.flip(image, 1)
     if vertical:
@@ -23,7 +25,8 @@ def random_brightness_contrast(image, brightness_range=(-30, 30), contrast_range
     contrast = random.uniform(*contrast_range)
     return cv2.addWeighted(image, contrast, image, 0, brightness)
 
-def augment_image(image_path, label_path, output_img_dir, output_label_dir, num_augmented_images):
+def augment_image(image_path: str, label_path: str, output_img_dir: str, output_label_dir: str,
+                      num_augmented_images: int) -> None:
     image = cv2.imread(image_path)
     filename = os.path.splitext(os.path.basename(image_path))[0]
 
@@ -42,7 +45,8 @@ def augment_image(image_path, label_path, output_img_dir, output_label_dir, num_
         # print(f"Augmented image saved to {output_path}")
 
 # 数据集增强函数
-def augment_dataset(input_img_dir, input_label_dir, output_img_dir, output_label_dir, num_augmented_images, class_to_augment):
+def augment_dataset(input_img_dir: str, input_label_dir: str, output_img_dir: str, output_label_dir: str,
+                        num_augmented_images: int, class_to_augment: int) -> None:
     os.makedirs(output_img_dir, exist_ok=True)
     os.makedirs(output_label_dir, exist_ok=True)
 
@@ -60,7 +64,7 @@ def augment_dataset(input_img_dir, input_label_dir, output_img_dir, output_label
                     augment_image(image_path, label_path, output_img_dir, output_label_dir, num_augmented_images)
 
 # 计算标签分布
-def count_labels(input_dir):
+def count_labels(input_dir: str) -> defaultdict:
     label_counts = defaultdict(int)
 
     for filename in os.listdir(input_dir):
@@ -77,7 +81,8 @@ def count_labels(input_dir):
     return label_counts
 
 # 自适应数据增强
-def adaptive_augmentation(input_img_dir, input_label_dir, output_img_dir, output_label_dir, target_num_samples):
+def adaptive_augmentation(input_img_dir: str, input_label_dir: str, output_img_dir: str, output_label_dir: str,
+                              target_num_samples: int) -> None:
     label_counts = count_labels(input_label_dir)
     print("Current label distribution:", label_counts)
 
