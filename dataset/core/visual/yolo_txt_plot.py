@@ -164,7 +164,11 @@ if __name__ == '__main__':
                    'laptop', 'mouse', 'remote', 'keyboard', 'cell phone', 'microwave', 'oven', 'toaster', 'sink',
                    'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush']
     visualizer = Visualizer(class_names)
-    img_folder = '/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/images/train2017'
-    pred_folder = '/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/labels/train2017'
-    output_folder = '/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/output'
+    # img_folder = '/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/images/train2017'
+    # pred_folder = '/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/labels/train2017'
+    # output_folder = '/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/output'
+    img_folder = "/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/aug_output1/images"
+    pred_folder = "/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/aug_output1/labels"
+    output_folder = '/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/aug_out_vis1'
+
     visualizer.draw_boxes_folder(img_folder, pred_folder, output_folder)

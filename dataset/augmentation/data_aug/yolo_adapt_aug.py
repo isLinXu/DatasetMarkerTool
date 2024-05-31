@@ -13,36 +13,73 @@ def random_rotation(image: np.ndarray, angle_range: Tuple[int, int] = (-20, 20))
     matrix = cv2.getRotationMatrix2D((w/2, h/2), angle, 1)
     return cv2.warpAffine(image, matrix, (w, h))
 
-def random_flip(image: np.ndarray, horizontal: bool = True, vertical: bool = False) -> np.ndarray:
-    if horizontal:
-        image = cv2.flip(image, 1)
-    if vertical:
-        image = cv2.flip(image, 0)
-    return image
+def random_flip(image: np.ndarray, horizontal: bool = True, vertical: bool = False) -> Tuple[np.ndarray, int]:
+    flip_type = -1
+    if horizontal and vertical:
+        flip_type = -1
+        image = cv2.flip(image, flip_type)
+    elif horizontal:
+        flip_type = 1
+        image = cv2.flip(image, flip_type)
+    elif vertical:
+        flip_type = 0
+        image = cv2.flip(image, flip_type)
+    else:
+        flip_type = -1
+    return image, flip_type
+
+def adjust_bbox(bbox: Tuple[float, float, float, float], img_shape: Tuple[int, int], angle: int, flip_type: int) -> Tuple[float, float, float, float]:
+    x, y, w, h = bbox
+    img_h, img_w = img_shape
+
+    # Adjust for rotation
+    x_center, y_center = x * img_w, y * img_h
+    x_center_rotated = (x_center - img_w / 2) * np.cos(np.radians(angle)) - (y_center - img_h / 2) * np.sin(np.radians(angle)) + img_w / 2
+    y_center_rotated = (x_center - img_w / 2) * np.sin(np.radians(angle)) + (y_center - img_h / 2) * np.cos(np.radians(angle)) + img_h / 2
+    x, y = x_center_rotated / img_w, y_center_rotated / img_h
+
+    # Adjust for flip
+    if flip_type == 0:  # Vertical flip
+        y = 1 - y
+    elif flip_type == 1:  # Horizontal flip
+        x = 1 - x
+    elif flip_type == -1:  # No flip
+        pass
+
+    return x, y, w, h
+
+
 
 def random_brightness_contrast(image, brightness_range=(-30, 30), contrast_range=(0.7, 1.3)):
     brightness = random.randint(*brightness_range)
     contrast = random.uniform(*contrast_range)
     return cv2.addWeighted(image, contrast, image, 0, brightness)
 
-def augment_image(image_path: str, label_path: str, output_img_dir: str, output_label_dir: str,
-                      num_augmented_images: int) -> None:
+def augment_image(image_path: str, label_path: str, output_img_dir: str, output_label_dir: str, num_augmented_images: int) -> None:
     image = cv2.imread(image_path)
+    img_h, img_w = image.shape[:2]
     filename = os.path.splitext(os.path.basename(image_path))[0]
 
     for i in range(num_augmented_images):
-        augmented_image = random_rotation(image)
-        augmented_image = random_flip(augmented_image)
+        # angle = random.randint(-20, 20)
+        angle_range = (-5, 5)
+        augmented_image = random_rotation(image, angle_range)
+        augmented_image, flip_type = random_flip(augmented_image)
         augmented_image = random_brightness_contrast(augmented_image)
 
         output_path = os.path.join(output_img_dir, f"{filename}_augmented_{i}.jpg")
         cv2.imwrite(output_path, augmented_image)
-        # print(f"Augmented image saved to {output_path}")
 
-        # Copy the label file.
+        # Adjust the label file.
         output_label_path = os.path.join(output_label_dir, f"{filename}_augmented_{i}.txt")
-        os.system(f"cp {label_path} {output_label_path}")
-        # print(f"Augmented image saved to {output_path}")
+        with open(label_path, "r") as file:
+            lines = file.readlines()
+        angle = random.randint(-5, 5)
+        with open(output_label_path, "w") as file:
+            for line in lines:
+                cls, x, y, w, h = map(float, line.split())
+                x, y, w, h = adjust_bbox((x, y, w, h), (img_h, img_w), angle, flip_type)
+                file.write(f"{int(cls)} {float(x):.6f} {float(y):.6f} {float(w):.6f} {float(h):.6f}\n")
 
 # 数据集增强函数
 def augment_dataset(input_img_dir: str, input_label_dir: str, output_img_dir: str, output_label_dir: str,
@@ -100,6 +137,6 @@ if __name__ == "__main__":
     target_num_samples = 10
     input_img_dir = "/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/images/train"
     input_label_dir = "/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/labels/train"
-    output_img_dir = "/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/aug_output/images"
-    output_label_dir = "/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/aug_output/labels"
+    output_img_dir = "/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/aug_output1/images"
+    output_label_dir = "/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/aug_output1/labels"
     adaptive_augmentation(input_img_dir, input_label_dir, output_img_dir, output_label_dir, target_num_samples)
