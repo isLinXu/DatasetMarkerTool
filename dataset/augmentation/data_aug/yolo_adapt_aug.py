@@ -8,12 +8,13 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Tuple, List
 
-# 数据增强函数
 def random_rotation(image: np.ndarray, angle_range: Tuple[int, int] = (-20, 20)) -> Tuple[np.ndarray, int]:
+    # ... (省略了部分代码)
     h, w = image.shape[:2]
     angle = random.randint(*angle_range)
     matrix = cv2.getRotationMatrix2D((w / 2, h / 2), angle, 1)
     return cv2.warpAffine(image, matrix, (w, h)), angle
+
 
 
 def random_crop(image: np.ndarray, label: List[Tuple[int, float, float, float, float]],
@@ -163,7 +164,32 @@ def random_noise(image: np.ndarray, intensity: float = 0.05) -> np.ndarray:
     noise = np.random.normal(0, intensity * 255, image.shape)
     return np.clip(image + noise, 0, 255).astype(np.uint8)
 
-def augment_image(image_path: str, label_path: str, output_img_dir: str, output_label_dir: str, num_augmented_images: int, iou_threshold: float = 0.5) -> None:
+
+def random_perspective(image: np.ndarray, max_ratio: float = 0.1) -> np.ndarray:
+    h, w = image.shape[:2]
+    shift = max_ratio * min(h, w)
+    pts1 = np.float32([[0, 0], [w, 0], [0, h], [w, h]])
+    pts2 = np.float32([[random.uniform(-shift, shift), random.uniform(-shift, shift)],
+                       [w - random.uniform(-shift, shift), random.uniform(-shift, shift)],
+                       [random.uniform(-shift, shift), h - random.uniform(-shift, shift)],
+                       [w - random.uniform(-shift, shift), h - random.uniform(-shift, shift)]])
+    matrix = cv2.getPerspectiveTransform(pts1, pts2)
+    return cv2.warpPerspective(image, matrix, (w, h))
+
+def random_occlusion(image: np.ndarray, max_num_rects: int = 3, max_rect_ratio: float = 0.1) -> np.ndarray:
+    h, w = image.shape[:2]
+    num_rects = random.randint(1, max_num_rects)
+    for _ in range(num_rects):
+        x = random.randint(0, w)
+        y = random.randint(0, h)
+        rect_w = random.randint(1, int(w * max_rect_ratio))
+        rect_h = random.randint(1, int(h * max_rect_ratio))
+        image[y:y + rect_h, x:x + rect_w] = 0
+    return image
+
+def augment_image(image_path: str, label_path: str, output_img_dir: str, output_label_dir: str, num_augmented_images: int, iou_threshold: float = 0.5,
+                  p_rotation: float = 0.2, p_crop: float = 0.2, p_flip: float = 0.2, p_brightness_contrast: float = 0.2,
+                  p_scale: float = 0.2, p_noise: float = 0.2, p_perspective: float = 0.2, p_occlusion: float = 0.2) -> None:
     image = cv2.imread(image_path)
     img_h, img_w = image.shape[:2]
     filename = os.path.splitext(os.path.basename(image_path))[0]
@@ -172,9 +198,9 @@ def augment_image(image_path: str, label_path: str, output_img_dir: str, output_
         label = [tuple(map(float, line.strip().split())) for line in f]
 
     for i in range(num_augmented_images):
-        # Randomly select a transformation
-        transformation = random.choice([random_rotation, random_crop, random_flip, random_brightness_contrast, random_scale, random_noise])
-
+        # Randomly select a transformation based on probabilities
+        transformation = random.choices([random_rotation, random_crop, random_flip, random_brightness_contrast, random_scale, random_noise, random_perspective, random_occlusion],
+                                        [p_rotation, p_crop, p_flip, p_brightness_contrast, p_scale, p_noise, p_perspective, p_occlusion])[0]
         if transformation == random_rotation:
             augmented_img, angle = transformation(image)
             flip_type = -1
@@ -237,8 +263,8 @@ if __name__ == "__main__":
     target_num_samples = 20
     input_img_dir = "/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/images/train"
     input_label_dir = "/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/labels/train"
-    output_img_dir = "/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/aug_output_0601_1/images"
-    output_label_dir = "/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/aug_output_0601_1/labels"
+    output_img_dir = "/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/aug_output_0602_1/images"
+    output_label_dir = "/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/aug_output_0602_1/labels"
 
     os.makedirs(output_img_dir, exist_ok=True)
     os.makedirs(output_label_dir, exist_ok=True)
