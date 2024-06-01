@@ -1,3 +1,4 @@
+import math
 
 import cv2
 import numpy as np
@@ -96,22 +97,6 @@ def adjust_bbox(bbox: Tuple[float, float, float, float], img_shape: Tuple[int, i
     x_max_rot, y_max_rot = np.max(rotated_points, axis=0)
 
     # Adjust for flip
-    # if flip_type == 0:  # Vertical flip
-    #     y_min_rot, y_max_rot = img_h - y_max_rot, img_h - y_min_rot
-    # elif flip_type == 1:  # Horizontal flip
-    #     x_min_rot, x_max_rot = img_w - x_max_rot, img_w - x_min_rot
-    # elif flip_type == -1:  # No flip
-    #     pass
-    #
-    # # Calculate the new center, width, and height
-    # x_center_rot = (x_min_rot + x_max_rot) / 2 / img_w
-    # y_center_rot = (y_min_rot + y_max_rot) / 2 / img_h
-    # width_rot = (x_max_rot - x_min_rot) / img_w
-    # height_rot = (y_max_rot - y_min_rot) / img_h
-    #
-    # return x_center_rot, y_center_rot, width_rot, height_rot
-
-    # Adjust for flip
     if flip_type == 0:  # Vertical flip
         y_min_rot, y_max_rot = img_h - y_max_rot, img_h - y_min_rot
     elif flip_type == 1:  # Horizontal flip
@@ -178,36 +163,6 @@ def random_noise(image: np.ndarray, intensity: float = 0.05) -> np.ndarray:
     noise = np.random.normal(0, intensity * 255, image.shape)
     return np.clip(image + noise, 0, 255).astype(np.uint8)
 
-
-
-# def augment_image(image_path: str, label_path: str, output_img_dir: str, output_label_dir: str, num_augmented_images: int, iou_threshold: float = 0.5) -> None:
-#     image = cv2.imread(image_path)
-#     img_h, img_w = image.shape[:2]
-#     filename = os.path.splitext(os.path.basename(image_path))[0]
-#
-#     with open(label_path, 'r') as f:
-#         label = [tuple(map(float, line.strip().split())) for line in f]
-#
-#     for i in range(num_augmented_images):
-#         augmented_img, angle = random_rotation(image)
-#         augmented_img, flip_type = random_flip(augmented_img)
-#         augmented_img = random_brightness_contrast(augmented_img)
-#         augmented_img = random_scale(augmented_img)
-#         augmented_img = random_noise(augmented_img)
-#
-#         augmented_label = []
-#         for bbox in label:
-#             cls, x, y, w, h = bbox
-#             x, y, w, h = adjust_bbox((x, y, w, h), (img_h, img_w), angle, flip_type)
-#             if 0.0 < x < 1.0 and 0.0 < y < 1.0 and w > 0.0 and h > 0.0 and w * img_w >= 1 and h * img_h >= 1:
-#                 augmented_label.append((cls, x, y, w, h))
-#
-#         cv2.imwrite(os.path.join(output_img_dir, f"{filename}_{i}.jpg"), augmented_img)
-#
-#         with open(os.path.join(output_label_dir, f"{filename}_{i}.txt"), 'w') as f:
-#             for cls, x, y, w, h in augmented_label:
-#                 f.write(f"{int(cls)} {x} {y} {w} {h}\n")
-
 def augment_image(image_path: str, label_path: str, output_img_dir: str, output_label_dir: str, num_augmented_images: int, iou_threshold: float = 0.5) -> None:
     image = cv2.imread(image_path)
     img_h, img_w = image.shape[:2]
@@ -218,24 +173,25 @@ def augment_image(image_path: str, label_path: str, output_img_dir: str, output_
 
     for i in range(num_augmented_images):
         # Randomly select a transformation
-        transformation = random.choice([random_rotation, random_flip, random_brightness_contrast, random_scale, random_noise])
+        transformation = random.choice([random_rotation, random_crop, random_flip, random_brightness_contrast, random_scale, random_noise])
 
         if transformation == random_rotation:
             augmented_img, angle = transformation(image)
+            flip_type = -1
         elif transformation == random_flip:
             augmented_img, flip_type = transformation(image)
+            angle = 0
+        elif transformation == random_crop:
+            augmented_img, label = transformation(image, label)
+            angle, flip_type = 0, -1
         else:
             augmented_img = transformation(image)
+            angle, flip_type = 0, -1
 
         augmented_label = []
         for bbox in label:
             cls, x, y, w, h = bbox
-            if transformation == random_rotation:
-                x, y, w, h = adjust_bbox((x, y, w, h), (img_h, img_w), angle, -1)
-            elif transformation == random_flip:
-                x, y, w, h = adjust_bbox((x, y, w, h), (img_h, img_w), 0, flip_type)
-            else:
-                x, y, w, h = adjust_bbox((x, y, w, h), (img_h, img_w), 0, -1)
+            x, y, w, h = adjust_bbox((x, y, w, h), (img_h, img_w), angle, flip_type)
             if 0.0 < x < 1.0 and 0.0 < y < 1.0 and w > 0.0 and h > 0.0 and w * img_w >= 1 and h * img_h >= 1:
                 augmented_label.append((cls, x, y, w, h))
 
@@ -262,7 +218,6 @@ def count_labels(label_dir: str) -> dict:
                 label_count[cls] += 1
     return label_count
 
-
 def adaptive_augmentation(image_dir: str, label_dir: str, output_img_dir: str, output_label_dir: str,
                           target_samples: int, iou_threshold: float = 0.5) -> None:
     label_count = count_labels(label_dir)
@@ -272,11 +227,9 @@ def adaptive_augmentation(image_dir: str, label_dir: str, output_img_dir: str, o
         if os.path.exists(label_path):
             with open(label_path, 'r') as f:
                 cls = int(f.readline().strip().split()[0])
-            num_augmented_images = target_samples // label_count[cls] - 1
+            num_augmented_images = math.ceil(target_samples / label_count[cls]) - 1
             print(f"Augmenting class {cls} with {num_augmented_images} additional images per sample")
-            augment_image(str(image_path), str(label_path), output_img_dir, output_label_dir, num_augmented_images,
-                          iou_threshold)
-
+            augment_image(str(image_path), str(label_path), output_img_dir, output_label_dir, num_augmented_images, iou_threshold)
 
 
 # 主函数
