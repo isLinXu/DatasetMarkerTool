@@ -8,6 +8,9 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Tuple, List
 
+from matplotlib import pyplot as plt
+
+
 def random_rotation(image: np.ndarray, angle_range: Tuple[int, int] = (-20, 20)) -> Tuple[np.ndarray, int]:
     # ... (省略了部分代码)
     h, w = image.shape[:2]
@@ -53,20 +56,8 @@ def random_crop(image: np.ndarray, label: List[Tuple[int, float, float, float, f
 
 
 def random_flip(image: np.ndarray, horizontal: bool = True, vertical: bool = False) -> Tuple[np.ndarray, int]:
-    flip_type = -1
-    if horizontal and vertical:
-        flip_type = -1
-        image = cv2.flip(image, flip_type)
-    elif horizontal:
-        flip_type = 1
-        image = cv2.flip(image, flip_type)
-    elif vertical:
-        flip_type = 0
-        image = cv2.flip(image, flip_type)
-    else:
-        flip_type = -1
-    return image, flip_type
-
+    flip_type = -1 if horizontal and vertical else 1 if horizontal else 0 if vertical else -1
+    return cv2.flip(image, flip_type), flip_type
 
 def rotate_points(points, center, angle):
     angle = np.radians(angle)
@@ -187,9 +178,13 @@ def random_occlusion(image: np.ndarray, max_num_rects: int = 3, max_rect_ratio: 
         image[y:y + rect_h, x:x + rect_w] = 0
     return image
 
-def augment_image(image_path: str, label_path: str, output_img_dir: str, output_label_dir: str, num_augmented_images: int, iou_threshold: float = 0.5,
-                  p_rotation: float = 0.2, p_crop: float = 0.2, p_flip: float = 0.2, p_brightness_contrast: float = 0.2,
-                  p_scale: float = 0.2, p_noise: float = 0.2, p_perspective: float = 0.2, p_occlusion: float = 0.2) -> None:
+
+def augment_image(image_path: str, label_path: str, output_img_dir: str, output_label_dir: str,
+                      num_augmented_images: int, iou_threshold: float = 0.5,
+                      p_rotation: float = 0.2, p_crop: float = 0.2, p_flip: float = 0.2,
+                      p_brightness_contrast: float = 0.2,
+                      p_scale: float = 0.2, p_noise: float = 0.2, p_perspective: float = 0.2,
+                      p_occlusion: float = 0.2) -> None:
     image = cv2.imread(image_path)
     img_h, img_w = image.shape[:2]
     filename = os.path.splitext(os.path.basename(image_path))[0]
@@ -199,9 +194,15 @@ def augment_image(image_path: str, label_path: str, output_img_dir: str, output_
 
     for i in range(num_augmented_images):
         # Randomly select a transformation based on probabilities
-        transformation = random.choices([random_rotation, random_crop, random_flip, random_brightness_contrast, random_scale, random_noise, random_perspective, random_occlusion],
-                                        [p_rotation, p_crop, p_flip, p_brightness_contrast, p_scale, p_noise, p_perspective, p_occlusion])[0]
-        if transformation == random_rotation:
+        transformation = random.choices(
+            [random_rotation, random_crop, random_flip, random_brightness_contrast, random_scale, random_noise,
+             random_perspective, random_occlusion],weights=[p_rotation, p_crop, p_flip, p_brightness_contrast, p_scale, p_noise, p_perspective, p_occlusion])[0]
+
+        # Apply the transformation to the image and label
+        if transformation == random_crop:
+            augmented_img, label = transformation(image, label)
+            angle, flip_type = 0, -1
+        elif transformation == random_rotation:
             augmented_img, angle = transformation(image)
             flip_type = -1
         elif transformation == random_flip:
@@ -221,8 +222,8 @@ def augment_image(image_path: str, label_path: str, output_img_dir: str, output_
             if 0.0 < x < 1.0 and 0.0 < y < 1.0 and w > 0.0 and h > 0.0 and w * img_w >= 1 and h * img_h >= 1:
                 augmented_label.append((cls, x, y, w, h))
 
-        cv2.imwrite(os.path.join(output_img_dir, f"{filename}_{i}.jpg"), augmented_img)
         with open(os.path.join(output_label_dir, f"{filename}_{i}.txt"), 'w') as f:
+            cv2.imwrite(os.path.join(output_img_dir, f"{filename}_{i}.jpg"), augmented_img)
             for cls, x, y, w, h in augmented_label:
                 f.write(f"{int(cls)} {x} {y} {w} {h}\n")
 
@@ -243,19 +244,36 @@ def count_labels(label_dir: str) -> dict:
                 cls = int(line.strip().split()[0])
                 label_count[cls] += 1
     return label_count
+def combine_label_counts(count_before: dict, count_after: dict) -> dict:
+    combined_count = count_before.copy()
+    for cls, count in count_after.items():
+        combined_count[cls] += count
+    return combined_count
+
+def save_histogram(label_count: dict, title: str, filename: str):
+    labels, counts = zip(*label_count.items())
+    plt.bar(labels, counts)
+    plt.xlabel("Class")
+    plt.ylabel("Number of instances")
+    plt.title(title)
+    plt.savefig(filename)
+    plt.close()
 
 def adaptive_augmentation(image_dir: str, label_dir: str, output_img_dir: str, output_label_dir: str,
                           target_samples: int, iou_threshold: float = 0.5) -> None:
     label_count = count_labels(label_dir)
     print("Current label distribution:", label_count)
+    num_augmented_images = {cls: math.ceil(target_samples / count) - 1 for cls, count in label_count.items()}
+    print(f"Augmenting with {num_augmented_images} additional images per sample")
+
     for image_path in Path(image_dir).glob("*.jpg"):
         label_path = Path(label_dir) / (image_path.stem + ".txt")
         if os.path.exists(label_path):
             with open(label_path, 'r') as f:
                 cls = int(f.readline().strip().split()[0])
-            num_augmented_images = math.ceil(target_samples / label_count[cls]) - 1
-            print(f"Augmenting class {cls} with {num_augmented_images} additional images per sample")
-            augment_image(str(image_path), str(label_path), output_img_dir, output_label_dir, num_augmented_images, iou_threshold)
+            num_augmented_images_len = math.ceil(target_samples / label_count[cls]) - 1
+            print(f"Augmenting class {cls} with {num_augmented_images_len} additional images per sample")
+            augment_image(str(image_path), str(label_path), output_img_dir, output_label_dir, num_augmented_images[cls], iou_threshold)
 
 
 # 主函数
@@ -263,10 +281,21 @@ if __name__ == "__main__":
     target_num_samples = 20
     input_img_dir = "/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/images/train"
     input_label_dir = "/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/labels/train"
-    output_img_dir = "/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/aug_output_0602_1/images"
-    output_label_dir = "/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/aug_output_0602_1/labels"
+    output_img_dir = "/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/aug_output_0603_2/images"
+    output_label_dir = "/Users/gatilin/PycharmProjects/DatasetMarkerTool/coco128/aug_output_0603_2/labels"
 
     os.makedirs(output_img_dir, exist_ok=True)
     os.makedirs(output_label_dir, exist_ok=True)
 
+    # 在数据增强前保存直方图
+    label_count_before = count_labels(input_label_dir)
+    save_histogram(label_count_before, "Histogram before data augmentation", "histogram_before.png")
+    # 开始数据增强
     adaptive_augmentation(input_img_dir, input_label_dir, output_img_dir, output_label_dir, target_num_samples)
+    # 在数据增强后保存直方图
+    # 计算增强后的标签数量
+    label_count_after = count_labels(output_label_dir)
+    label_count_total = combine_label_counts(label_count_before, label_count_after)
+
+    # 在数据增强后保存直方图
+    save_histogram(label_count_total, "Histogram after data augmentation", "histogram_after.png")
